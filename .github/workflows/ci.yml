@@ -1,0 +1,43 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  test-action:
+    name: GitHub Actions Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Clone OpenModelicaLibraryTesting repository
+        uses: actions/checkout@v3
+        with:
+          repository: AMIT-HSBI/PNlib
+          path: PNlib
+
+      - name: Test openmodelica-library-testing
+        id: test-action
+        uses: ./
+        with:
+          package-name: PNlib
+          package-version: 2.2
+          modelica-file: PNlib/PNlib/package.mo
+          dependencies: |
+            Modelica 4.0.0+maint.om
+          omc-version: stable
+          reference-files-dir: PNlib/ReferenceFiles
+          reference-files-format: mat
+          reference-files-delimiter: .
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

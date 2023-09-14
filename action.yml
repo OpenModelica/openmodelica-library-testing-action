@@ -1,0 +1,112 @@
+name: 'openmodelica-library-testing'
+description: 'Setup OpenModelicaLibraryTesting script and run them on Modelica package and publishes results.'
+author: 'Andreas Heuermann'
+
+# Define your inputs here.
+inputs:
+  package-name:
+    description: 'Name of Modelica package to test.'
+    required: true
+  package-version:
+    description: 'Version of Modelica package to test.'
+    required: true
+  modelica-file:
+    description: 'Path to Modelica file containing package to test. E.g to package.mo'
+    required: true
+    default: 'package.mo'
+  dependencies:
+    description: 'Modelica library dependencies to install with the OpenModelica package manager.'
+    required: true
+    default: ''
+  omc-version:
+    description: 'Version of OpenModelica to use for testing'
+    required: true
+    default: 'stable'
+  reference-files-dir:
+    description: 'Path to reference files'
+    required: true
+    default: ''
+  reference-files-format:
+    description: 'File extension of result files. Allowed values are "mat" and "csv".'
+    required: true
+    default: 'mat'
+  reference-files-delimiter:
+    description: 'Character to separate model names in reference files. E.g. for Modelica.Blocks.Examples.PID_Controller.mat it would be "."'
+    required: true
+    default: '.'
+  GITHUB_TOKEN:
+    description: 'Value of secrets.GITHUB_TOKEN to authenticate and write comments in PRs.'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup OpenModelica
+      uses: AnHeuermann/setup-openmodelica@v0.6
+      with:
+        version: stable
+        packages: |
+          'omc'
+        libraries: ${{ inputs.dependencies }}
+        omc-diff: true
+
+    - name: Clone OpenModelicaLibraryTesting repository
+      uses: actions/checkout@v3
+      with:
+        repository: OpenModelica/OpenModelicaLibraryTesting
+        ref: 5a71cc63211d9363eefea6a8cd816739af540d2f
+        path: OpenModelicaLibraryTesting
+        token: ${{ github.token }}
+
+    - name: Setup Python3
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        cache: 'pip'            # caching pip dependencies
+    - name: Install Python dependencies
+      shell: bash
+      run: |
+        pip install -r requirements.txt
+
+    - name: Create config.json
+      shell: bash
+      run: |
+        python scripts/genConfig.py "OpenModelicaLibraryTesting/configs/myConf.json" "${{ inputs.modelica-file }}" "${{ inputs.package-name }}" "${{ inputs.reference-files-dir }}" "${{ inputs.reference-files-format }}" "${{ inputs.reference-files-delimiter }}"
+        cat OpenModelicaLibraryTesting/configs/myConf.json
+
+    - name: Run library test
+      working-directory: OpenModelicaLibraryTesting
+      shell: bash
+      run: python test.py configs/myConf.json
+
+    - name: Generate HTML results
+      working-directory: OpenModelicaLibraryTesting
+      shell: bash
+      run: python report.py configs/myConf.json
+
+    - name: Check Results
+      id: check_results
+      shell: bash
+      run: |
+        python scripts/getTestResults.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "master" "${{ inputs.reference-files-dir }}"
+
+    - name: Archive sqlite3.db
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: sqlite3.db
+        path: |
+          OpenModelicaLibraryTesting/sqlite3.db
+
+    - name: Archive HTML
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: ${{ inputs.package-name }}.html
+        path: |
+          OpenModelicaLibraryTesting/files/*
+          OpenModelicaLibraryTesting/*.html
+
+branding:
+  icon: 'check-square'
+  color: 'blue'
