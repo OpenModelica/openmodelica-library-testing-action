@@ -30,18 +30,15 @@ def getTestResults(htmlFile, testVerification):
   with open(summary_file, "a") as f:
     f.write(out_str)
 
-  if (not simSuccess):
-    print("::error Check-Test-Results: Not all simulation tests passed")
-    #return 1 # Failure
-  if testVerification and not verificationSuccess:
-    print("::error Check-Test-Results: Not all verification tests passed")
-    #return 1  # Failure
+  output_file = os.getenv('GITHUB_OUTPUT')
+  with open(output_file, "a") as f:
+    f.write(f"simulation-tests-passing={simSuccess}\n")
+    f.write(f"verification-tests-passing={testVerification and not verificationSuccess}")
+
+  if (simSuccess) and (not testVerification or verificationSuccess):
+    return 0  # Success
   else:
-    if testVerification:
-      print("::notice Check-Test-Results: All verification tests passing")
-    else:
-      print("::notice Check-Test-Results: All simulation tests passing")
-    #return 0  # Success
+    return 1  # Failure
 
 if len(sys.argv) != 5:
   raise Exception("Wrong number of input arguments.\nUsage:\n\getTestResults.py /path/to/OpenModelicaLibraryTesting libName master")

@@ -38,6 +38,14 @@ inputs:
     description: 'Value of secrets.GITHUB_TOKEN to authenticate and write comments in PRs.'
     required: true
 
+outputs:
+  simulation-tests-passing:
+    description: 'True if all simulation tests are passing'
+    value: ${{ steps.check_results.outputs.simulation-tests-passing }}
+  verification-tests-passing:
+    description: 'True if all verification tests are passing'
+    value: ${{ steps.check_results.outputs.verification-tests-passing }}
+
 runs:
   using: "composite"
   steps:
@@ -89,6 +97,16 @@ runs:
       shell: bash
       run: |
         python scripts/checkTestResults.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}"
+
+    - name: Error message
+      if: ${{ steps.check_results.outputs.simulation-tests-passing == 'false' }}
+      shell: bash
+      run: echo "::error Not all simulation tests are passing"
+
+    - name: Error message
+      if: ${{ steps.check_results.outputs.verification-tests-passing == 'false' }}
+      shell: bash
+      run: echo "::error Not all verification tests are passing"
 
     - name: Archive sqlite3.db
       uses: actions/upload-artifact@v3
