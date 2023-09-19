@@ -3,7 +3,7 @@
 import os
 import sys
 
-if len(sys.argv) != 7:
+if len(sys.argv) != 8:
   raise Exception("Wrong number of input arguments.\nUsage:\n\tgenConfig.py configFile /path/to/package.mo packageName branchName referenceFiles referenceFileExtension referenceFileDelimiter")
 
 configFile             = sys.argv[1]
