@@ -31,7 +31,7 @@ jobs:
           dependencies: |
             Modelica 4.0.0+maint.om
           omc-version: stable
-          reference-files-dir: examples/MyLibrary/ReferenceFiles
+          reference-files-dir: examples/ReferenceFiles
           reference-files-format: csv
           reference-files-delimiter: .
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
