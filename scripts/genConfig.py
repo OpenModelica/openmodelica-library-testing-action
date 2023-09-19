@@ -14,8 +14,13 @@ referenceFiles         = sys.argv[5]
 referenceFileExtension = sys.argv[6]
 referenceFileDelimiter = sys.argv[7]
 
-with open(configFile, 'w') as f:
+# If running inside a pull request
+if refName.endswith('/merge'):
+  refName = 'dev-pr-' + refName.replace('/merge', '')
 
+refName.replace('/', '-')
+
+with open(configFile, 'w') as f:
   content = (
     '[\n'
     '  {\n'
