@@ -38,11 +38,14 @@ def getTestResults(htmlFile, testVerification):
 if len(sys.argv) != 5:
   raise Exception("Wrong number of input arguments.\nUsage:\n\getTestResults.py /path/to/OpenModelicaLibraryTesting libName master")
 
-name_of_script  = sys.argv[0]
 directory       = sys.argv[1]
 libName         = sys.argv[2]
 libVersion      = sys.argv[3]
 referenceFiles  = sys.argv[4]
+
+# If running inside a pull request
+if libVersion.endswith('/merge'):
+  libVersion = 'dev-pr-' + libVersion.replace('/merge', '')
 
 htmlFile = os.path.join(directory, libName + "_" + libVersion + ".html")
 exitCode = getTestResults(htmlFile, referenceFiles != "")
