@@ -4,6 +4,7 @@ package MyLibrary "My awesome Modelica library"
       package Examples
         model Pendulum
           extends Modelica.Mechanics.MultiBody.Examples.Elementary.Pendulum;
+          this is not allowed!
           annotation(
             experiment(StopTime=5)
           );
