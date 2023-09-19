@@ -21,23 +21,17 @@ jobs:
         id: checkout
         uses: actions/checkout@v3
 
-      - name: Clone OpenModelicaLibraryTesting repository
-        uses: actions/checkout@v3
-        with:
-          repository: AMIT-HSBI/PNlib
-          path: PNlib
-
       - name: Test openmodelica-library-testing
         id: test-action
         uses: ./
         with:
-          package-name: PNlib
-          package-version: 2.2
-          modelica-file: PNlib/PNlib/package.mo
+          package-name: MyLibrary
+          package-version: 1.0.0
+          modelica-file: examples/MyLibrary/package.mo
           dependencies: |
             Modelica 4.0.0+maint.om
           omc-version: stable
-          reference-files-dir: PNlib/ReferenceFiles
-          reference-files-format: mat
+          reference-files-dir: examples/MyLibrary/ReferenceFiles
+          reference-files-format: csv
           reference-files-delimiter: .
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
