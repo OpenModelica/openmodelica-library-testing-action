@@ -4,14 +4,15 @@ import os
 import sys
 
 if len(sys.argv) != 7:
-  raise Exception("Wrong number of input arguments.\nUsage:\n\tgenConfig.py configFile /path/to/package.mo packageName referenceFiles referenceFileExtension referenceFileDelimiter")
+  raise Exception("Wrong number of input arguments.\nUsage:\n\tgenConfig.py configFile /path/to/package.mo packageName branchName referenceFiles referenceFileExtension referenceFileDelimiter")
 
 configFile             = sys.argv[1]
 modelicaFile           = sys.argv[2]
 packageName            = sys.argv[3]
-referenceFiles         = sys.argv[4]
-referenceFileExtension = sys.argv[5]
-referenceFileDelimiter = sys.argv[6]
+refName                = sys.argv[4]
+referenceFiles         = sys.argv[5]
+referenceFileExtension = sys.argv[6]
+referenceFileDelimiter = sys.argv[7]
 
 with open(configFile, 'w') as f:
 
@@ -19,7 +20,7 @@ with open(configFile, 'w') as f:
     '[\n'
     '  {\n'
     f'    "library": "{packageName}",\n'
-    '    "libraryVersion": "master",\n'
+    f'    "libraryVersion": "{refName}",\n'
     '    "loadFileCommands": [\n'
     f'      "loadFile(\\\"{os.path.abspath(modelicaFile)}\\\")"\n'
     '    ],\n'
