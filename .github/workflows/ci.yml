@@ -36,13 +36,13 @@ jobs:
           reference-files-delimiter: .
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Test openmodelica-library-testing
+      - name: Verify action results
         shell: bash
         run: |
-          echo "simulation-tests-passing: ${{ steps.check_results.outputs.simulation-tests-passing }}"
-          echo "verification-tests-passing: ${{ steps.check_results.outputs.verification-tests-passing }}"
+          echo "simulation-tests-passing: ${{ steps.test-action.outputs.simulation-tests-passing }}"
+          echo "verification-tests-passing: ${{ steps.test-action.outputs.verification-tests-passing }}"
 
-          if [${{ steps.check_results.outputs.simulation-tests-passing }}] && [ ${{ steps.check_results.outputs.n-simulation-passing }} == 2 ] && [${{ steps.check_results.outputs.verification-tests-passing }}] && ! [ ${{ steps.check_results.outputs.n-simulation-passing }} == 1 ]; then
+          if [${{ steps.test-action.outputs.simulation-tests-passing }}] && [ ${{ steps.test-action.outputs.n-simulation-passing }} == 2 ] && [${{ steps.test-action.outputs.verification-tests-passing }}] && ! [ ${{ steps.test-action.outputs.n-simulation-passing }} == 1 ]; then
             exit 0;
           else
             exit 1;
