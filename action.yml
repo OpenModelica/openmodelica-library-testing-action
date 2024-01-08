@@ -102,7 +102,7 @@ runs:
       id: summary
       shell: bash
       run: |
-        python scripts/checkTestResults.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}"
+        python scripts/createSummary.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}"
 
     - shell: bash
       run: |
