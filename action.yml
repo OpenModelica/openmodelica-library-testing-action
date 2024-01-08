@@ -92,21 +92,13 @@ runs:
       shell: bash
       run: python report.py configs/myConf.json
 
-    - name: Check Results
+    - name: Summary
       id: check_results
       shell: bash
       run: |
         python scripts/checkTestResults.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}"
-
-    - name: Error message
-      if: ${{ steps.check_results.outputs.simulation-tests-passing == 'false' }}
-      shell: bash
-      run: echo "::error Not all simulation tests are passing"
-
-    - name: Error message
-      if: ${{ steps.check_results.outputs.verification-tests-passing == 'false' }}
-      shell: bash
-      run: echo "::error Not all verification tests are passing"
+        echo "simulation-tests-passing: ${{ steps.check_results.outputs.simulation-tests-passing }}"
+        echo "verification-tests-passing: ${{ steps.check_results.outputs.verification-tests-passing }}"
 
     - name: Archive sqlite3.db
       uses: actions/upload-artifact@v3

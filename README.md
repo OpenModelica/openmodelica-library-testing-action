@@ -77,3 +77,29 @@ jobs:
           reference-files-delimiter: .
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+## Outputs
+
+## `simulation-tests-passing`
+
+True if all simulation tests are passing.
+
+## `verification-tests-passing`
+
+True if all verification tests are passing.
+
+## Artifacts
+
+### HTML Results
+
+Download the `MyLibrary.html.zip` artifact, unzip it and start a HTML server to display
+the results. This can be used to host results on a server or GitHub pages.
+
+```bash
+unzip MyLibrary.html.zip -d html
+python3 -m http.server -d html
+```
+
+### SQlite
+
+For future test the SQlite data base `sqlite3.db` is achieved.
