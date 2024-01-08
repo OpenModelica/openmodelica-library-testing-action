@@ -1,7 +1,9 @@
 # openmodelica-library-testing Action
 
 This GitHub action setups OpenModelicaLibraryTesting scripts and run them on a provided
-Modelica package and publishes a webpage containing HTML results.
+Modelica package and returns a summary of the test report.
+
+The action will set output variables that can be checked if all test passed.
 
 ## Inputs
 

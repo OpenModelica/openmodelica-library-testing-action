@@ -9,13 +9,19 @@ import pandas as pd
 import sys
 import tabulate
 
-def getTestResults(htmlFile, testVerification):
+def createSummary(htmlFile, testVerification):
+  """Create markdown summary from HTML file.
+
+  Arguments:
+  htmlFile         -- HTML file containing results for one library.
+  testVerification -- Test if verification tests passed.
+  """
   dfs = pd.read_html(htmlFile)
   overview = dfs[0]
   results = dfs[1]
 
-  simSuccess = (overview["Total"][0] == overview["Simulation"][0])
-  verificationSuccess = (overview["Total"][0] == overview["Verification"][0])
+  simSuccess = (overview["Total"][1] == overview["Simulation"][1])
+  verificationSuccess = (overview["Total"][1] == overview["Verification"][1])
 
   # Write to output and summary
   out_str = (
@@ -40,7 +46,7 @@ def getTestResults(htmlFile, testVerification):
   return 0
 
 if len(sys.argv) != 5:
-  raise Exception("Wrong number of input arguments.\nUsage:\n\getTestResults.py /path/to/OpenModelicaLibraryTesting libName master")
+  raise Exception("Wrong number of input arguments.\nUsage:\n\createSummary.py /path/to/OpenModelicaLibraryTesting libName master")
 
 directory       = sys.argv[1]
 libName         = sys.argv[2]
@@ -52,5 +58,5 @@ if libVersion.endswith('/merge'):
   libVersion = 'dev-pr-' + libVersion.replace('/merge', '')
 
 htmlFile = os.path.join(directory, libName + "_" + libVersion + ".html")
-exitCode = getTestResults(htmlFile, referenceFiles != "")
+exitCode = createSummary(htmlFile, referenceFiles != "")
 sys.exit(exitCode)

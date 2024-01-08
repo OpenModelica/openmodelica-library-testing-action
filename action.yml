@@ -103,8 +103,10 @@ runs:
       shell: bash
       run: |
         python scripts/checkTestResults.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}"
-        echo "simulation-tests-passing: ${{ steps.check_results.outputs.simulation-tests-passing }}"
-        echo "verification-tests-passing: ${{ steps.check_results.outputs.verification-tests-passing }}"
+        echo "::notice::simulation-tests-passing: ${{ outputs.simulation-tests-passing }}"
+        echo "::notice::n-simulation-passing: ${{ outputs.n-simulation-passing }}"
+        echo "::notice::verification-tests-passing: ${{ outputs.verification-tests-passing }}"
+        echo "::notice::n-verification-passing: ${{ outputs.n-verification-passing }}"
 
     - name: Archive sqlite3.db
       uses: actions/upload-artifact@v3
