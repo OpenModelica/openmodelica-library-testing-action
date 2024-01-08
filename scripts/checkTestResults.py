@@ -34,8 +34,8 @@ def getTestResults(htmlFile, testVerification):
   with open(output_file, "a") as f:
     f.write(f"simulation-tests-passing={simSuccess}\n")
     f.write(f"n-simulation-passing={overview['Simulation'][0]}\n")
-    f.write(f"verification-tests-passing={testVerification and not verificationSuccess}")
-    f.write(f"n-verification-passing={overview['Verification'][0]}")
+    f.write(f"verification-tests-passing={testVerification and not verificationSuccess}\n")
+    f.write(f"n-verification-passing={overview['Verification'][0]}\n")
 
   return 0
 
