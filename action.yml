@@ -41,16 +41,16 @@ inputs:
 outputs:
   simulation-tests-passing:
     description: 'True if all simulation tests are passing'
-    value: ${{ steps.check_results.outputs.simulation-tests-passing }}
+    value: ${{ steps.summary.outputs.simulation-tests-passing }}
   n-simulation-passing:
     description: 'Number of successful simulation tests'
-    value: ${{ steps.check_results.outputs.n-simulation-passing }}
+    value: ${{ steps.summary.outputs.n-simulation-passing }}
   verification-tests-passing:
     description: 'True if all verification tests are passing'
-    value: ${{ steps.check_results.outputs.verification-tests-passing }}
+    value: ${{ steps.summary.outputs.verification-tests-passing }}
   n-verification-passing:
     description: 'Number of successful verification tests'
-    value: ${{ steps.check_results.outputs.n-verification-passing }}
+    value: ${{ steps.summary.outputs.n-verification-passing }}
 
 runs:
   using: "composite"
@@ -99,14 +99,17 @@ runs:
       run: python report.py configs/myConf.json
 
     - name: Summary
-      id: check_results
+      id: summary
       shell: bash
       run: |
         python scripts/checkTestResults.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}"
-        echo "::notice::simulation-tests-passing: ${{ outputs.simulation-tests-passing }}"
-        echo "::notice::n-simulation-passing: ${{ outputs.n-simulation-passing }}"
-        echo "::notice::verification-tests-passing: ${{ outputs.verification-tests-passing }}"
-        echo "::notice::n-verification-passing: ${{ outputs.n-verification-passing }}"
+
+    - shell: bash
+      run: |
+        echo "::notice::simulation-tests-passing: ${{ steps.summary.outputs.simulation-tests-passing }}"
+        echo "::notice::n-simulation-passing: ${{ steps.summary.outputs.n-simulation-passing }}"
+        echo "::notice::verification-tests-passing: ${{ steps.summary.outputs.verification-tests-passing }}"
+        echo "::notice::n-verification-passing: ${{ steps.summary.outputs.n-verification-passing }}"
 
     - name: Archive sqlite3.db
       uses: actions/upload-artifact@v3

@@ -20,8 +20,8 @@ def createSummary(htmlFile, testVerification):
   overview = dfs[0]
   results = dfs[1]
 
-  simSuccess = (overview["Total"][1] == overview["Simulation"][1])
-  verificationSuccess = (overview["Total"][1] == overview["Verification"][1])
+  simSuccess = (overview["Total"][0] == overview["Simulation"][0])
+  verificationSuccess = (overview["Total"][0] == overview["Verification"][0])
 
   # Write to output and summary
   out_str = (
