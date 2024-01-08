@@ -106,10 +106,10 @@ runs:
 
     - shell: bash
       run: |
-        echo "::debug::simulation-tests-passing: ${{ steps.summary.outputs.simulation-tests-passing }}\\n\
-        n-simulation-passing: ${{ steps.summary.outputs.n-simulation-passing }}\\n\
-        verification-tests-passing: ${{ steps.summary.outputs.verification-tests-passing }}\\n\
-        n-verification-passing: ${{ steps.summary.outputs.n-verification-passing }}"
+        echo "::debug::simulation-tests-passing: ${{ steps.summary.outputs.simulation-tests-passing }}"
+        echo "::debug::n-simulation-passing: ${{ steps.summary.outputs.n-simulation-passing }}"
+        echo "::debug::verification-tests-passing: ${{ steps.summary.outputs.verification-tests-passing }}"
+        echo "::debug::n-verification-passing: ${{ steps.summary.outputs.n-verification-passing }}"
 
     - name: Archive sqlite3.db
       uses: actions/upload-artifact@v3
