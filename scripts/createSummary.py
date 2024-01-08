@@ -21,7 +21,12 @@ def createSummary(htmlFile, testVerification):
   results = dfs[1]
 
   simSuccess = (overview["Total"][0] == overview["Simulation"][0])
-  verificationSuccess = (overview["Total"][0] == overview["Verification"][0])
+  verificationSuccess = not testVerification or (testVerification and (overview["Total"][0] == overview["Verification"][0]))
+
+  if (not simSuccess):
+    print("::error::Some simulation tests failed")
+  if (not verificationSuccess):
+    print("::error::Some verification tests failed")
 
   # Write to output and summary
   out_str = (
@@ -40,7 +45,7 @@ def createSummary(htmlFile, testVerification):
   with open(output_file, "a") as f:
     f.write(f"simulation-tests-passing={simSuccess}\n")
     f.write(f"n-simulation-passing={overview['Simulation'][0]}\n")
-    f.write(f"verification-tests-passing={not testVerification or (testVerification and verificationSuccess)}\n")
+    f.write(f"verification-tests-passing={verificationSuccess}\n")
     f.write(f"n-verification-passing={overview['Verification'][0]}\n")
 
   return 0

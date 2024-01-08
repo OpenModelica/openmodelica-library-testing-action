@@ -23,8 +23,6 @@ jobs:
 
       - name: Test openmodelica-library-testing
         id: test-action
-        env:
-          ACTIONS_RUNNER_DEBUG: true
         uses: ./
         with:
           package-name: MyLibrary
