@@ -36,7 +36,7 @@ Version of OpenModelica to use for testing.
 Check
 [AnHeuermann/setup-openmodelica](https://github.com/AnHeuermann/setup-openmodelica#available-openmodelica-versions)
 for available versions.\
-Default: `'stable`
+Default: `'stable'`
 
 ### `reference-files-dir`
 
@@ -84,9 +84,17 @@ jobs:
 
 True if all simulation tests are passing.
 
+## ` n-simulation-passing`
+
+Number of successful simulation tests.
+
 ## `verification-tests-passing`
 
 True if all verification tests are passing.
+
+## `n-verification-passing`
+
+Number of successful verification tests.
 
 ## Artifacts
 

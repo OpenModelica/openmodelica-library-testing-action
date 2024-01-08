@@ -42,9 +42,15 @@ outputs:
   simulation-tests-passing:
     description: 'True if all simulation tests are passing'
     value: ${{ steps.check_results.outputs.simulation-tests-passing }}
+  n-simulation-passing:
+    description: 'Number of successful simulation tests'
+    value: ${{ steps.check_results.outputs.n-simulation-passing }}
   verification-tests-passing:
     description: 'True if all verification tests are passing'
     value: ${{ steps.check_results.outputs.verification-tests-passing }}
+  n-verification-passing:
+    description: 'Number of successful verification tests'
+    value: ${{ steps.check_results.outputs.n-verification-passing }}
 
 runs:
   using: "composite"

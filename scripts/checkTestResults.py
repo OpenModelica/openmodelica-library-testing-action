@@ -33,7 +33,9 @@ def getTestResults(htmlFile, testVerification):
   output_file = os.getenv('GITHUB_OUTPUT')
   with open(output_file, "a") as f:
     f.write(f"simulation-tests-passing={simSuccess}\n")
+    f.write(f"n-simulation-passing={overview['Simulation'][0]}\n")
     f.write(f"verification-tests-passing={testVerification and not verificationSuccess}")
+    f.write(f"n-verification-passing={overview['Verification'][0]}")
 
   return 0
 
