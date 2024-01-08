@@ -38,6 +38,20 @@ inputs:
     description: 'Value of secrets.GITHUB_TOKEN to authenticate and write comments in PRs.'
     required: true
 
+outputs:
+  simulation-tests-passing:
+    description: 'True if all simulation tests are passing'
+    value: ${{ steps.summary.outputs.simulation-tests-passing }}
+  n-simulation-passing:
+    description: 'Number of successful simulation tests'
+    value: ${{ steps.summary.outputs.n-simulation-passing }}
+  verification-tests-passing:
+    description: 'True if all verification tests are passing'
+    value: ${{ steps.summary.outputs.verification-tests-passing }}
+  n-verification-passing:
+    description: 'Number of successful verification tests'
+    value: ${{ steps.summary.outputs.n-verification-passing }}
+
 runs:
   using: "composite"
   steps:
@@ -71,7 +85,7 @@ runs:
     - name: Create config.json
       shell: bash
       run: |
-        python scripts/genConfig.py "OpenModelicaLibraryTesting/configs/myConf.json" "${{ inputs.modelica-file }}" "${{ inputs.package-name }}" "${{ inputs.reference-files-dir }}" "${{ inputs.reference-files-format }}" "${{ inputs.reference-files-delimiter }}"
+        python scripts/genConfig.py "OpenModelicaLibraryTesting/configs/myConf.json" "${{ inputs.modelica-file }}" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}" "${{ inputs.reference-files-format }}" "${{ inputs.reference-files-delimiter }}"
         cat OpenModelicaLibraryTesting/configs/myConf.json
 
     - name: Run library test
@@ -84,11 +98,11 @@ runs:
       shell: bash
       run: python report.py configs/myConf.json
 
-    - name: Check Results
-      id: check_results
+    - name: Summary
+      id: summary
       shell: bash
       run: |
-        python scripts/getTestResults.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "master" "${{ inputs.reference-files-dir }}"
+        python scripts/createSummary.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}"
 
     - name: Archive sqlite3.db
       uses: actions/upload-artifact@v3
