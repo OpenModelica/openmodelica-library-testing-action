@@ -7,7 +7,6 @@
 import os
 import pandas as pd
 import sys
-import tabulate
 
 def createSummary(htmlFile, testVerification):
   """Create markdown summary from HTML file.
@@ -51,7 +50,7 @@ def createSummary(htmlFile, testVerification):
   return 0
 
 if len(sys.argv) != 5:
-  raise Exception("Wrong number of input arguments.\nUsage:\n\createSummary.py /path/to/OpenModelicaLibraryTesting libName master")
+  raise Exception("Wrong number of input arguments.\nUsage:\ncreateSummary.py /path/to/OpenModelicaLibraryTesting libName master")
 
 directory       = sys.argv[1]
 libName         = sys.argv[2]

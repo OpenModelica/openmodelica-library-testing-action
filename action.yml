@@ -91,18 +91,23 @@ runs:
     - name: Run library test
       working-directory: OpenModelicaLibraryTesting
       shell: bash
-      run: python test.py --noclean configs/myConf.json
+      run: python test.py --branch="omc-stable" --noclean configs/myConf.json
 
     - name: Generate HTML results
       working-directory: OpenModelicaLibraryTesting
       shell: bash
-      run: python report.py configs/myConf.json
+      run: python report.py --branches="omc-stable" configs/myConf.json
 
     - name: Summary
       id: summary
       shell: bash
       run: |
         python scripts/createSummary.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}"
+
+    - name: Zip HTML results
+      shell: bash
+      run: |
+        python scripts/archieveResults.py "${{ inputs.package-name }}" "${{ github.ref_name }}" "omc-stable" "OpenModelicaLibraryTesting" "html.zip"
 
     - name: Archive sqlite3.db
       uses: actions/upload-artifact@v3
@@ -118,8 +123,7 @@ runs:
       with:
         name: ${{ inputs.package-name }}.html
         path: |
-          OpenModelicaLibraryTesting/files/*
-          OpenModelicaLibraryTesting/*.html
+          html.zip
 
 branding:
   icon: 'check-square'
