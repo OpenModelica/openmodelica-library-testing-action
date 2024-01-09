@@ -140,12 +140,13 @@ runs:
         clean: false
 
     - name: Remove old files/ directory
+      if: ${{ inputs.publish-gh-pages }}
       shell: bash
       run: rm -rf omc-stable/files
 
     - name: Get HTML artifact
-      uses: actions/download-artifact@v4
       if: ${{ inputs.publish-gh-pages }}
+      uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.package-name }}.html
 
@@ -167,6 +168,9 @@ runs:
         # - exitAtEnd -> the action will go on, every pathspec error will be logged at the end, the step will fail.
         # Default: ignore
         pathspec_error_handling: ignore
+
+    - name: Checkout
+      uses: actions/checkout@v4
 
 branding:
   icon: 'check-square'
