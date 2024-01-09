@@ -91,7 +91,7 @@ runs:
     - name: Run library test
       working-directory: OpenModelicaLibraryTesting
       shell: bash
-      run: python test.py configs/myConf.json
+      run: python test.py --noclean configs/myConf.json
 
     - name: Generate HTML results
       working-directory: OpenModelicaLibraryTesting

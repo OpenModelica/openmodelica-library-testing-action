@@ -3,6 +3,23 @@
 import os
 import sys
 
+"""
+Generate configuration file for test library script.
+
+Arguments:
+configFile             -- Full path to configure file to generate, e.g. `OpenModelicaLibraryTesting/configs/myConf.json`
+modelicaFile           -- Path to Modelica library, e.g. `path/to/MyLibrary/package.mo`
+packageName            -- Name of Modelica library, e.g. `MyLibrary`
+refName                -- Reference name, (version, branch, ...), e.g. `main`
+referenceFiles         -- Path to directory with reference files, empty sting if not available. E.g. `examples/ReferenceFiles`
+referenceFileExtension -- File extension of reference files: `csv` or `mat`.
+referenceFileDelimiter -- File delimiter of CSV files, e.g. `.`
+
+Example call:
+./scripts/genConfig.py "OpenModelicaLibraryTesting/configs/myConf.json" "examples/MyLibrary/package.mo" "MyLibrary" "main" "examples/ReferenceFiles" "csv" "."
+"""
+
+
 if len(sys.argv) != 8:
   raise Exception("Wrong number of input arguments.\nUsage:\n\tgenConfig.py configFile /path/to/package.mo packageName branchName referenceFiles referenceFileExtension referenceFileDelimiter")
 
