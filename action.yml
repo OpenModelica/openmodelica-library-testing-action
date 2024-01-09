@@ -133,10 +133,10 @@ runs:
         path: html/
 
     - name: Checkout GitHub Pages branch
-      if: ${{ publish-gh-pages }}
+      if: ${{ inputs.publish-gh-pages }}
       uses: actions/checkout@v4
       with:
-        ref: ${{ gh-pages-ref }}
+        ref: ${{ inputs.gh-pages-ref }}
 
     - name: Remove old files/ directory
       shell: bash
@@ -144,12 +144,12 @@ runs:
 
     - name: Get HTML artifact
       uses: actions/download-artifact@v4
-      if: ${{ publish-gh-pages }}
+      if: ${{ inputs.publish-gh-pages }}
       with:
         name: ${{ inputs.package-name }}.html
 
     - name: Publish results
-      if: ${{ publish-gh-pages }}
+      if: ${{ inputs.publish-gh-pages }}
       uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
       with:
         add: 'omc-stable index.html'
