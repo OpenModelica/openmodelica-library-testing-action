@@ -107,10 +107,10 @@ runs:
     - name: Zip HTML results
       shell: bash
       run: |
-        python scripts/archieveResults.py "${{ inputs.package-name }}" "${{ github.ref_name }}" "omc-stable" "OpenModelicaLibraryTesting" "html.zip"
+        python scripts/archieveResults.py "${{ inputs.package-name }}" "${{ github.ref_name }}" "omc-stable" "OpenModelicaLibraryTesting" "html/"
 
     - name: Archive sqlite3.db
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: sqlite3.db
@@ -118,12 +118,11 @@ runs:
           OpenModelicaLibraryTesting/sqlite3.db
 
     - name: Archive HTML
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: ${{ inputs.package-name }}.html
-        path: |
-          html.zip
+        path: html/
 
 branding:
   icon: 'check-square'
