@@ -67,7 +67,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup OpenModelica
-      uses: AnHeuermann/setup-openmodelica@v0.6
+      uses: AnHeuermann/setup-openmodelica@v0.7
       with:
         version: ${{ inputs.omc-version }}
         packages: |

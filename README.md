@@ -1,3 +1,5 @@
+[![Continuous Integration](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml/badge.svg)](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml)
+
 # openmodelica-library-testing Action
 
 This GitHub action setups [OpenModelicaLibraryTesting](https://github.com/OpenModelica/OpenModelicaLibraryTesting)
@@ -76,7 +78,7 @@ the results of PRs and branches are getting published automatically.
 
 ### `gh-pages-ref`
 
-Set branch to push HTML results to, so they can be published with GitHub Pages.
+Set branch to push HTML results to, so they can be published with GitHub Pages.\
 Default: `'gh-pages'`
 
 ### `pages-root-url`
@@ -93,7 +95,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: openmodelica-library-testing
+      - uses: openmodelica-library-testing@v0.1.1
         id: library-testing
         with:
           package-name: MyLibrary
