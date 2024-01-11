@@ -95,7 +95,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: openmodelica-library-testing@v0.1.0
+      - uses: openmodelica-library-testing@v0.1.1
         id: library-testing
         with:
           package-name: MyLibrary
