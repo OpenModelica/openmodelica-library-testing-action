@@ -46,7 +46,7 @@ inputs:
     required: true
     default: 'gh-pages'
   pages-root-url:
-    description: 'Root url GitHub Pages deploys to, e.g. https://<GitHub User>.github.io/<Repository>/'
+    description: 'Root url GitHub Pages deploys to, e.g. https://<GitHub User>.github.io/<Repository>'
 
 # Action outputs
 outputs:
@@ -164,7 +164,7 @@ runs:
       with:
         add: '${{ inputs.omc-version }} index.html'
         default_author: github_actions
-        message: '[${{ github.action }} ] Test results from ${{ github.ref }-${{ github.run_number }}'
+        message: '[${{ github.action }} ] Test results from ${{ github.ref }}-${{ github.run_number }}'
         fetch: false
         pathspec_error_handling: ignore
 

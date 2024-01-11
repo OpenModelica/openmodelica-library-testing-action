@@ -78,6 +78,11 @@ the results of PRs and branches are getting published automatically.
 Set branch to push HTML results to, so they can be published with GitHub Pages.
 Default: `'gh-pages'`
 
+### `pages-root-url`
+
+Root url GitHub Pages deploys to, e.g. `'https://<GitHub User>.github.io/<Repository>'`.
+
+
 ## Example usage
 
 ```yaml
@@ -101,6 +106,7 @@ jobs:
           reference-files-delimiter: .
           publish-gh-pages: true
           gh-pages-ref: gh-pages
+          pages-root-url: https://USERNAME.github.io/MyLibrary
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 

@@ -33,6 +33,7 @@ jobs:
           reference-files-dir: examples/ReferenceFiles
           reference-files-format: csv
           reference-files-delimiter: .
+          pages-root-url: https://anheuermann.github.io/openmodelica-library-testing-action
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify action results
