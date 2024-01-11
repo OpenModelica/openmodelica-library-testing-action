@@ -1,8 +1,8 @@
 name: 'openmodelica-library-testing'
-description: 'Setup OpenModelicaLibraryTesting script and run them on Modelica package and publishes results.'
+description: 'Setup OpenModelicaLibraryTesting scripts and run them on Modelica package and publishes results.'
 author: 'Andreas Heuermann'
 
-# Define your inputs here.
+# Action inputs
 inputs:
   package-name:
     description: 'Name of Modelica package to test.'
@@ -37,7 +37,18 @@ inputs:
   GITHUB_TOKEN:
     description: 'Value of secrets.GITHUB_TOKEN to authenticate and write comments in PRs.'
     required: true
+  publish-gh-pages:
+    description: 'Push results to gh-pages branch.'
+    required: true
+    default: true
+  gh-pages-ref:
+    description: 'Branch GitHub Pages deploys from, e.g. `gh-pages`'
+    required: true
+    default: 'gh-pages'
+  pages-root-url:
+    description: 'Root url GitHub Pages deploys to, e.g. https://<GitHub User>.github.io/<Repository>'
 
+# Action outputs
 outputs:
   simulation-tests-passing:
     description: 'True if all simulation tests are passing'
@@ -58,7 +69,7 @@ runs:
     - name: Setup OpenModelica
       uses: AnHeuermann/setup-openmodelica@v0.6
       with:
-        version: stable
+        version: ${{ inputs.omc-version }}
         packages: |
           'omc'
         libraries: ${{ inputs.dependencies }}
@@ -91,21 +102,31 @@ runs:
     - name: Run library test
       working-directory: OpenModelicaLibraryTesting
       shell: bash
-      run: python test.py configs/myConf.json
+      run: python test.py --branch="${{ inputs.omc-version }}" --noclean configs/myConf.json
 
     - name: Generate HTML results
       working-directory: OpenModelicaLibraryTesting
       shell: bash
-      run: python report.py configs/myConf.json
+      run: python report.py --branches="${{ inputs.omc-version }}" configs/myConf.json
+
+    - name: Zip HTML results
+      id: archiveHTML
+      env:
+        ROOT_URL: "${{ inputs.pages-root-url }}"
+      shell: bash
+      run: |
+        python scripts/archiveResults.py "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.omc-version }}" "OpenModelicaLibraryTesting" "html/"
 
     - name: Summary
       id: summary
+      env:
+        PAGES_URL: "${{ steps.archiveHTML.outputs.pages-url }}"
       shell: bash
       run: |
         python scripts/createSummary.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}"
 
     - name: Archive sqlite3.db
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: sqlite3.db
@@ -113,13 +134,42 @@ runs:
           OpenModelicaLibraryTesting/sqlite3.db
 
     - name: Archive HTML
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: ${{ inputs.package-name }}.html
-        path: |
-          OpenModelicaLibraryTesting/files/*
-          OpenModelicaLibraryTesting/*.html
+        path: html/
+
+    - name: Checkout GitHub Pages branch
+      if: ${{ inputs.publish-gh-pages }}
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.gh-pages-ref }}
+        clean: false
+
+    - name: Remove old files/ directory
+      if: ${{ inputs.publish-gh-pages }}
+      shell: bash
+      run: rm -rf ${{ inputs.omc-version }}/files
+
+    - name: Get HTML artifact
+      if: ${{ inputs.publish-gh-pages }}
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.package-name }}.html
+
+    - name: Publish results
+      if: ${{ inputs.publish-gh-pages }}
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: '${{ inputs.omc-version }} index.html'
+        default_author: github_actions
+        message: '[${{ github.action }}] Test results from ${{ github.ref }}-${{ github.run_number }}'
+        fetch: false
+        pathspec_error_handling: ignore
+
+    - name: Checkout
+      uses: actions/checkout@v4
 
 branding:
   icon: 'check-square'

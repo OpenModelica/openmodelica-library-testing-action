@@ -7,7 +7,6 @@
 import os
 import pandas as pd
 import sys
-import tabulate
 
 def createSummary(htmlFile, testVerification):
   """Create markdown summary from HTML file.
@@ -28,13 +27,15 @@ def createSummary(htmlFile, testVerification):
   if (not verificationSuccess):
     print("::error::Some verification tests failed")
 
+  pages_url = os.getenv("PAGES_URL")
+
   # Write to output and summary
   out_str = (
-    "## Summary\n"
-    "\n"
-    f"{overview.to_markdown()}\n"
-    "## Results\n"
-    f"{results.to_markdown()}\n"
+    "## Summary\n\n"
+    f"{overview.to_markdown()}\n\n"
+    "## Results\n\n"
+    f"{results.to_markdown()}\n\n"
+    f"## Detailed report\n\n{pages_url}.\n"
   )
 
   summary_file = os.getenv('GITHUB_STEP_SUMMARY')
@@ -51,7 +52,7 @@ def createSummary(htmlFile, testVerification):
   return 0
 
 if len(sys.argv) != 5:
-  raise Exception("Wrong number of input arguments.\nUsage:\n\createSummary.py /path/to/OpenModelicaLibraryTesting libName master")
+  raise Exception("Wrong number of input arguments.\nUsage:\ncreateSummary.py /path/to/OpenModelicaLibraryTesting libName master")
 
 directory       = sys.argv[1]
 libName         = sys.argv[2]

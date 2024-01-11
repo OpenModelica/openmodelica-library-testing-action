@@ -13,13 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
 
     steps:
       - name: Checkout
-        id: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Test openmodelica-library-testing
         id: test-action
@@ -34,6 +33,7 @@ jobs:
           reference-files-dir: examples/ReferenceFiles
           reference-files-format: csv
           reference-files-delimiter: .
+          pages-root-url: https://anheuermann.github.io/openmodelica-library-testing-action
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify action results
