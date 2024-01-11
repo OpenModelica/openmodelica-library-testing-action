@@ -35,7 +35,7 @@ def createSummary(htmlFile, testVerification):
     f"{overview.to_markdown()}\n\n"
     "## Results\n\n"
     f"{results.to_markdown()}\n\n"
-    f"##Detailed report\n{pages_url}.\n"
+    f"## Detailed report\n\n{pages_url}.\n"
   )
 
   summary_file = os.getenv('GITHUB_STEP_SUMMARY')

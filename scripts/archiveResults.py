@@ -48,7 +48,7 @@ if libVersion.endswith('/merge'):
 
 copyFiles(libraryName, libVersion, branchOM, omLibTestingDir, targetDir)
 
-root_url = os.getenv("PAGES_URL")
+root_url = os.getenv("ROOT_URL")
 
 url = f"{root_url}/{branchOM}/{libraryName}_{libVersion}/{libraryName}_{libVersion}.html"
 output_file = os.getenv('GITHUB_OUTPUT')
