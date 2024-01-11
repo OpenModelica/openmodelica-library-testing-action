@@ -160,10 +160,11 @@ runs:
 
     - name: Publish results
       if: ${{ inputs.publish-gh-pages }}
-      uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
+      uses: EndBug/add-and-commit@v9
       with:
         add: '${{ inputs.omc-version }} index.html'
         default_author: github_actions
+        message: '[${{ github.action }} ] Test results from ${{ github.ref }-${{ github.run_number }}'
         fetch: false
         pathspec_error_handling: ignore
 
