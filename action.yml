@@ -1,8 +1,8 @@
 name: 'openmodelica-library-testing'
-description: 'Setup OpenModelicaLibraryTesting script and run them on Modelica package and publishes results.'
+description: 'Setup OpenModelicaLibraryTesting scripts and run them on Modelica package and publishes results.'
 author: 'Andreas Heuermann'
 
-# Define your inputs here.
+# Action inputs
 inputs:
   package-name:
     description: 'Name of Modelica package to test.'
@@ -46,6 +46,7 @@ inputs:
     required: true
     default: 'gh-pages'
 
+# Action outputs
 outputs:
   simulation-tests-passing:
     description: 'True if all simulation tests are passing'
@@ -66,7 +67,7 @@ runs:
     - name: Setup OpenModelica
       uses: AnHeuermann/setup-openmodelica@v0.6
       with:
-        version: stable
+        version: ${{ inputs.omc-version }}
         packages: |
           'omc'
         libraries: ${{ inputs.dependencies }}
@@ -99,12 +100,12 @@ runs:
     - name: Run library test
       working-directory: OpenModelicaLibraryTesting
       shell: bash
-      run: python test.py --branch="omc-stable" --noclean configs/myConf.json
+      run: python test.py --branch="${{ inputs.omc-version }}" --noclean configs/myConf.json
 
     - name: Generate HTML results
       working-directory: OpenModelicaLibraryTesting
       shell: bash
-      run: python report.py --branches="omc-stable" configs/myConf.json
+      run: python report.py --branches="${{ inputs.omc-version }}" configs/myConf.json
 
     - name: Summary
       id: summary
@@ -115,7 +116,7 @@ runs:
     - name: Zip HTML results
       shell: bash
       run: |
-        python scripts/archieveResults.py "${{ inputs.package-name }}" "${{ github.ref_name }}" "omc-stable" "OpenModelicaLibraryTesting" "html/"
+        python scripts/archieveResults.py "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.omc-version }}" "OpenModelicaLibraryTesting" "html/"
 
     - name: Archive sqlite3.db
       uses: actions/upload-artifact@v4
@@ -142,7 +143,7 @@ runs:
     - name: Remove old files/ directory
       if: ${{ inputs.publish-gh-pages }}
       shell: bash
-      run: rm -rf omc-stable/files
+      run: rm -rf ${{ inputs.omc-version }}/files
 
     - name: Get HTML artifact
       if: ${{ inputs.publish-gh-pages }}
@@ -154,19 +155,9 @@ runs:
       if: ${{ inputs.publish-gh-pages }}
       uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
       with:
-        add: 'omc-stable index.html'
+        add: '${{ inputs.omc-version }} index.html'
         default_author: github_actions
         fetch: false
-
-        # The message for the commit.
-        # Default: 'Commit from GitHub Actions (name of the workflow)'
-        #message: 'Coverage for ${{ github.ref_name }}'
-
-        # The way the action should handle pathspec errors from the add and remove commands. Three options are available:
-        # - ignore -> errors will be logged but the step won't fail
-        # - exitImmediately -> the action will stop right away, and the step will fail
-        # - exitAtEnd -> the action will go on, every pathspec error will be logged at the end, the step will fail.
-        # Default: ignore
         pathspec_error_handling: ignore
 
     - name: Checkout
