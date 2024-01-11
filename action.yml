@@ -45,6 +45,8 @@ inputs:
     description: 'Branch GitHub Pages deploys from, e.g. `gh-pages`'
     required: true
     default: 'gh-pages'
+  pages-root-url:
+    description: 'Root url GitHub Pages deploys to, e.g. https://<GitHub User>.github.io/<Repository>/'
 
 # Action outputs
 outputs:
@@ -107,16 +109,21 @@ runs:
       shell: bash
       run: python report.py --branches="${{ inputs.omc-version }}" configs/myConf.json
 
+    - name: Zip HTML results
+      id: archiveHTML
+      env:
+        ROOT_URL: "${{ inputs.pages-root-url }}"
+      shell: bash
+      run: |
+        python scripts/archiveResults.py "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.omc-version }}" "OpenModelicaLibraryTesting" "html/"
+
     - name: Summary
       id: summary
+      env:
+        PAGES_URL: "${{ steps.archiveHTML.pages-url }}"
       shell: bash
       run: |
         python scripts/createSummary.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}"
-
-    - name: Zip HTML results
-      shell: bash
-      run: |
-        python scripts/archieveResults.py "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.omc-version }}" "OpenModelicaLibraryTesting" "html/"
 
     - name: Archive sqlite3.db
       uses: actions/upload-artifact@v4

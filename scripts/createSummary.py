@@ -27,13 +27,15 @@ def createSummary(htmlFile, testVerification):
   if (not verificationSuccess):
     print("::error::Some verification tests failed")
 
+  pages_url = os.getenv("PAGES_URL")
+
   # Write to output and summary
   out_str = (
-    "## Summary\n"
-    "\n"
-    f"{overview.to_markdown()}\n"
-    "## Results\n"
-    f"{results.to_markdown()}\n"
+    "## Summary\n\n"
+    f"{overview.to_markdown()}\n\n"
+    "## Results\n\n"
+    f"{results.to_markdown()}\n\n"
+    f"##Detailed report\n{pages_url}.\n"
   )
 
   summary_file = os.getenv('GITHUB_STEP_SUMMARY')
