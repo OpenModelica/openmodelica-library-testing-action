@@ -2,16 +2,16 @@
  * Unit tests for src/genConfig.ts
  */
 
-import { Configuration, genConfigFileSync } from '../src/genConfig'
+import { Configuration, genConfigFileSync } from '../src/config'
 import { expect } from '@jest/globals'
-import { join, resolve } from 'path';
-import { existsSync, rmSync } from 'fs';
+import { join, resolve } from 'path'
+import { existsSync, rmSync } from 'fs'
 
 const tempTestDir = join('__tests__', 'tmp-configs')
 
 describe('genConfig.ts', () => {
-  beforeAll(() => rmSync(tempTestDir, {recursive: true, force: true}));
-  afterEach(() => rmSync(tempTestDir, {recursive: true, force: true}));
+  beforeAll(() => rmSync(tempTestDir, { recursive: true, force: true }))
+  afterEach(() => rmSync(tempTestDir, { recursive: true, force: true }))
 
   it('Generate minimal configuration', async () => {
     const modelicaFile = '/path/to/MyLibrary/package.mo'
@@ -19,9 +19,13 @@ describe('genConfig.ts', () => {
       library: 'MyLibrary',
       libraryVersion: 'main',
       loadFileCommands: [`loadFile(\\"${resolve(modelicaFile)}\\")`]
-    };
+    }
 
-    expect(config).toEqual({'library': 'MyLibrary', 'libraryVersion': 'main', 'loadFileCommands': ['loadFile(\\"/path/to/MyLibrary/package.mo\\")']});
+    expect(config).toEqual({
+      library: 'MyLibrary',
+      libraryVersion: 'main',
+      loadFileCommands: ['loadFile(\\"/path/to/MyLibrary/package.mo\\")']
+    })
   })
 
   it('Generate minimal configuration file', async () => {
@@ -30,11 +34,11 @@ describe('genConfig.ts', () => {
     const config: Configuration = {
       library: 'MyLibrary',
       libraryVersion: 'main',
-      loadFileCommands: [`loadFile(\\\"${resolve(modelicaFile)}\\\")`]
-    };
+      loadFileCommands: [`loadFile(\\"${resolve(modelicaFile)}\\")`]
+    }
 
-    genConfigFileSync(file, [config]);
-    expect(existsSync(file)).toBe(true);
+    genConfigFileSync(file, [config])
+    expect(existsSync(file)).toBe(true)
   })
 
   it('Generate extensive configuration file', async () => {
@@ -64,19 +68,27 @@ describe('genConfig.ts', () => {
       ulimitMemory: 12582912,
       optlevel: '-Os -march=native',
       alarmFlag: '--alarm',
-      abortSlowSimulation: "",
+      abortSlowSimulation: '',
       loadFileCommands: ['loadFile(\\"${resolve(modelicaFile)}\\")'],
-      extraCustomCommands: ['setCommandLineOptions(\\"-d=-NLSanalyticJacobian\\")'],
+      extraCustomCommands: [
+        'setCommandLineOptions(\\"-d=-NLSanalyticJacobian\\")'
+      ],
       environmentSimulation: [
         ['publicData', '$libraryLocation/Tables/'],
         ['privateData', '$libraryLocation/Tables/'],
-        ['superstructureTables', '$libraryLocation/Tables/superstructure/Tables/'],
-        ['superstructureInput', '$libraryLocation/Tables/superstructure/RegionInformation/']
+        [
+          'superstructureTables',
+          '$libraryLocation/Tables/superstructure/Tables/'
+        ],
+        [
+          'superstructureInput',
+          '$libraryLocation/Tables/superstructure/RegionInformation/'
+        ]
       ],
       configExtraName: 'noopt'
-    };
+    }
 
-    genConfigFileSync(file, [config]);
-    expect(existsSync(file)).toBe(true);
+    genConfigFileSync(file, [config])
+    expect(existsSync(file)).toBe(true)
   })
 })
