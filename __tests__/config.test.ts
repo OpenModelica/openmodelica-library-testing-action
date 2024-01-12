@@ -1,5 +1,5 @@
 /**
- * Unit tests for src/genConfig.ts
+ * Unit tests for src/config.ts
  */
 
 import { Configuration, genConfigFileSync } from '../src/config'
@@ -9,7 +9,7 @@ import { existsSync, rmSync } from 'fs'
 
 const tempTestDir = join('__tests__', 'tmp-configs')
 
-describe('genConfig.ts', () => {
+describe('config.ts', () => {
   beforeAll(() => rmSync(tempTestDir, { recursive: true, force: true }))
   afterEach(() => rmSync(tempTestDir, { recursive: true, force: true }))
 
