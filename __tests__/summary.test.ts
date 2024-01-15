@@ -2,84 +2,111 @@
  * Unit tests for src/summary.ts
  */
 
-import { extractSummary, Summary, SummaryInterface } from '../src/summary'
+import { summaryFromHtmlFile } from '../src/summary'
+import { mkdirSync, writeFileSync, rmSync } from 'fs'
+import { join, dirname } from 'path'
 import { expect } from '@jest/globals'
 
-const html = `<!DOCTYPE html>
-<html lang="en">
+const tempTestDir = join('__tests__', 'tmp-configs')
+
+const htmlLibOverview =`<!DOCTYPE html>
+<html>
 <head>
-  <title>OpenModelica Library Testing Overview</title>
-  <style>
-  td.warning {background-color:#FFCC66;}
-  td.better {background-color:#00FF00;}
-  td.warningPerformance {background-color:#FFFC66;}
-  td.betterPerformance {background-color:#00FAFF;}
-  a span.tooltip {display:none;}
-  a:hover span.tooltip {position:fixed;top:30px;left:20px;display:inline;border:2px solid black;background-color:white;}
-  a.dot {border-bottom: 1px dotted #000; text-decoration: none;}
-  </style>
+  <title>MyLibrary_main test using OpenModelica</title>
 </head>
 <body>
-<h2>Statistics</h2>
+<h1>MyLibrary_main test using OpenModelica</h1>
+
 <table>
-<tr><td>Number of libraries</td><td>1</td></tr>
-<tr><td>Number of models</td><td>2</td></tr>
+<tr>
+<th>Total</th>
+<th>Frontend</th>
+<th>Backend</th>
+<th>SimCode</th>
+<th>Templates</th>
+<th>Compilation</th>
+<th>Simulation</th>
+<th>Verification</th>
+</tr>
+<tr>
+<td>2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#FFCC66">1</td>
+</tr>
 </table>
-<h2>Tested branches</h2>
+
+<p>Total time taken: 0:00:08</p>
+<p>System info: 12th Gen Intel(R) Core(TM) i7-12800H, 16 GB RAM, Ubuntu 22.04.3 LTS</p>
+<p>OpenModelica Version: v1.23.0-dev-203-g5904d1ea84-cmake</p>
+
+<p>Test started: 2024-01-09 16:34:16</p>
+<p>Tested Library: 1.0.0<pre>
+</pre></p>
+<p>BuildModel time limit: 660s</p>
+<p>Simulation time limit: 480s</p>
+<p>Default tolerance: 1e-06</p>
+<p>Optimization level: -Os -march=native</p>
+<p>Reference Files: /path/to/ReferenceFiles</p>
+<p>Verified using: v1.23.0-dev-203-g5904d1ea84-cmake (diffSimulationResults)</p>
+Flags: <pre>setCommandLineOptions(&quot;-d=nogen&quot;);
+setCommandLineOptions(&quot;-d=initialization&quot;);
+setCommandLineOptions(&quot;-d=backenddaeinfo&quot;);
+setCommandLineOptions(&quot;-d=discreteinfo&quot;);
+setCommandLineOptions(&quot;-d=stateselection&quot;);
+setCommandLineOptions(&quot;-d=execstat&quot;);
+setMatchingAlgorithm(&quot;PFPlusExt&quot;);
+setIndexReductionMethod(&quot;dynamicStateSelection&quot;);</pre>
+Config: <pre>{
+ &quot;library&quot;: &quot;MyLibrary&quot;,
+ &quot;libraryVersion&quot;: &quot;main&quot;,
+ &quot;loadFileCommands&quot;: [
+  &quot;loadFile(\&quot;/path/to/MyLibrary/package.mo\&quot;)&quot;
+ ],
+ &quot;optlevel&quot;: &quot;-Os -march=native&quot;,
+ &quot;referenceFileExtension&quot;: &quot;csv&quot;,
+ &quot;referenceFileNameDelimiter&quot;: &quot;.&quot;,
+ &quot;referenceFiles&quot;: &quot;/path/to/ReferenceFiles&quot;
+}</pre>
+<p>Links are provided if getErrorString() or the simulation generates output. The links are coded with <font style="#FF0000">red</font> if there were errors, <font style="#FFCC66">yellow</font> if there were warnings, and normal links if there are only notifications.</p>
 <table>
-<tr><th>Branch</th><th>Version</th><th>Build time</th><th>Execution time</th><th># Simulate</th><th># Total</th></tr>
-<tr><td>omc-stable</td><td>v1.23.0-dev-203-g5904d1ea84-cmake</td><td>2024-01-09 16:34:16</td><td>8.74</td><td>2</td><td>2</td></tr>
+<tr><th>Model</th><th>Verified</th><th>Simulate</th><th>Total buildModel</th><th>Parsing</th><th>Frontend</th><th>Backend</th><th>SimCode</th><th>Templates</th><th>Compile</th></tr>
+<tr><td><a href="files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.err">MyLibrary.Blocks.Examples.PID_Controller</a> (<a href="files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.sim">sim</a>)</td><td bgcolor="#FFCC66">0.05 (<a href="files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.diff.html">4/7 failed</a>)</td><td bgcolor="#00FF00">0.02</td><td bgcolor="#00FF00">1.52</td><td>1.96</td><td bgcolor="#00FF00">0.08</td><td bgcolor="#00FF00">0.20</td><td bgcolor="#00FF00">0.01</td><td bgcolor="#00FF00">0.02</td><td bgcolor="#00FF00">1.20</td></tr>
+
+<tr><td><a href="files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err">MyLibrary.Mechanics.MultiBody.Examples.Pendulum</a> (<a href="files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim">sim</a>)</td><td bgcolor="#00FF00">0.01 (3 verified)</td><td bgcolor="#00FF00">0.06</td><td bgcolor="#00FF00">2.32</td><td>1.95</td><td bgcolor="#00FF00">0.29</td><td bgcolor="#00FF00">0.22</td><td bgcolor="#00FF00">0.03</td><td bgcolor="#00FF00">0.06</td><td bgcolor="#00FF00">1.72</td></tr>
 
 </table>
-<hr><h3>MyLibrary_main</h3>
-<p><strong>Library version:</strong> 1.0.0 (/home/aheuermann/workspace/githubactions/openmodelica-library-testing-action/examples/MyLibrary/package.mo)</p><table>
-<tr><th>Branch</th><th>Total</th><th>Parsing</th><th>Frontend</th><th>Backend</th><th>SimCode</th><th>Templates</th><th>Compilation</th><th>Simulation</th><th>Verification</th></tr>
-<tr><td><a href="omc-stable/MyLibrary_main/MyLibrary_main.html">omc-stable</a></td><td><a>2</a></td><td><a>2</a></td><td><a>2</a></td><td><a>2</a></td><td><a>2</a></td><td><a>2</a></td><td><a>2</a></td><td><a>2</a></td><td><a>1</a></td></tr></table>
-<table>
-<tr><th>Branch</th><th>Total</th><th>Parsing</th><th>Frontend</th><th>Backend</th><th>SimCode</th><th>Templates</th><th>Compilation</th><th>Simulation</th><th>Verification</th></tr>
-<tr><td><a href="omc-stable/MyLibrary_main/MyLibrary_main.html">omc-stable</a></td><td>8.74</td><td>3.91</td><td>0.36</td><td>0.42</td><td>0.04</td><td>0.09</td><td>2.92</td><td>0.08</td><td>0.07</td></tr>
-</table>
-
 </body>
 </html>
 `
 
-const markdownTable = `| Branch     | Total | Parsing | Frontend | Backend | SimCode | Templates | Compilation | Simulation | Verification |
-| ---------- | ----- | ------- | -------- | ------- | ------- | --------- | ----------- | ---------- | ------------ |
-| omc-stable | 2     | 2       | 2        | 2       | 2       | 2         | 2           | 2          | 1            |`
+const markdownSummary = `## Summary
+
+| Total | Frontend | Backend | SimCode | Templates | Compilation | Simulation | Verification |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 2 | 2 | 2 | 2 | 2 | 2 | 2 | 1 |
+
+## Results
+
+| Model | Verified | Simulate | Total buildModel | Parsing | Frontend | Backend | SimCode | Templates | Compile |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| MyLibrary.Blocks.Examples.PID\\_Controller | 4/7 failed | 0.02 | 1.52 | 1.96 | 0.08 | 0.20 | 0.01 | 0.02 | 1.20 |
+| MyLibrary.Mechanics.MultiBody.Examples.Pendulum | 0.01 (3 verified) | 0.06 | 2.32 | 1.95 | 0.29 | 0.22 | 0.03 | 0.06 | 1.72 |
+`
 
 describe('summary.ts', () => {
-  it('Extract summary from HTML', async () => {
-    const summary = extractSummary(html)
+  afterEach(() => rmSync(tempTestDir, { recursive: true, force: true }))
 
-    expect(summary).toEqual({
-      branch: 'omc-stable',
-      total: 2,
-      parsing: 2,
-      frontend: 2,
-      backend: 2,
-      simCode: 2,
-      templates: 2,
-      compilation: 2,
-      simulation: 2,
-      verification: 1
-    } as SummaryInterface)
-  })
+  it('Markdown summary from HTML', () => {
+    const htmlFile = join(tempTestDir, 'overview.html')
+    mkdirSync(dirname(htmlFile), { recursive: true })
+    writeFileSync(htmlFile, htmlLibOverview)
 
-  it('Summary to Markdown', async () => {
-    const summary = new Summary({
-      branch: 'omc-stable',
-      total: 2,
-      parsing: 2,
-      frontend: 2,
-      backend: 2,
-      simCode: 2,
-      templates: 2,
-      compilation: 2,
-      simulation: 2,
-      verification: 1
-    } as SummaryInterface)
-
-    expect(summary.toMarkdown()).toEqual(markdownTable)
+    const summary = summaryFromHtmlFile(htmlFile)
+    expect(summary).toEqual(markdownSummary)
   })
 })
