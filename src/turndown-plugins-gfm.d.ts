@@ -1,8 +1,8 @@
 declare module 'turndown-plugin-gfm' {
-  import { Plugin } from 'turndown';
+  import Turndown from 'turndown'
 
-  const gfm: Plugin;
-  const tables: Plugin;
+  const gfm: Turndown.Plugin
+  const tables: Turndown.Plugin
 
-  export { gfm, tables };
+  export { gfm, tables }
 }

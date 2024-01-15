@@ -9,7 +9,7 @@ import { expect } from '@jest/globals'
 
 const tempTestDir = join('__tests__', 'tmp-configs')
 
-const htmlLibOverview =`<!DOCTYPE html>
+const htmlLibOverview = `<!DOCTYPE html>
 <html>
 <head>
   <title>MyLibrary_main test using OpenModelica</title>
@@ -65,7 +65,7 @@ Config: <pre>{
  &quot;library&quot;: &quot;MyLibrary&quot;,
  &quot;libraryVersion&quot;: &quot;main&quot;,
  &quot;loadFileCommands&quot;: [
-  &quot;loadFile(\&quot;/path/to/MyLibrary/package.mo\&quot;)&quot;
+  &quot;loadFile(\\&quot;/path/to/MyLibrary/package.mo\\&quot;)&quot;
  ],
  &quot;optlevel&quot;: &quot;-Os -march=native&quot;,
  &quot;referenceFileExtension&quot;: &quot;csv&quot;,

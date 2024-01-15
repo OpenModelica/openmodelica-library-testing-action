@@ -1,18 +1,19 @@
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync } from 'fs'
 import * as HTMLParser from 'node-html-parser'
 import TurndownService from 'turndown'
 import * as turndownPluginGfm from 'turndown-plugin-gfm'
 
-function removeHtmlLinks(table: HTMLParser.HTMLElement): HTMLParser.HTMLElement {
-
-  table.querySelectorAll('td').forEach((td: HTMLParser.HTMLElement) => {
+function removeHtmlLinks(
+  table: HTMLParser.HTMLElement
+): HTMLParser.HTMLElement {
+  for (const td of table.querySelectorAll('td')) {
     // Check if the <td> contains an <a> element
-    const linkElement = td.querySelector('a');
+    const linkElement = td.querySelector('a')
     if (linkElement) {
       // Replace the <a> element with its text content
-      td.set_content(linkElement.text);
+      td.set_content(linkElement.text)
     }
-  });
+  }
 
   return table
 }
@@ -23,15 +24,18 @@ export function summaryFromHtmlFile(htmlFile: string): string {
   const root = HTMLParser.parse(html)
   const htmlTables = root.getElementsByTagName('table')
 
-  const turndownService = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced' });
+  const turndownService = new TurndownService({
+    headingStyle: 'atx',
+    codeBlockStyle: 'fenced'
+  })
   turndownService.use([turndownPluginGfm.gfm, turndownPluginGfm.tables])
 
-  const table = removeHtmlLinks(htmlTables[1])
+  const resultTable = removeHtmlLinks(htmlTables[1])
 
   const coverage = turndownService.turndown(htmlTables[0].outerHTML)
-  const results = turndownService.turndown(table.outerHTML)
+  const results = turndownService.turndown(resultTable.outerHTML)
 
-  let summary: string = `## Summary
+  const summary = `## Summary
 
 ${coverage}
 
