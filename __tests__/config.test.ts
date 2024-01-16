@@ -2,7 +2,7 @@
  * Unit tests for src/config.ts
  */
 
-import { Configuration, genConfigFileSync } from '../src/config'
+import { Configuration, genConfigFile } from '../src/config'
 import { expect } from '@jest/globals'
 import { join, resolve } from 'path'
 import { existsSync, rmSync } from 'fs'
@@ -37,7 +37,7 @@ describe('config.ts', () => {
       loadFileCommands: [`loadFile(\\"${resolve(modelicaFile)}\\")`]
     }
 
-    genConfigFileSync(file, [config])
+    await genConfigFile(file, [config])
     expect(existsSync(file)).toBe(true)
   })
 
@@ -88,7 +88,7 @@ describe('config.ts', () => {
       configExtraName: 'noopt'
     }
 
-    genConfigFileSync(file, [config])
+    await genConfigFile(file, [config])
     expect(existsSync(file)).toBe(true)
   })
 })

@@ -1,7 +1,13 @@
-import { readFileSync } from 'fs'
 import * as HTMLParser from 'node-html-parser'
 import TurndownService from 'turndown'
 import * as turndownPluginGfm from 'turndown-plugin-gfm'
+
+export interface ActionOutputs {
+  simulationTestsPassing: boolean
+  nSimulationPassing: number
+  verificationTestsPassing: boolean
+  nVerificationPassing: number
+}
 
 function removeHtmlLinks(
   table: HTMLParser.HTMLElement
@@ -18,9 +24,36 @@ function removeHtmlLinks(
   return table
 }
 
-export function summaryFromHtmlFile(htmlFile: string): string {
-  const html: string = readFileSync(htmlFile, 'utf-8')
+function parseStats(table: HTMLParser.HTMLElement, verificationTested: boolean): ActionOutputs {
+  const rows = table.getElementsByTagName('tr')
 
+  const total = Number(rows[1].getElementsByTagName('td')[0].text)
+  const simulated = Number(rows[1].getElementsByTagName('td')[6].text)
+  const verified = Number(rows[1].getElementsByTagName('td')[7].text)
+
+  const outputs = {
+    simulationTestsPassing: total == simulated,
+    nSimulationPassing: simulated,
+    verificationTestsPassing: !verificationTested || (verificationTested && (total == verified)),
+    nVerificationPassing: verified
+  } as ActionOutputs
+
+  return outputs
+}
+
+/**
+ * Generate summary from HTML overview file
+ *
+ * @param html                Path to overview.html
+ * @param pagesUrl            URL where GitHub pages are hosted.
+ * @param verificationTested  `true` if referenceFiles are available and verification should be tested.
+ * @returns                   Array with markdown summary and action outputs.
+ */
+export function summaryFromHtml(
+  html: string,
+  pagesUrl: string,
+  verificationTested: boolean
+): [string, ActionOutputs] {
   const root = HTMLParser.parse(html)
   const htmlTables = root.getElementsByTagName('table')
 
@@ -35,6 +68,8 @@ export function summaryFromHtmlFile(htmlFile: string): string {
   const coverage = turndownService.turndown(htmlTables[0].outerHTML)
   const results = turndownService.turndown(resultTable.outerHTML)
 
+  const outputs = parseStats(htmlTables[0], verificationTested)
+
   const summary = `## Summary
 
 ${coverage}
@@ -42,7 +77,11 @@ ${coverage}
 ## Results
 
 ${results}
+
+## Detailed report
+
+${pagesUrl}
 `
 
-  return summary
+  return [summary, outputs]
 }

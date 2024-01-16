@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'fs'
+import { promises as fsPromises } from 'fs'
 import { dirname } from 'path'
 
 type Library = [string, string]
@@ -37,16 +37,16 @@ export interface Configuration {
 }
 
 /**
- * Generate OpenModelicaLibraryTesting configuration file synchronously.
+ * Generate OpenModelicaLibraryTesting configuration file.
  *
  * @param path            Path to configuration file.
  *                        If a file descriptor is provided, the underlying file will not be closed automatically.
  * @param configurations  Array of configurations for Modelica libraries.
  */
-export function genConfigFileSync(
+export async function genConfigFile(
   path: string,
   configurations: Configuration[]
-): void {
-  mkdirSync(dirname(path), { recursive: true })
-  writeFileSync(path, JSON.stringify(configurations, null, 2))
+): Promise<void> {
+  await fsPromises.mkdir(dirname(path), { recursive: true })
+  await fsPromises.writeFile(path, JSON.stringify(configurations, null, 2))
 }

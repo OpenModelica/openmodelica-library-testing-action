@@ -37,8 +37,22 @@ describe('action', () => {
     // Set the action's inputs as return values from core.getInput()
     getInputMock.mockImplementation((name: string): string => {
       switch (name) {
-        case 'milliseconds':
-          return '500'
+        case 'package-name':
+          return 'MyLibrary'
+        case 'package-version':
+          return '0.1.0'
+        case 'modelica-file':
+          return 'examples/MyLibrary/package.mo'
+        case 'reference-files-dir':
+          return 'examples/ReferenceFiles'
+        case 'reference-files-format':
+          return 'csv'
+        case 'reference-files-delimiter':
+          return '.'
+        case 'omcVersion':
+          return 'master'
+        case 'pagesRootUrl':
+          return 'https://not/a/valid/url'
         default:
           return ''
       }
@@ -48,42 +62,8 @@ describe('action', () => {
     expect(runMock).toHaveReturned()
 
     // Verify that all of the core library functions were called correctly
-    expect(debugMock).toHaveBeenNthCalledWith(1, 'Waiting 500 milliseconds ...')
-    expect(debugMock).toHaveBeenNthCalledWith(
-      2,
-      expect.stringMatching(timeRegex)
-    )
-    expect(debugMock).toHaveBeenNthCalledWith(
-      3,
-      expect.stringMatching(timeRegex)
-    )
-    expect(setOutputMock).toHaveBeenNthCalledWith(
-      1,
-      'time',
-      expect.stringMatching(timeRegex)
-    )
-    expect(errorMock).not.toHaveBeenCalled()
-  })
-
-  it('sets a failed status', async () => {
-    // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation((name: string): string => {
-      switch (name) {
-        case 'milliseconds':
-          return 'this is not a number'
-        default:
-          return ''
-      }
-    })
-
-    await main.run()
-    expect(runMock).toHaveReturned()
-
-    // Verify that all of the core library functions were called correctly
-    expect(setFailedMock).toHaveBeenNthCalledWith(
-      1,
-      'milliseconds not a number'
-    )
+    expect(debugMock).toHaveBeenNthCalledWith(1, 'Get inputs')
+    //expect(debugMock).toHaveBeenNthCalledWith(1, 'Generating configuration')
     expect(errorMock).not.toHaveBeenCalled()
   })
 })

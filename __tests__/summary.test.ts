@@ -2,12 +2,8 @@
  * Unit tests for src/summary.ts
  */
 
-import { summaryFromHtmlFile } from '../src/summary'
-import { mkdirSync, writeFileSync, rmSync } from 'fs'
-import { join, dirname } from 'path'
+import { summaryFromHtml, ActionOutputs } from '../src/summary'
 import { expect } from '@jest/globals'
-
-const tempTestDir = join('__tests__', 'tmp-configs')
 
 const htmlLibOverview = `<!DOCTYPE html>
 <html>
@@ -96,17 +92,21 @@ const markdownSummary = `## Summary
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | MyLibrary.Blocks.Examples.PID\\_Controller | 4/7 failed | 0.02 | 1.52 | 1.96 | 0.08 | 0.20 | 0.01 | 0.02 | 1.20 |
 | MyLibrary.Mechanics.MultiBody.Examples.Pendulum | 0.01 (3 verified) | 0.06 | 2.32 | 1.95 | 0.29 | 0.22 | 0.03 | 0.06 | 1.72 |
+
+## Detailed report
+
+https://not/a/valid/url
 `
 
 describe('summary.ts', () => {
-  afterEach(() => rmSync(tempTestDir, { recursive: true, force: true }))
-
   it('Markdown summary from HTML', () => {
-    const htmlFile = join(tempTestDir, 'overview.html')
-    mkdirSync(dirname(htmlFile), { recursive: true })
-    writeFileSync(htmlFile, htmlLibOverview)
-
-    const summary = summaryFromHtmlFile(htmlFile)
+    const [summary, outputs]  = summaryFromHtml(htmlLibOverview, 'https://not/a/valid/url', true)
     expect(summary).toEqual(markdownSummary)
+    expect(outputs).toEqual({
+      simulationTestsPassing: true,
+      nSimulationPassing: 2,
+      verificationTestsPassing: false,
+      nVerificationPassing: 1
+    } as ActionOutputs)
   })
 })

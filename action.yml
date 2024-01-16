@@ -14,29 +14,17 @@ inputs:
     description: 'Path to Modelica file containing package to test. E.g to package.mo'
     required: true
     default: 'package.mo'
-  dependencies:
-    description: 'Modelica library dependencies to install with the OpenModelica package manager.'
-    required: true
-    default: ''
-  omc-version:
-    description: 'Version of OpenModelica to use for testing'
-    required: true
-    default: 'stable'
   reference-files-dir:
     description: 'Path to reference files'
-    required: true
-    default: ''
+    required: false
   reference-files-format:
     description: 'File extension of result files. Allowed values are "mat" and "csv".'
-    required: true
+    required: false
     default: 'mat'
   reference-files-delimiter:
     description: 'Character to separate model names in reference files. E.g. for Modelica.Blocks.Examples.PID_Controller.mat it would be "."'
-    required: true
+    required: false
     default: '.'
-  GITHUB_TOKEN:
-    description: 'Value of secrets.GITHUB_TOKEN to authenticate and write comments in PRs.'
-    required: true
   publish-gh-pages:
     description: 'Push results to gh-pages branch.'
     required: true
