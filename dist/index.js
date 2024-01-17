@@ -40933,6 +40933,67 @@ exports.cloneScripts = cloneScripts;
 
 /***/ }),
 
+/***/ 4641:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.copyHtmlFilesSync = void 0;
+const fs = __importStar(__nccwpck_require__(7147));
+const path = __importStar(__nccwpck_require__(1017));
+/**
+ * Copy all html files generated from OpenModelicaLibraryTesting into target directory.
+ *
+ * @param libraryName     Modelica library name
+ * @param libraryVersion  Version or ref of Modelica library
+ * @param branchOM        OpenModelica version or ref
+ * @param omLibTestingDir Root directory of OpenModelicaLibraryTesting
+ * @param targetDir       Target directory
+ */
+function copyHtmlFilesSync(libraryName, libraryVersion, branchOM, omLibTestingDir, targetDir) {
+    const libNameBranch = `${libraryName}_${libraryVersion}`;
+    if (!fs.existsSync(path.join(targetDir, branchOM, libNameBranch))) {
+        fs.mkdirSync(path.join(targetDir, branchOM, libNameBranch), {
+            recursive: true
+        });
+    }
+    // Copy files/
+    fs.cpSync(path.join(omLibTestingDir, 'files'), path.join(targetDir, branchOM, libNameBranch, 'files'), { recursive: true });
+    // Copy overview
+    fs.cpSync(path.join(omLibTestingDir, 'overview.html'), path.join(targetDir, 'index.html'));
+    fs.cpSync(path.join(omLibTestingDir, `${libNameBranch}.html`), path.join(targetDir, branchOM, libNameBranch, `${libNameBranch}.html`));
+    // Copy dygraph script
+    fs.cpSync(path.join(__dirname, '..', 'scripts', 'dygraph-combined.js'), path.join(targetDir, branchOM, libNameBranch, 'files', 'dygraph-combined.js'));
+}
+exports.copyHtmlFilesSync = copyHtmlFilesSync;
+
+
+/***/ }),
+
 /***/ 6373:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -41015,9 +41076,10 @@ const path = __importStar(__nccwpck_require__(1017));
 const fs = __importStar(__nccwpck_require__(7147));
 const child_process = __importStar(__nccwpck_require__(2081));
 const core = __importStar(__nccwpck_require__(2186));
+const clone_1 = __nccwpck_require__(1848);
+const collect_1 = __nccwpck_require__(4641);
 const config_1 = __nccwpck_require__(6373);
 const summary_1 = __nccwpck_require__(2553);
-const clone_1 = __nccwpck_require__(1848);
 /**
  * Run Python script.
  *
@@ -41115,7 +41177,9 @@ async function run() {
         core.info(`n-simulation-passing: ${actionOutputs.nSimulationPassing}`);
         core.info(`verification-tests-passing: ${actionOutputs.verificationTestsPassing}`);
         core.info(`n-verification-passing: ${actionOutputs.nVerificationPassing}`);
-        // Collect HTML files and publish on gh-pages
+        // Collect HTML files
+        core.debug('Collect HTML outputs');
+        (0, collect_1.copyHtmlFilesSync)(packageName, packageVersion, omcVersion, 'OpenModelicaLibraryTesting', 'html');
     }
     catch (error) {
         // Fail the workflow run if an error occurs

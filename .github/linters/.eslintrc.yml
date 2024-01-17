@@ -13,7 +13,7 @@ ignorePatterns:
   - '**/dist/.*'
   - '**/coverage/.*'
   - '*.json'
-  - 'scripts/dygraph-combined.js'
+  - '**/dygraph-combined.js'
 
 parser: '@typescript-eslint/parser'
 

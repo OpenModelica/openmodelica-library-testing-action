@@ -12,25 +12,24 @@ import * as path from 'path'
  */
 export function copyHtmlFilesSync(
   libraryName: string,
-   libraryVersion: string,
-   branchOM: string,
-   omLibTestingDir: string,
-   targetDir: string) {
-
+  libraryVersion: string,
+  branchOM: string,
+  omLibTestingDir: string,
+  targetDir: string
+): void {
   const libNameBranch = `${libraryName}_${libraryVersion}`
 
-  if (fs.existsSync(path.join(targetDir, branchOM, libNameBranch))) {
-    fs.mkdirSync(
-      path.join(targetDir, branchOM, libNameBranch),
-      { recursive: true }
-    )
+  if (!fs.existsSync(path.join(targetDir, branchOM, libNameBranch))) {
+    fs.mkdirSync(path.join(targetDir, branchOM, libNameBranch), {
+      recursive: true
+    })
   }
 
   // Copy files/
   fs.cpSync(
     path.join(omLibTestingDir, 'files'),
     path.join(targetDir, branchOM, libNameBranch, 'files'),
-    {recursive: true}
+    { recursive: true }
   )
 
   // Copy overview
@@ -47,6 +46,12 @@ export function copyHtmlFilesSync(
   // Copy dygraph script
   fs.cpSync(
     path.join(__dirname, '..', 'scripts', 'dygraph-combined.js'),
-    path.join(targetDir, branchOM, libNameBranch, 'files', 'dygraph-combined.js')
+    path.join(
+      targetDir,
+      branchOM,
+      libNameBranch,
+      'files',
+      'dygraph-combined.js'
+    )
   )
 }

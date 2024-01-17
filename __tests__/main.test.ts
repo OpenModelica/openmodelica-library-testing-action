@@ -161,7 +161,9 @@ describe('action', () => {
       )
 
       // Verify html/ dir
-      const files = fs.readdirSync(path.join('html', 'master', 'MyLibrary_0.1.0', 'files'))
+      const files = fs.readdirSync(
+        path.join('html', 'master', 'MyLibrary_0.1.0', 'files')
+      )
       expect(files.sort()).toEqual([
         'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.cmdout',
         'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.html',
@@ -184,12 +186,12 @@ describe('action', () => {
       ])
 
       expect(
-        fs.existsSync(path.join('html', 'master', 'MyLibrary_0.1.0', 'MyLibrary_0.1.0.html'))
+        fs.existsSync(
+          path.join('html', 'master', 'MyLibrary_0.1.0', 'MyLibrary_0.1.0.html')
+        )
       ).toBe(true)
 
-      expect(
-        fs.existsSync(path.join('html', 'index.html'))
-      ).toBe(true)
+      expect(fs.existsSync(path.join('html', 'index.html'))).toBe(true)
     },
     10 * 60000 /* 10 minutes */
   )

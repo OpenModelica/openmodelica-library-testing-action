@@ -147,7 +147,13 @@ export async function run(): Promise<void> {
 
     // Collect HTML files
     core.debug('Collect HTML outputs')
-    copyHtmlFilesSync(packageName, packageVersion, omcVersion, 'OpenModelicaLibraryTesting', 'html')
+    copyHtmlFilesSync(
+      packageName,
+      packageVersion,
+      omcVersion,
+      'OpenModelicaLibraryTesting',
+      'html'
+    )
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
