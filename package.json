@@ -31,8 +31,9 @@
     "format:write": "prettier --write **/*.ts",
     "format:check": "prettier --check **/*.ts",
     "lint": "npx eslint . -c ./.github/linters/.eslintrc.yml",
-    "package": "ncc build src/index.ts --license licenses.txt",
+    "package": "ncc build src/index.ts --license licenses.txt && npm run copy-files",
     "package:watch": "npm run package -- --watch",
+    "copy-files": "copyfiles scripts/dygraph-combined.js dist/",
     "test": "jest",
     "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
   },
@@ -80,6 +81,7 @@
     "@typescript-eslint/eslint-plugin": "^6.18.0",
     "@typescript-eslint/parser": "^6.18.0",
     "@vercel/ncc": "^0.38.1",
+    "copyfiles": "^2.4.1",
     "eslint": "^8.56.0",
     "eslint-plugin-github": "^4.10.1",
     "eslint-plugin-jest": "^27.6.1",
@@ -89,6 +91,7 @@
     "make-coverage-badge": "^1.2.0",
     "prettier": "^3.1.1",
     "prettier-eslint": "^16.2.0",
+    "rimraf": "^5.0.5",
     "ts-jest": "^29.1.1",
     "typescript": "^5.3.3"
   }

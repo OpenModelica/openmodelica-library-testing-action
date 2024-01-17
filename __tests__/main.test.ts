@@ -38,10 +38,12 @@ process.env.GITHUB_STEP_SUMMARY = gitHubStepSummaryFile
 describe('action', () => {
   afterAll(() => {
     fs.rmSync('OpenModelicaLibraryTesting', { recursive: true, force: true })
+    //fs.rmSync('html', { recursive: true, force: true })
     fs.rmSync(gitHubStepSummaryFile, { force: true })
   })
   beforeEach(() => {
     fs.rmSync('OpenModelicaLibraryTesting', { recursive: true, force: true })
+    fs.rmSync('html', { recursive: true, force: true })
     fs.rmSync(gitHubStepSummaryFile, { force: true })
     fs.writeFileSync(gitHubStepSummaryFile, '', { flag: 'w' })
 
@@ -96,7 +98,7 @@ describe('action', () => {
       expect(runMock).toHaveReturned()
 
       // Verify that all of the core library functions were called correctly
-      expect(debugMock).toHaveBeenCalledTimes(9)
+      expect(debugMock).toHaveBeenCalledTimes(10)
       expect(debugMock).toHaveBeenNthCalledWith(1, 'Get inputs')
       expect(debugMock).toHaveBeenNthCalledWith(
         2,
@@ -113,6 +115,7 @@ describe('action', () => {
       )
       expect(debugMock).toHaveBeenNthCalledWith(8, 'Write summary')
       expect(debugMock).toHaveBeenNthCalledWith(9, 'Set outputs')
+      expect(debugMock).toHaveBeenNthCalledWith(10, 'Collect HTML outputs')
 
       expect(setOutputMock).toHaveBeenCalledTimes(4)
       expect(setOutputMock).toHaveBeenNthCalledWith(
@@ -156,6 +159,37 @@ describe('action', () => {
       expect(summaryContent).toContain(
         'MyLibrary.Blocks.Examples.PID\\_Controller | 4/7 failed'
       )
+
+      // Verify html/ dir
+      const files = fs.readdirSync(path.join('html', 'master', 'MyLibrary_0.1.0', 'files'))
+      expect(files.sort()).toEqual([
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.cmdout',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.html',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.phi.csv',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.phi.html',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.w.csv',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.w.html',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.phi_rel.csv',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.phi_rel.html',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.w_rel.csv',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.w_rel.html',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.err',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.sim',
+        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.stat.json',
+        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.cmdout',
+        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err',
+        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim',
+        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.stat.json',
+        'dygraph-combined.js'
+      ])
+
+      expect(
+        fs.existsSync(path.join('html', 'master', 'MyLibrary_0.1.0', 'MyLibrary_0.1.0.html'))
+      ).toBe(true)
+
+      expect(
+        fs.existsSync(path.join('html', 'index.html'))
+      ).toBe(true)
     },
     10 * 60000 /* 10 minutes */
   )

@@ -3,9 +3,10 @@ import * as fs from 'fs'
 import * as child_process from 'child_process'
 import * as core from '@actions/core'
 
+import { cloneScripts } from './clone'
+import { copyHtmlFilesSync } from './collect'
 import { Configuration, genConfigFile } from './config'
 import { summaryFromHtmlFile } from './summary'
-import { cloneScripts } from './clone'
 
 /**
  * Run Python script.
@@ -144,7 +145,9 @@ export async function run(): Promise<void> {
     )
     core.info(`n-verification-passing: ${actionOutputs.nVerificationPassing}`)
 
-    // Collect HTML files and publish on gh-pages
+    // Collect HTML files
+    core.debug('Collect HTML outputs')
+    copyHtmlFilesSync(packageName, packageVersion, omcVersion, 'OpenModelicaLibraryTesting', 'html')
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)

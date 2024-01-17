@@ -14,7 +14,7 @@ describe('clone.ts', () => {
   beforeAll(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
   afterEach(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
 
-  it('Generate minimal configuration', async () => {
+  it('git clone OpenModelicaLibraryTesting', async () => {
     await cloneScripts('cdf827130ce7df206264f673972a691fb469533a', tempTestDir)
     expect(
       fs.existsSync(

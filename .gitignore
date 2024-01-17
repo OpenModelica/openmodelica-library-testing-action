@@ -102,4 +102,5 @@ __tests__/runner/*
 .vscode
 *.code-workspace
 
-OpenModelicaLibraryTesting/
+/OpenModelicaLibraryTesting/
+/html/
