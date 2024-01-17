@@ -2,23 +2,23 @@
  * Unit tests for src/config.ts
  */
 
-import { Configuration, genConfigFile } from '../src/config'
+import * as fs from 'fs'
+import * as path from 'path'
 import { expect } from '@jest/globals'
-import { join, resolve } from 'path'
-import { existsSync, rmSync } from 'fs'
+import { Configuration, genConfigFile } from '../src/config'
 
-const tempTestDir = join('__tests__', 'tmp-configs')
+const tempTestDir = path.join('__tests__', 'tmp-configs')
 
 describe('config.ts', () => {
-  beforeAll(() => rmSync(tempTestDir, { recursive: true, force: true }))
-  afterEach(() => rmSync(tempTestDir, { recursive: true, force: true }))
+  beforeAll(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
+  afterEach(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
 
   it('Generate minimal configuration', async () => {
     const modelicaFile = '/path/to/MyLibrary/package.mo'
     const config: Configuration = {
       library: 'MyLibrary',
       libraryVersion: 'main',
-      loadFileCommands: [`loadFile("${resolve(modelicaFile)}")`]
+      loadFileCommands: [`loadFile("${path.resolve(modelicaFile)}")`]
     }
 
     expect(config).toEqual({
@@ -29,20 +29,20 @@ describe('config.ts', () => {
   })
 
   it('Generate minimal configuration file', async () => {
-    const file = join(tempTestDir, 'testConfigSimple.json')
+    const file = path.join(tempTestDir, 'testConfigSimple.json')
     const modelicaFile = '/path/to/MyLibrary/package.mo'
     const config: Configuration = {
       library: 'MyLibrary',
       libraryVersion: 'main',
-      loadFileCommands: [`loadFile("${resolve(modelicaFile)}")`]
+      loadFileCommands: [`loadFile("${path.resolve(modelicaFile)}")`]
     }
 
     await genConfigFile(file, [config])
-    expect(existsSync(file)).toBe(true)
+    expect(fs.existsSync(file)).toBe(true)
   })
 
   it('Generate extensive configuration file', async () => {
-    const file = join(tempTestDir, 'testConfig.json')
+    const file = path.join(tempTestDir, 'testConfig.json')
     const config: Configuration = {
       library: 'MyLibrary',
       libraryVersion: 'main',
@@ -70,9 +70,7 @@ describe('config.ts', () => {
       alarmFlag: '--alarm',
       abortSlowSimulation: '',
       loadFileCommands: ['loadFile("${resolve(modelicaFile)}")'],
-      extraCustomCommands: [
-        'setCommandLineOptions("-d=-NLSanalyticJacobian")'
-      ],
+      extraCustomCommands: ['setCommandLineOptions("-d=-NLSanalyticJacobian")'],
       environmentSimulation: [
         ['publicData', '$libraryLocation/Tables/'],
         ['privateData', '$libraryLocation/Tables/'],
@@ -89,6 +87,6 @@ describe('config.ts', () => {
     }
 
     await genConfigFile(file, [config])
-    expect(existsSync(file)).toBe(true)
+    expect(fs.existsSync(file)).toBe(true)
   })
 })

@@ -1,7 +1,7 @@
+import * as fsPromise from 'fs/promises'
 import * as HTMLParser from 'node-html-parser'
 import TurndownService from 'turndown'
 import * as turndownPluginGfm from 'turndown-plugin-gfm'
-import * as fsPromise from 'fs/promises';
 
 export interface ActionOutputs {
   simulationTestsPassing: boolean
@@ -25,7 +25,10 @@ function removeHtmlLinks(
   return table
 }
 
-function parseStats(table: HTMLParser.HTMLElement, verificationTested: boolean): ActionOutputs {
+function parseStats(
+  table: HTMLParser.HTMLElement,
+  verificationTested: boolean
+): ActionOutputs {
   const rows = table.getElementsByTagName('tr')
 
   const total = Number(rows[1].getElementsByTagName('td')[0].text)
@@ -33,9 +36,10 @@ function parseStats(table: HTMLParser.HTMLElement, verificationTested: boolean):
   const verified = Number(rows[1].getElementsByTagName('td')[7].text)
 
   const outputs = {
-    simulationTestsPassing: total == simulated,
+    simulationTestsPassing: total === simulated,
     nSimulationPassing: simulated,
-    verificationTestsPassing: !verificationTested || (verificationTested && (total == verified)),
+    verificationTestsPassing:
+      !verificationTested || (verificationTested && total === verified),
     nVerificationPassing: verified
   } as ActionOutputs
 
@@ -72,18 +76,22 @@ export function summaryFromHtml(
 
   const outputs = parseStats(htmlTables[0], verificationTested)
 
-  const summary = `## Summary
+  let summary = `## Summary
 
 ${coverage}
 
 ## Results
 
 ${results}
+`
 
+  if (pagesUrl !== '') {
+    summary += `
 ## Detailed report
 
 ${pagesUrl}
 `
+  }
 
   return [summary, outputs]
 }
@@ -101,7 +109,6 @@ export async function summaryFromHtmlFile(
   pagesUrl: string,
   verificationTested: boolean
 ): Promise<[string, ActionOutputs]> {
-
   console.log(`Read file ${htmlFile}`)
   const html = await fsPromise.readFile(htmlFile, 'utf-8')
 

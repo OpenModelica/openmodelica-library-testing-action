@@ -1,21 +1,22 @@
 {
-  "name": "typescript-action",
-  "description": "GitHub Actions TypeScript template",
-  "version": "0.0.0",
-  "author": "",
+  "name": "openmodelica-library-testing-action",
+  "description": "Setup OpenModelicaLibraryTesting scripts and run them on Modelica package and publishes results.",
+  "version": "0.1.0",
+  "author": "AndreasHeuermann",
   "private": true,
-  "homepage": "https://github.com/actions/typescript-action",
+  "homepage": "https://github.com/AnHeuermann/openmodelica-library-testing-action",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/AnHeuermann/openmodelica-library-testing-action.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/typescript-action/issues"
+    "url": "https://github.com/AnHeuermann/openmodelica-library-testing-action/issues"
   },
   "keywords": [
+    "continuous-integration",
     "actions",
-    "node",
-    "setup"
+    "modelica-library",
+    "openmodelica"
   ],
   "exports": {
     ".": "./dist/index.js"
@@ -50,8 +51,7 @@
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/dist/",
-      "/src/"
+      "/dist/"
     ],
     "transform": {
       "^.+\\.ts$": "ts-jest"

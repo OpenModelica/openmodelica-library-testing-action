@@ -2,24 +2,32 @@
  * Unit tests for src/clone.ts
  */
 
-import { cloneScripts } from '../src/clone'
+import * as fs from 'fs'
+import * as path from 'path'
+import SimpleGit from 'simple-git'
 import { expect } from '@jest/globals'
-import { join } from 'path'
-import { existsSync, rmSync } from 'fs'
-import simpleGit from 'simple-git'
+import { cloneScripts } from '../src/clone'
 
-const tempTestDir = join('__tests__', 'clone')
+const tempTestDir = path.join('__tests__', 'clone')
 
 describe('clone.ts', () => {
-  beforeAll(() => rmSync(tempTestDir, { recursive: true, force: true }))
-  afterEach(() => rmSync(tempTestDir, { recursive: true, force: true }))
+  beforeAll(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
+  afterEach(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
 
   it('Generate minimal configuration', async () => {
     await cloneScripts('cdf827130ce7df206264f673972a691fb469533a', tempTestDir)
-    expect(existsSync(join(tempTestDir, 'OpenModelicaLibraryTesting', 'test.py'))).toBe(true)
+    expect(
+      fs.existsSync(
+        path.join(tempTestDir, 'OpenModelicaLibraryTesting', 'test.py')
+      )
+    ).toBe(true)
 
-    const git = simpleGit({ baseDir: join(tempTestDir, 'OpenModelicaLibraryTesting')})
+    const git = SimpleGit({
+      baseDir: path.join(tempTestDir, 'OpenModelicaLibraryTesting')
+    })
     expect(await git.revparse(['--abbrev-ref', 'HEAD'])).toEqual('master')
-    expect(await git.revparse(['HEAD'])).toEqual('cdf827130ce7df206264f673972a691fb469533a')
+    expect(await git.revparse(['HEAD'])).toEqual(
+      'cdf827130ce7df206264f673972a691fb469533a'
+    )
   }, 60000)
 })

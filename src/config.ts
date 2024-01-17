@@ -1,5 +1,5 @@
-import { promises as fsPromises } from 'fs'
-import { dirname } from 'path'
+import * as fsPromise from 'fs/promises'
+import * as path from 'path'
 
 type Library = [string, string]
 type ReferenceFileExtension = 'csv' | 'mat'
@@ -39,14 +39,14 @@ export interface Configuration {
 /**
  * Generate OpenModelicaLibraryTesting configuration file.
  *
- * @param path            Path to configuration file.
+ * @param file            Path to configuration file.
  *                        If a file descriptor is provided, the underlying file will not be closed automatically.
  * @param configurations  Array of configurations for Modelica libraries.
  */
 export async function genConfigFile(
-  path: string,
+  file: string,
   configurations: Configuration[]
 ): Promise<void> {
-  await fsPromises.mkdir(dirname(path), { recursive: true })
-  await fsPromises.writeFile(path, JSON.stringify(configurations, null, 2))
+  await fsPromise.mkdir(path.dirname(file), { recursive: true })
+  await fsPromise.writeFile(file, JSON.stringify(configurations, null, 2))
 }
