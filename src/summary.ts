@@ -1,6 +1,7 @@
 import * as HTMLParser from 'node-html-parser'
 import TurndownService from 'turndown'
 import * as turndownPluginGfm from 'turndown-plugin-gfm'
+import * as fsPromise from 'fs/promises';
 
 export interface ActionOutputs {
   simulationTestsPassing: boolean
@@ -44,7 +45,7 @@ function parseStats(table: HTMLParser.HTMLElement, verificationTested: boolean):
 /**
  * Generate summary from HTML overview file
  *
- * @param html                Path to overview.html
+ * @param html                Content of overview.html
  * @param pagesUrl            URL where GitHub pages are hosted.
  * @param verificationTested  `true` if referenceFiles are available and verification should be tested.
  * @returns                   Array with markdown summary and action outputs.
@@ -63,6 +64,7 @@ export function summaryFromHtml(
   })
   turndownService.use([turndownPluginGfm.gfm, turndownPluginGfm.tables])
 
+  // TODO: ensure that htmlTables has two elements and that they are the correct tables
   const resultTable = removeHtmlLinks(htmlTables[1])
 
   const coverage = turndownService.turndown(htmlTables[0].outerHTML)
@@ -84,4 +86,24 @@ ${pagesUrl}
 `
 
   return [summary, outputs]
+}
+
+/**
+ * Generate summary from HTML overview file
+ *
+ * @param htmlFile            Path to overview.html
+ * @param pagesUrl            URL where GitHub pages are hosted.
+ * @param verificationTested  `true` if referenceFiles are available and verification should be tested.
+ * @returns                   Array with markdown summary and action outputs.
+ */
+export async function summaryFromHtmlFile(
+  htmlFile: string,
+  pagesUrl: string,
+  verificationTested: boolean
+): Promise<[string, ActionOutputs]> {
+
+  console.log(`Read file ${htmlFile}`)
+  const html = await fsPromise.readFile(htmlFile, 'utf-8')
+
+  return summaryFromHtml(html, pagesUrl, verificationTested)
 }

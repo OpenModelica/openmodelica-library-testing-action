@@ -18,13 +18,13 @@ describe('config.ts', () => {
     const config: Configuration = {
       library: 'MyLibrary',
       libraryVersion: 'main',
-      loadFileCommands: [`loadFile(\\"${resolve(modelicaFile)}\\")`]
+      loadFileCommands: [`loadFile("${resolve(modelicaFile)}")`]
     }
 
     expect(config).toEqual({
       library: 'MyLibrary',
       libraryVersion: 'main',
-      loadFileCommands: ['loadFile(\\"/path/to/MyLibrary/package.mo\\")']
+      loadFileCommands: ['loadFile("/path/to/MyLibrary/package.mo")']
     })
   })
 
@@ -34,7 +34,7 @@ describe('config.ts', () => {
     const config: Configuration = {
       library: 'MyLibrary',
       libraryVersion: 'main',
-      loadFileCommands: [`loadFile(\\"${resolve(modelicaFile)}\\")`]
+      loadFileCommands: [`loadFile("${resolve(modelicaFile)}")`]
     }
 
     await genConfigFile(file, [config])
@@ -69,9 +69,9 @@ describe('config.ts', () => {
       optlevel: '-Os -march=native',
       alarmFlag: '--alarm',
       abortSlowSimulation: '',
-      loadFileCommands: ['loadFile(\\"${resolve(modelicaFile)}\\")'],
+      loadFileCommands: ['loadFile("${resolve(modelicaFile)}")'],
       extraCustomCommands: [
-        'setCommandLineOptions(\\"-d=-NLSanalyticJacobian\\")'
+        'setCommandLineOptions("-d=-NLSanalyticJacobian")'
       ],
       environmentSimulation: [
         ['publicData', '$libraryLocation/Tables/'],

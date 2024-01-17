@@ -4,7 +4,7 @@ import { exec } from 'child_process'
 import * as core from '@actions/core'
 
 import { Configuration, genConfigFile } from './config'
-import { summaryFromHtml } from './summary'
+import { summaryFromHtmlFile } from './summary'
 import { cloneScripts } from './clone'
 
 /**
@@ -21,8 +21,10 @@ function runPythonScript(scriptPath: string, args: string[]): Promise<{ stdout: 
 
     // Execute the command
     exec(command, (error, stdout, stderr) => {
+      core.debug(stdout);
+
       if (error) {
-        core.error(`Error executing Python script ${scriptPath}: ${error.message}`)
+        core.error(`Error executing Python script ${scriptPath}\n${error.message}`)
         reject(error);
       } else {
         resolve({ stdout, stderr })
@@ -31,9 +33,9 @@ function runPythonScript(scriptPath: string, args: string[]): Promise<{ stdout: 
   })
 }
 
-
 /**
  * The main function for the action.
+ *
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 export async function run(): Promise<void> {
@@ -46,13 +48,13 @@ export async function run(): Promise<void> {
     const referenceFilesDir = core.getInput('reference-files-dir')  !== '' ? core.getInput('reference-files-dir') : undefined
     const referenceFilesFormat = core.getInput('reference-files-format') !== '' ? core.getInput('reference-files-format') : undefined
     const referenceFilesDelimiter = core.getInput('reference-files-delimiter') !== '' ? core.getInput('reference-files-delimiter') : undefined
-    const omcVersion = core.getInput('omcVersion', {required: true})
     const pagesRootUrl = core.getInput('pages-root-url')
+    const omcVersion = core.getInput('omcVersion', {required: true})
 
-    /*
-    // Make sure OpenModelica and Python are available
+    // Make sure OpenModelica and Python3 are available
 
     // Clone OpenModelicaLibraryTesting
+    core.debug('clone OpenModelicaLibraryTesting')
     await cloneScripts('cdf827130ce7df206264f673972a691fb469533a')
 
     // Generate config
@@ -60,11 +62,11 @@ export async function run(): Promise<void> {
     if (!fs.existsSync(modelicaFile)) {
       throw new Error(`Can't find file '${modelicaFile}' from input modelica-file: '${core.getInput('modelica-file')}'`)
     }
-    const confFile = 'conf.json'
+    const confFile = join('configs', `conf-${packageName}.json`)
     const config = {
       library: packageName,
       libraryVersion: packageVersion,
-      loadFileCommands: [`loadFile(\\"${modelicaFile}\\")`],
+      loadFileCommands: [`loadFile("${modelicaFile}")`],
       referenceFiles: referenceFilesDir,
       referenceFileExtension: referenceFilesFormat,
       referenceFileNameDelimiter: referenceFilesDelimiter
@@ -72,13 +74,21 @@ export async function run(): Promise<void> {
     genConfigFile(confFile, [config])
 
     // Run OpenModelicaLibraryTesting scripts
-    await runPythonScript(join('OpenModelicaLibraryTesting', 'test.py'), [`--branch=${omcVersion}`, '--noclean', confFile])
-    await runPythonScript(join('OpenModelicaLibraryTesting', 'report.py'), [`--branch=${omcVersion}`, confFile])
+    const cwd = process.cwd()
+    try {
+      process.chdir('OpenModelicaLibraryTesting')
+      await runPythonScript('test.py', [`--branch=${omcVersion}`, '--noclean', confFile])
+      await runPythonScript('report.py', [`--branch=${omcVersion}`, confFile])
+      process.chdir(cwd)
+    } catch (error) {
+      process.chdir(cwd)
+      throw(error)
+    }
 
     // Write summary
     core.debug('Write summary')
-    const htmlLibOverview = join('OpenModelicaLibraryTesting', 'overview.html')
-    const [summary, actionOutputs] = summaryFromHtml(htmlLibOverview, pagesRootUrl, referenceFilesDir !== undefined)
+    const overviewFile = join('OpenModelicaLibraryTesting', `${packageName}_${packageVersion}.html`)
+    const [summary, actionOutputs] = await summaryFromHtmlFile(overviewFile, pagesRootUrl, referenceFilesDir !== undefined)
     await core.summary.addRaw(summary).write()
 
     // Set outputs
@@ -94,7 +104,7 @@ export async function run(): Promise<void> {
     core.info(`n-verification-passing: ${ actionOutputs.nVerificationPassing }`)
 
     // Collect HTML files and publish on gh-pages
-    */
+
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)

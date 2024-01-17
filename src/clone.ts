@@ -10,7 +10,6 @@ import simpleGit from 'simple-git'
  * @param baseDir Base directory for all git operations.
  */
 export async function cloneScripts(ref: string, baseDir?: string): Promise<void>{
-  core.debug('clone OpenModelicaLibraryTesting')
   if (baseDir !== undefined) {
     await fsPromises.mkdir(baseDir, { recursive: true })
   }

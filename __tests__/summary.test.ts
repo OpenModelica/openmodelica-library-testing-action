@@ -2,8 +2,9 @@
  * Unit tests for src/summary.ts
  */
 
-import { summaryFromHtml, ActionOutputs } from '../src/summary'
+import { summaryFromHtml, summaryFromHtmlFile, ActionOutputs } from '../src/summary'
 import { expect } from '@jest/globals'
+import { writeFileSync, rmSync } from 'fs'
 
 const htmlLibOverview = `<!DOCTYPE html>
 <html>
@@ -80,6 +81,8 @@ Config: <pre>{
 </html>
 `
 
+const libOverviewFile = 'MyLibrary_0.1.0.html'
+
 const markdownSummary = `## Summary
 
 | Total | Frontend | Backend | SimCode | Templates | Compilation | Simulation | Verification |
@@ -99,8 +102,12 @@ https://not/a/valid/url
 `
 
 describe('summary.ts', () => {
-  it('Markdown summary from HTML', () => {
-    const [summary, outputs]  = summaryFromHtml(htmlLibOverview, 'https://not/a/valid/url', true)
+  afterAll(() => rmSync(libOverviewFile, { force: true }))
+  beforeEach(() => rmSync(libOverviewFile, { force: true }))
+
+  it('Markdown summary from HTML file', async () => {
+    writeFileSync(libOverviewFile, htmlLibOverview)
+    const [summary, outputs]  = await summaryFromHtmlFile(libOverviewFile, 'https://not/a/valid/url', true)
     expect(summary).toEqual(markdownSummary)
     expect(outputs).toEqual({
       simulationTestsPassing: true,
