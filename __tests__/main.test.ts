@@ -38,7 +38,7 @@ process.env.GITHUB_STEP_SUMMARY = gitHubStepSummaryFile
 describe('action', () => {
   afterAll(() => {
     fs.rmSync('OpenModelicaLibraryTesting', { recursive: true, force: true })
-    //fs.rmSync('html', { recursive: true, force: true })
+    fs.rmSync('html', { recursive: true, force: true })
     fs.rmSync(gitHubStepSummaryFile, { force: true })
   })
   beforeEach(() => {
@@ -84,38 +84,38 @@ describe('action', () => {
         }
       })
       // Mock logging functions
-      debugMock.mockImplementation((msg: string): void => {
-        console.log(msg)
-      })
-      errorMock.mockImplementation((msg: string): void => {
-        console.log(msg)
-      })
-      infoMock.mockImplementation((msg: string): void => {
-        console.log(msg)
-      })
+      //debugMock.mockImplementation((msg: string): void => {
+      //  console.log(msg)
+      //})
+      //errorMock.mockImplementation((msg: string): void => {
+      //  console.log(msg)
+      //})
+      //infoMock.mockImplementation((msg: string): void => {
+      //  console.log(msg)
+      //})
 
       await main.run()
       expect(runMock).toHaveReturned()
 
       // Verify that all of the core library functions were called correctly
-      expect(debugMock).toHaveBeenCalledTimes(10)
+      expect(debugMock).toHaveBeenCalledTimes(11)
       expect(debugMock).toHaveBeenNthCalledWith(1, 'Get inputs')
       expect(debugMock).toHaveBeenNthCalledWith(
         2,
         'clone OpenModelicaLibraryTesting'
       )
-      expect(debugMock).toHaveBeenNthCalledWith(3, 'Generating configuration')
+      expect(debugMock).toHaveBeenNthCalledWith(4, 'Generating configuration')
       expect(debugMock).toHaveBeenNthCalledWith(
-        4,
+        5,
         'Running python test.py --branch=master --noclean configs/conf-MyLibrary.json'
       )
       expect(debugMock).toHaveBeenNthCalledWith(
-        6,
+        7,
         'Running python report.py --branch=master configs/conf-MyLibrary.json'
       )
-      expect(debugMock).toHaveBeenNthCalledWith(8, 'Write summary')
-      expect(debugMock).toHaveBeenNthCalledWith(9, 'Set outputs')
-      expect(debugMock).toHaveBeenNthCalledWith(10, 'Collect HTML outputs')
+      expect(debugMock).toHaveBeenNthCalledWith(9, 'Write summary')
+      expect(debugMock).toHaveBeenNthCalledWith(10, 'Set outputs')
+      expect(debugMock).toHaveBeenNthCalledWith(11, 'Collect HTML outputs')
 
       expect(setOutputMock).toHaveBeenCalledTimes(4)
       expect(setOutputMock).toHaveBeenNthCalledWith(

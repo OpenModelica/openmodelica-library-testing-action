@@ -6,6 +6,7 @@ import * as core from '@actions/core'
 import { cloneScripts } from './clone'
 import { copyHtmlFilesSync } from './collect'
 import { Configuration, genConfigFile } from './config'
+import { installPythonDeps } from './installdeps'
 import { summaryFromHtmlFile } from './summary'
 
 /**
@@ -19,11 +20,10 @@ async function runPythonScript(
   scriptPath: string,
   args: string[]
 ): Promise<{ stdout: string; stderr: string }> {
-  return new Promise((resolve, reject) => {
-    const command = `python ${scriptPath} ${args.join(' ')}`
-    core.debug(`Running ${command}`)
+  const command = `python ${scriptPath} ${args.join(' ')}`
+  core.debug(`Running ${command}`)
 
-    // Execute the command
+  return new Promise((resolve, reject) => {
     child_process.exec(command, (error, stdout, stderr) => {
       core.debug(stdout)
 
@@ -68,11 +68,16 @@ export async function run(): Promise<void> {
     const pagesRootUrl = core.getInput('pages-root-url')
     const omcVersion = core.getInput('omcVersion', { required: true })
 
-    // Make sure OpenModelica and Python3 are available
+    // TODO: Make sure OpenModelica and Python 3 are available
 
     // Clone OpenModelicaLibraryTesting
     core.debug('clone OpenModelicaLibraryTesting')
     await cloneScripts('cdf827130ce7df206264f673972a691fb469533a')
+
+    // Install Python dependencies
+    await installPythonDeps(
+      path.join('OpenModelicaLibraryTesting', 'requirements.txt')
+    )
 
     // Generate config
     core.debug('Generating configuration')

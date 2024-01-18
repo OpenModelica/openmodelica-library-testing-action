@@ -41042,6 +41042,58 @@ exports.genConfigFile = genConfigFile;
 
 /***/ }),
 
+/***/ 9112:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.installPythonDeps = void 0;
+const child_process = __importStar(__nccwpck_require__(2081));
+const core = __importStar(__nccwpck_require__(2186));
+async function installPythonDeps(requirementsFile) {
+    const command = `pip install -r ${requirementsFile}`;
+    return new Promise((resolve, reject) => {
+        child_process.exec(command, (error, stdout, stderr) => {
+            core.debug(stdout);
+            if (error) {
+                core.error('Failed installing Python dependencies');
+                reject(error);
+            }
+            else {
+                resolve({ stdout, stderr });
+            }
+        });
+    });
+}
+exports.installPythonDeps = installPythonDeps;
+
+
+/***/ }),
+
 /***/ 399:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -41079,6 +41131,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const clone_1 = __nccwpck_require__(1848);
 const collect_1 = __nccwpck_require__(4641);
 const config_1 = __nccwpck_require__(6373);
+const installdeps_1 = __nccwpck_require__(9112);
 const summary_1 = __nccwpck_require__(2553);
 /**
  * Run Python script.
@@ -41088,10 +41141,9 @@ const summary_1 = __nccwpck_require__(2553);
  * @returns           Promise resolving when Python process exits.
  */
 async function runPythonScript(scriptPath, args) {
+    const command = `python ${scriptPath} ${args.join(' ')}`;
+    core.debug(`Running ${command}`);
     return new Promise((resolve, reject) => {
-        const command = `python ${scriptPath} ${args.join(' ')}`;
-        core.debug(`Running ${command}`);
-        // Execute the command
         child_process.exec(command, (error, stdout, stderr) => {
             core.debug(stdout);
             if (error) {
@@ -41127,10 +41179,12 @@ async function run() {
             : undefined;
         const pagesRootUrl = core.getInput('pages-root-url');
         const omcVersion = core.getInput('omcVersion', { required: true });
-        // Make sure OpenModelica and Python3 are available
+        // TODO: Make sure OpenModelica and Python 3 are available
         // Clone OpenModelicaLibraryTesting
         core.debug('clone OpenModelicaLibraryTesting');
         await (0, clone_1.cloneScripts)('cdf827130ce7df206264f673972a691fb469533a');
+        // Install Python dependencies
+        await (0, installdeps_1.installPythonDeps)(path.join('OpenModelicaLibraryTesting', 'requirements.txt'));
         // Generate config
         core.debug('Generating configuration');
         if (!fs.existsSync(modelicaFile)) {
@@ -41301,7 +41355,6 @@ exports.summaryFromHtml = summaryFromHtml;
  * @returns                   Array with markdown summary and action outputs.
  */
 async function summaryFromHtmlFile(htmlFile, pagesUrl, verificationTested) {
-    console.log(`Read file ${htmlFile}`);
     const html = await fsPromise.readFile(htmlFile, 'utf-8');
     return summaryFromHtml(html, pagesUrl, verificationTested);
 }

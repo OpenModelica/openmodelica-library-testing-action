@@ -27,12 +27,10 @@ inputs:
     default: '.'
   publish-gh-pages:
     description: 'Push results to gh-pages branch.'
-    required: true
-    default: true
+    default: false
   gh-pages-ref:
     description: 'Branch GitHub Pages deploys from, e.g. `gh-pages`'
-    required: true
-    default: 'gh-pages'
+    required: false
   pages-root-url:
     description: 'Root url GitHub Pages deploys to, e.g. https://<GitHub User>.github.io/<Repository>'
 

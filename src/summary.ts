@@ -109,7 +109,6 @@ export async function summaryFromHtmlFile(
   pagesUrl: string,
   verificationTested: boolean
 ): Promise<[string, ActionOutputs]> {
-  console.log(`Read file ${htmlFile}`)
   const html = await fsPromise.readFile(htmlFile, 'utf-8')
 
   return summaryFromHtml(html, pagesUrl, verificationTested)
