@@ -12,6 +12,7 @@ const tempTestDir = path.join('__tests__', 'tmp-collect')
 
 // Mock @actions/artifact
 jest.mock('@actions/artifact')
+jest.mock('@actions/github')
 
 function mockFileStructure(
   libraryName: string,

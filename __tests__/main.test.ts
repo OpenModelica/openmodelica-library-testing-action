@@ -29,8 +29,9 @@ let getInputMock: jest.SpyInstance
 let setFailedMock: jest.SpyInstance
 let setOutputMock: jest.SpyInstance
 
-// Mock @actions/artifact
+// Mock @actions/artifact and @actions/github
 jest.mock('@actions/artifact')
+jest.mock('@actions/github')
 
 // Set GitHub summary file
 const gitHubStepSummaryFile = path.resolve(

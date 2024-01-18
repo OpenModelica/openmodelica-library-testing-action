@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import * as artifact from '@actions/artifact'
+import * as github from '@actions/github'
 
 /**
  * Copy all html files generated from OpenModelicaLibraryTesting into target directory.
@@ -69,21 +70,20 @@ export async function uploadArtifacts(
   htmlArtifactsDir: string
 ): Promise<[artifact.UploadArtifactResponse, artifact.UploadArtifactResponse]> {
   const client = new artifact.DefaultArtifactClient()
-  // TODO: Set uid to something from GitHub
-  const uid = ''
+  const runId = github.context.runId
 
   const htmlFiles = await fs.promises.readdir(htmlArtifactsDir, {
     recursive: true
   })
 
   const htmlPromise = client.uploadArtifact(
-    `${libraryName}-${uid}.html`,
+    `${libraryName}-${runId}.html`,
     htmlFiles,
     htmlArtifactsDir
   )
 
   const sqlitePromise = client.uploadArtifact(
-    `sqlite3-${uid}.db`,
+    `sqlite3-${runId}.db`,
     [sqlFile],
     path.dirname(sqlFile)
   )

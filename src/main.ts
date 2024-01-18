@@ -55,7 +55,7 @@ export async function run(): Promise<void> {
     )
     const referenceFilesDir =
       core.getInput('reference-files-dir') !== ''
-        ? core.getInput('reference-files-dir')
+        ? path.resolve(core.getInput('reference-files-dir'))
         : undefined
     const referenceFilesFormat =
       core.getInput('reference-files-format') !== ''

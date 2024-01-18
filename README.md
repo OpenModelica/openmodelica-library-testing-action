@@ -2,7 +2,6 @@
 
 [![Continuous Integration](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml/badge.svg)](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml)
 
-
 This GitHub action setups [OpenModelicaLibraryTesting](https://github.com/OpenModelica/OpenModelicaLibraryTesting)
 scripts and run them on a provided Modelica package and returns a summary of the
 test report.
@@ -64,6 +63,26 @@ Default: `'.'`
 jobs:
   library-testing:
     steps:
+      - name: Setup Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: pip            # caching pip dependencies
+
+      - name: Update pip
+        run: |
+          pip install --upgrade pip
+
+      - name: Setup OpenModelica
+        uses: AnHeuermann/setup-openmodelica@v0.7
+        with:
+          version: stable
+          packages: |
+            omc
+          libraries: |
+            Modelica 4.0.0
+          omc-diff: true
+
       - uses: openmodelica-library-testing@v0.2.0
         id: library-testing
         with:
@@ -76,7 +95,6 @@ jobs:
           reference-files-delimiter: '.'
           publish-gh-pages: true
           gh-pages-ref: gh-pages
-          pages-root-url: https://USERNAME.github.io/MyLibrary
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -147,15 +165,15 @@ to check that verification will fail for variables `spring.w_rel`,
 
 The expected output is:
 
-> # GitHub Actions Test summary
+> ## GitHub Actions Test summary
 >
-> ## Summary
+> ### Summary
 >
 > |    |   Total |   Frontend |   Backend |   SimCode |   Templates |   Compilation |   Simulation |   Verification |
 > |---:|--------:|-----------:|----------:|----------:|------------:|--------------:|-------------:|---------------:|
 > |  0 |       2 |          2 |         2 |         2 |           2 |             2 |            2 |              1 |
 >
-> ## Results
+> ### Results
 >
 > |    | Model                                                 | Verified          |   Simulate |   Total buildModel |   Parsing |   Frontend |   Backend |   SimCode |   Templates |   Compile |
 > |---:|:------------------------------------------------------|:------------------|-----------:|-------------------:|----------:|-----------:|----------:|----------:|------------:|----------:|
