@@ -1,6 +1,7 @@
+# openmodelica-library-testing Action
+
 [![Continuous Integration](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml/badge.svg)](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml)
 
-# openmodelica-library-testing Action
 
 This GitHub action setups [OpenModelicaLibraryTesting](https://github.com/OpenModelica/OpenModelicaLibraryTesting)
 scripts and run them on a provided Modelica package and returns a summary of the test
@@ -71,6 +72,7 @@ the results of PRs and branches are getting published automatically.
 > [!NOTE]
 > For the action to be allowed to push to your repository you'll need to give write
 > permissions.
+>
 > ```yml
 > permissions:
 >   contents: write
@@ -83,8 +85,7 @@ Default: `'gh-pages'`
 
 ### `pages-root-url`
 
-Root url GitHub Pages deploys to, e.g. `'https://<GitHub User>.github.io/<Repository>'`.
-
+Root URL GitHub Pages deploys to, e.g. `'https://<GitHub User>.github.io/<Repository>'`.
 
 ## Example usage
 
@@ -136,7 +137,7 @@ additional step in your workflow.
 
 `'True'` if all simulation tests are passing, `'False'` otherwise.
 
-## ` n-simulation-passing`
+## `n-simulation-passing`
 
 Number of successful simulation tests.
 
@@ -171,7 +172,7 @@ python3 -m http.server -d html
 
 For future test the SQlite data base `sqlite3.db` is achieved.
 
-## Example
+## Demo
 
 This action tests Modelica library [MyLibrary](examples/MyLibrary/package.mo) consisting
 of two models from the Modelica Standard Library and compares them to reference results
@@ -184,6 +185,7 @@ and `inertia1.phi`.
 The expected output is:
 
 > # GitHub Actions Test summary
+>
 > ## Summary
 >
 > |    |   Total |   Frontend |   Backend |   SimCode |   Templates |   Compilation |   Simulation |   Verification |
@@ -191,6 +193,7 @@ The expected output is:
 > |  0 |       2 |          2 |         2 |         2 |           2 |             2 |            2 |              1 |
 >
 > ## Results
+>
 > |    | Model                                                 | Verified          |   Simulate |   Total buildModel |   Parsing |   Frontend |   Backend |   SimCode |   Templates |   Compile |
 > |---:|:------------------------------------------------------|:------------------|-----------:|-------------------:|----------:|-----------:|----------:|----------:|------------:|----------:|
 > |  0 | MyLibrary.Blocks.Examples.PID_Controller (sim)        | 0.06 (4/7 failed) |       0.03 |               2.46 |      1.86 |       0.23 |      0.03 |      0.01 |        0.03 |      2.16 |
