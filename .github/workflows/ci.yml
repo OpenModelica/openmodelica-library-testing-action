@@ -1,12 +1,13 @@
 name: Continuous Integration
 
 on:
-  pull_request:
   push:
     branches:
-      - main
+      - 'main'
       - 'releases/*'
-    tags: '*'
+    tags:
+      - '*'
+  pull_request:
 
 jobs:
   test-typescript:
@@ -55,21 +56,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-    - name: Setup Python3
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.10
-        cache: pip            # caching pip dependencies
+      - name: Setup Python3
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+          cache: pip            # caching pip dependencies
 
-    - name: Setup OpenModelica
-      uses: AnHeuermann/setup-openmodelica@v0.7
-      with:
-        version: stable
-        packages: |
-          omc
-        libraries: |
-          Modelica 4.0.0
-        omc-diff: true
+      - name: Setup OpenModelica
+        uses: AnHeuermann/setup-openmodelica@v0.7
+        with:
+          version: stable
+          packages: |
+            omc
+          libraries: |
+            Modelica 4.0.0
+          omc-diff: true
 
       - name: Test openmodelica-library-testing
         id: test-action
