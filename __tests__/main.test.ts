@@ -29,6 +29,9 @@ let getInputMock: jest.SpyInstance
 let setFailedMock: jest.SpyInstance
 let setOutputMock: jest.SpyInstance
 
+// Mock @actions/artifact
+jest.mock('@actions/artifact')
+
 // Set GitHub summary file
 const gitHubStepSummaryFile = path.resolve(
   path.join('__tests__', 'github_step_summary.md')
@@ -83,22 +86,12 @@ describe('action', () => {
             return ''
         }
       })
-      // Mock logging functions
-      //debugMock.mockImplementation((msg: string): void => {
-      //  console.log(msg)
-      //})
-      //errorMock.mockImplementation((msg: string): void => {
-      //  console.log(msg)
-      //})
-      //infoMock.mockImplementation((msg: string): void => {
-      //  console.log(msg)
-      //})
 
       await main.run()
       expect(runMock).toHaveReturned()
 
       // Verify that all of the core library functions were called correctly
-      expect(debugMock).toHaveBeenCalledTimes(11)
+      expect(debugMock).toHaveBeenCalledTimes(12)
       expect(debugMock).toHaveBeenNthCalledWith(1, 'Get inputs')
       expect(debugMock).toHaveBeenNthCalledWith(
         2,
@@ -116,6 +109,7 @@ describe('action', () => {
       expect(debugMock).toHaveBeenNthCalledWith(9, 'Write summary')
       expect(debugMock).toHaveBeenNthCalledWith(10, 'Set outputs')
       expect(debugMock).toHaveBeenNthCalledWith(11, 'Collect HTML outputs')
+      expect(debugMock).toHaveBeenNthCalledWith(12, 'Upload artifacts')
 
       expect(setOutputMock).toHaveBeenCalledTimes(4)
       expect(setOutputMock).toHaveBeenNthCalledWith(

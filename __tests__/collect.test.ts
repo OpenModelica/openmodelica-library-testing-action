@@ -4,10 +4,14 @@
 
 import * as fs from 'fs'
 import * as path from 'path'
+import * as artifact from '@actions/artifact'
 import { expect } from '@jest/globals'
-import { copyHtmlFilesSync } from '../src/collect'
+import { copyHtmlFilesSync, uploadArtifacts } from '../src/collect'
 
 const tempTestDir = path.join('__tests__', 'tmp-collect')
+
+// Mock @actions/artifact
+jest.mock('@actions/artifact')
 
 function mockFileStructure(
   libraryName: string,
@@ -40,7 +44,10 @@ function mockFileStructure(
 }
 
 describe('collect.ts', () => {
-  beforeAll(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
+  beforeEach(() => {
+    fs.rmSync(tempTestDir, { recursive: true, force: true })
+    jest.clearAllMocks()
+  })
   afterEach(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
 
   it('Copy HTML files', () => {
@@ -91,5 +98,39 @@ describe('collect.ts', () => {
     ).toBe(true)
 
     expect(fs.existsSync(path.join(targetDir, 'index.html'))).toBe(true)
+  })
+
+  it('Upload artifacts', async () => {
+    const libraryName = 'MyLibrary'
+    const libraryVersion = '1.2.3'
+    const modelPrefix = `${libraryName}_${libraryVersion}_${libraryName}.Examples.M`
+    const branchOM = 'master'
+    const omLibTestingDir = path.join(tempTestDir, 'OpenModelicaLibraryTesting')
+    const targetDir = path.join(tempTestDir, 'html')
+    mockFileStructure(libraryName, libraryVersion, modelPrefix, omLibTestingDir)
+
+    const DefaultArtifactClientMock = jest
+      .spyOn(artifact, 'DefaultArtifactClient')
+      .mockImplementation()
+    const uploadArtifactMock = jest
+      .spyOn(artifact.DefaultArtifactClient.prototype, 'uploadArtifact')
+      .mockImplementation()
+
+    copyHtmlFilesSync(
+      libraryName,
+      libraryVersion,
+      branchOM,
+      omLibTestingDir,
+      targetDir
+    )
+
+    await uploadArtifacts(
+      'MyLibrary',
+      'OpenModelicaLibraryTesting/sqlite3.db',
+      targetDir
+    )
+
+    expect(DefaultArtifactClientMock).toHaveBeenCalledTimes(1)
+    expect(uploadArtifactMock).toHaveBeenCalledTimes(2)
   })
 })

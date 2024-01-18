@@ -4,7 +4,7 @@ import * as child_process from 'child_process'
 import * as core from '@actions/core'
 
 import { cloneScripts } from './clone'
-import { copyHtmlFilesSync } from './collect'
+import { copyHtmlFilesSync, uploadArtifacts } from './collect'
 import { Configuration, genConfigFile } from './config'
 import { installPythonDeps } from './installdeps'
 import { summaryFromHtmlFile } from './summary'
@@ -152,12 +152,21 @@ export async function run(): Promise<void> {
 
     // Collect HTML files
     core.debug('Collect HTML outputs')
+    const htmlArtifactsDir = 'html'
     copyHtmlFilesSync(
       packageName,
       packageVersion,
       omcVersion,
       'OpenModelicaLibraryTesting',
-      'html'
+      htmlArtifactsDir
+    )
+
+    // Upload artifacts
+    core.debug('Upload artifacts')
+    await uploadArtifacts(
+      packageName,
+      path.join('OpenModelicaLibraryTesting', 'sqlite3.db'),
+      htmlArtifactsDir
     )
   } catch (error) {
     // Fail the workflow run if an error occurs

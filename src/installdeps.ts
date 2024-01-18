@@ -1,6 +1,12 @@
 import * as child_process from 'child_process'
 import * as core from '@actions/core'
 
+/**
+ * Install Python requirements.
+ *
+ * @param requirementsFile  Path to 'requirements.txt' file.
+ * @returns                 Promise resolving when pip process exits.
+ */
 export async function installPythonDeps(
   requirementsFile: string
 ): Promise<{ stdout: string; stderr: string }> {

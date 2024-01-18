@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import * as artifact from '@actions/artifact'
 
 /**
  * Copy all html files generated from OpenModelicaLibraryTesting into target directory.
@@ -54,4 +55,38 @@ export function copyHtmlFilesSync(
       'dygraph-combined.js'
     )
   )
+}
+
+/**
+ * Upload action artifacts.
+ *
+ * @param sqlFile Path to sqlite3.db
+ * @param htmlArtifactsDir Path to directory with all HTML artifacts
+ */
+export async function uploadArtifacts(
+  libraryName: string,
+  sqlFile: string,
+  htmlArtifactsDir: string
+): Promise<[artifact.UploadArtifactResponse, artifact.UploadArtifactResponse]> {
+  const client = new artifact.DefaultArtifactClient()
+  // TODO: Set uid to something from GitHub
+  const uid = ''
+
+  const htmlFiles = await fs.promises.readdir(htmlArtifactsDir, {
+    recursive: true
+  })
+
+  const htmlPromise = client.uploadArtifact(
+    `${libraryName}-${uid}.html`,
+    htmlFiles,
+    htmlArtifactsDir
+  )
+
+  const sqlitePromise = client.uploadArtifact(
+    `sqlite3-${uid}.db`,
+    [sqlFile],
+    path.dirname(sqlFile)
+  )
+
+  return Promise.all([htmlPromise, sqlitePromise])
 }

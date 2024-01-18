@@ -10,6 +10,12 @@ export interface ActionOutputs {
   nVerificationPassing: number
 }
 
+/**
+ * Remove all links from td elements of table.
+ *
+ * @param table HTML table
+ * @returns     table without links
+ */
 function removeHtmlLinks(
   table: HTMLParser.HTMLElement
 ): HTMLParser.HTMLElement {
@@ -25,6 +31,13 @@ function removeHtmlLinks(
   return table
 }
 
+/**
+ * Parse coverage HTML table to get action results.
+ *
+ * @param table               HTML table.
+ * @param verificationTested  Should reference results be tested.
+ * @returns                   Action outputs.
+ */
 function parseStats(
   table: HTMLParser.HTMLElement,
   verificationTested: boolean
@@ -47,9 +60,9 @@ function parseStats(
 }
 
 /**
- * Generate summary from HTML overview file
+ * Generate summary from HTML overview file.
  *
- * @param html                Content of overview.html
+ * @param html                Content of overview.html.
  * @param pagesUrl            URL where GitHub pages are hosted.
  * @param verificationTested  `true` if referenceFiles are available and verification should be tested.
  * @returns                   Array with markdown summary and action outputs.
@@ -97,9 +110,9 @@ ${pagesUrl}
 }
 
 /**
- * Generate summary from HTML overview file
+ * Generate summary from HTML overview file.
  *
- * @param htmlFile            Path to overview.html
+ * @param htmlFile            Path to overview.html.
  * @param pagesUrl            URL where GitHub pages are hosted.
  * @param verificationTested  `true` if referenceFiles are available and verification should be tested.
  * @returns                   Array with markdown summary and action outputs.
