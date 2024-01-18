@@ -78,10 +78,8 @@ describe('action', () => {
             return 'csv'
           case 'reference-files-delimiter':
             return '.'
-          case 'omcVersion':
+          case 'omc-version':
             return 'master'
-          case 'pagesRootUrl':
-            return 'https://not/a/valid/url'
           default:
             return ''
         }

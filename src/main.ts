@@ -65,8 +65,8 @@ export async function run(): Promise<void> {
       core.getInput('reference-files-delimiter') !== ''
         ? core.getInput('reference-files-delimiter')
         : undefined
-    const pagesRootUrl = core.getInput('pages-root-url')
-    const omcVersion = core.getInput('omcVersion', { required: true })
+    const pagesRootUrl = ''
+    const omcVersion = core.getInput('omc-version', { required: true })
 
     // TODO: Make sure OpenModelica and Python 3 are available
 

@@ -23,19 +23,23 @@ describe('installdeps.ts', () => {
   beforeAll(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
   afterEach(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
 
-  it('Install Python Dependencies', async () => {
-    fs.mkdirSync(tempTestDir)
-    fs.writeFileSync(requirementsFile, requirements)
-    const { stdout, stderr } = await installPythonDeps(requirementsFile)
+  it(
+    'Install Python Dependencies',
+    async () => {
+      fs.mkdirSync(tempTestDir)
+      fs.writeFileSync(requirementsFile, requirements)
+      const { stdout, stderr } = await installPythonDeps(requirementsFile)
 
-    expect(stderr).toBe('')
-    expect(stdout).toContain('datetime')
-    expect(stdout).toContain('matplotlib')
-    expect(stdout).toContain('monotonic')
-    expect(stdout).toContain('natsort')
-    expect(stdout).toContain('joblib')
-    expect(stdout).toContain('ompython')
-    expect(stdout).toContain('simplejson')
-    expect(stdout).toContain('psutil')
-  })
+      expect(stderr).toBe('')
+      expect(stdout).toContain('datetime')
+      expect(stdout).toContain('matplotlib')
+      expect(stdout).toContain('monotonic')
+      expect(stdout).toContain('natsort')
+      expect(stdout).toContain('joblib')
+      expect(stdout).toContain('ompython')
+      expect(stdout).toContain('simplejson')
+      expect(stdout).toContain('psutil')
+    },
+    2 * 60000 /* 2 minutes */
+  )
 })

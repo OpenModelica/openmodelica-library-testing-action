@@ -14,6 +14,10 @@ inputs:
     description: 'Path to Modelica file containing package to test. E.g to package.mo'
     required: true
     default: 'package.mo'
+  omc-version:
+    description: 'Version of OpenModelica to use for testing'
+    required: false
+    default: 'stable'
   reference-files-dir:
     description: 'Path to reference files'
     required: false
@@ -25,14 +29,6 @@ inputs:
     description: 'Character to separate model names in reference files. E.g. for Modelica.Blocks.Examples.PID_Controller.mat it would be "."'
     required: false
     default: '.'
-  publish-gh-pages:
-    description: 'Push results to gh-pages branch.'
-    default: false
-  gh-pages-ref:
-    description: 'Branch GitHub Pages deploys from, e.g. `gh-pages`'
-    required: false
-  pages-root-url:
-    description: 'Root url GitHub Pages deploys to, e.g. https://<GitHub User>.github.io/<Repository>'
 
 # Action outputs
 outputs:
