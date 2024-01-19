@@ -128,7 +128,8 @@ describe('collect.ts', () => {
     await uploadArtifacts(
       'MyLibrary',
       'OpenModelicaLibraryTesting/sqlite3.db',
-      targetDir
+      targetDir,
+      branchOM
     )
 
     expect(DefaultArtifactClientMock).toHaveBeenCalledTimes(1)

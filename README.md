@@ -63,15 +63,13 @@ Default: `'.'`
 jobs:
   library-testing:
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Setup Python 3
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-          cache: pip            # caching pip dependencies
-
-      - name: Update pip
-        run: |
-          pip install --upgrade pip
 
       - name: Setup OpenModelica
         uses: AnHeuermann/setup-openmodelica@v0.7
@@ -84,7 +82,6 @@ jobs:
           omc-diff: true
 
       - uses: openmodelica-library-testing@v0.2.0
-        id: library-testing
         with:
           package-name: 'MyLibrary'
           package-version: '2.2.0'
@@ -93,9 +90,6 @@ jobs:
           reference-files-dir: 'ReferenceFiles'
           reference-files-format: 'mat'
           reference-files-delimiter: '.'
-          publish-gh-pages: true
-          gh-pages-ref: gh-pages
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Outputs
@@ -137,8 +131,6 @@ Number of successful verification tests.
 
 ### HTML Results
 
-#### GitHub Pages
-
 Download the `MyLibrary.html.zip` artifact, unzip it and start a HTML server to
 display the results. This can be used to host results on a server or GitHub
 pages.
@@ -146,6 +138,42 @@ pages.
 ```bash
 unzip MyLibrary.html.zip -d html
 python3 -m http.server -d html
+```
+
+#### GitHub Pages
+
+It's possible to deploy the test results to GitHub pages. On option
+
+```yml
+# [...]
+jobs:
+  library-testing:
+    # [...]
+
+  deploy:
+    needs: library-testing
+    permissions:
+      contents: write
+    if: ${{ always() }}
+    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get HTML artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: html/
+          pattern: '*.html'
+          merge-multiple: true
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: html/
+          branch: gh-pages
 ```
 
 ### SQlite

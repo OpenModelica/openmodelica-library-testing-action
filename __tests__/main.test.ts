@@ -81,6 +81,8 @@ describe('action', () => {
             return '.'
           case 'omc-version':
             return 'master'
+          case 'pages-root-url':
+            return 'https://USERNAME.github.io/REPOSITORY/'
           default:
             return ''
         }
@@ -90,7 +92,6 @@ describe('action', () => {
       expect(runMock).toHaveReturned()
 
       // Verify that all of the core library functions were called correctly
-      expect(debugMock).toHaveBeenCalledTimes(12)
       expect(debugMock).toHaveBeenNthCalledWith(1, 'Get inputs')
       expect(debugMock).toHaveBeenNthCalledWith(
         2,
@@ -109,8 +110,8 @@ describe('action', () => {
       expect(debugMock).toHaveBeenNthCalledWith(10, 'Set outputs')
       expect(debugMock).toHaveBeenNthCalledWith(11, 'Collect HTML outputs')
       expect(debugMock).toHaveBeenNthCalledWith(12, 'Upload artifacts')
+      expect(debugMock).toHaveBeenCalledTimes(12)
 
-      expect(setOutputMock).toHaveBeenCalledTimes(4)
       expect(setOutputMock).toHaveBeenNthCalledWith(
         1,
         'simulation-tests-passing',
@@ -131,6 +132,7 @@ describe('action', () => {
         'n-verification-passing',
         1
       )
+      expect(setOutputMock).toHaveBeenCalledTimes(4)
 
       expect(infoMock).toHaveBeenNthCalledWith(
         1,

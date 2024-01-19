@@ -65,7 +65,7 @@ export async function run(): Promise<void> {
       core.getInput('reference-files-delimiter') !== ''
         ? core.getInput('reference-files-delimiter')
         : undefined
-    const pagesRootUrl = ''
+    const pagesRootUrl = core.getInput('pages-root-url')
     const omcVersion = core.getInput('omc-version', { required: true })
 
     // TODO: Make sure OpenModelica and Python 3 are available
@@ -166,7 +166,8 @@ export async function run(): Promise<void> {
     await uploadArtifacts(
       packageName,
       path.join('OpenModelicaLibraryTesting', 'sqlite3.db'),
-      htmlArtifactsDir
+      htmlArtifactsDir,
+      omcVersion
     )
   } catch (error) {
     // Fail the workflow run if an error occurs
