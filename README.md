@@ -184,7 +184,6 @@ The HTML results can be hosted with GitHub Pages, for this example they can be
 found at
 [https://anheuermann.github.io/openmodelica-library-testing-action][5].
 
-
 [1]: https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml
 [2]: https://github.com/OpenModelica/OpenModelicaLibraryTesting
 [3]: https://github.com/AnHeuermann/setup-openmodelica#available-openmodelica-versions
