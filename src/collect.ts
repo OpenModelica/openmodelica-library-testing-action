@@ -59,6 +59,43 @@ export function copyHtmlFilesSync(
 }
 
 /**
+ * Recursively reads a directory and adds absolute file paths to the provided array.
+ *
+ * @param dirPath The path of the directory to read.
+ * @param files   An array to store absolute file paths.
+ */
+async function readDirectoryRecursive(
+  dirPath: string,
+  files: string[]
+): Promise<void> {
+  const entries = await fs.promises.readdir(dirPath, { withFileTypes: true })
+
+  for (const entry of entries) {
+    const entryPath = path.join(dirPath, entry.name)
+
+    if (entry.isDirectory()) {
+      await readDirectoryRecursive(entryPath, files)
+    } else {
+      files.push(entryPath)
+    }
+  }
+}
+
+/**
+ * Recursively get absolute path of all files inside directory.
+ *
+ * @param directoryPath Path to directory.
+ * @returns             A promise that resolves to an array of absolute file paths.
+ */
+async function getAllAbsoluteFileNames(
+  directoryPath: string
+): Promise<string[]> {
+  const files: string[] = []
+  await readDirectoryRecursive(directoryPath, files)
+  return files
+}
+
+/**
  * Upload action artifacts.
  *
  * @param sqlFile Path to sqlite3.db
@@ -72,14 +109,7 @@ export async function uploadArtifacts(
   const client = new artifact.DefaultArtifactClient()
   const runId = github.context.runId
 
-  const htmlFiles = await fs.promises.readdir(htmlArtifactsDir, {
-    recursive: true
-  })
-  for (let index = 0; index < htmlFiles.length; index++) {
-    htmlFiles[index] = path.resolve(
-      path.join(htmlArtifactsDir, htmlFiles[index])
-    )
-  }
+  const htmlFiles = await getAllAbsoluteFileNames(htmlArtifactsDir)
 
   const htmlPromise = client.uploadArtifact(
     `${libraryName}-${runId}.html`,
