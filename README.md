@@ -1,8 +1,8 @@
 # openmodelica-library-testing Action
 
-[![Continuous Integration](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml/badge.svg)](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml)
+[![Continuous Integration](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml/badge.svg)][1]
 
-This GitHub action setups [OpenModelicaLibraryTesting](https://github.com/OpenModelica/OpenModelicaLibraryTesting)
+This GitHub action setups [OpenModelicaLibraryTesting][2]
 scripts and run them on a provided Modelica package and returns a summary of the
 test report.
 
@@ -35,7 +35,7 @@ Default: `'package.mo'`
 ### `omc-version`
 
 Version of OpenModelica used for testing.
-Add [AnHeuermann/setup-openmodelica](https://github.com/AnHeuermann/setup-openmodelica#available-openmodelica-versions)
+Add [AnHeuermann/setup-openmodelica][3]
 to your workflow to setup OpenModelica.\
 Default: `'stable'`
 
@@ -158,7 +158,7 @@ This action tests Modelica library [MyLibrary](examples/MyLibrary/package.mo)
 consisting of two models from the Modelica Standard Library and compares them to
 reference results in [examples/ReferenceFiles](examples/ReferenceFiles) taken
 from
-[https://github.com/modelica/MAP-LIB_ReferenceResults](https://github.com/modelica/MAP-LIB_ReferenceResults/blob/v4.0.0).
+[https://github.com/modelica/MAP-LIB_ReferenceResults][4].
 The reference results for MyLibrary.Blocks.Examples.PID_Controller are altered
 to check that verification will fail for variables `spring.w_rel`,
 `spring.phi_rel`, `inertia1.w` and `inertia1.phi`.
@@ -182,4 +182,11 @@ The expected output is:
 
 The HTML results can be hosted with GitHub Pages, for this example they can be
 found at
-[https://anheuermann.github.io/openmodelica-library-testing-action](https://anheuermann.github.io/openmodelica-library-testing-action/).
+[https://anheuermann.github.io/openmodelica-library-testing-action][5].
+
+
+[1]: https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml
+[2]: https://github.com/OpenModelica/OpenModelicaLibraryTesting
+[3]: https://github.com/AnHeuermann/setup-openmodelica#available-openmodelica-versions
+[4]: https://github.com/modelica/MAP-LIB_ReferenceResults/blob/v4.0.0
+[5]: https://anheuermann.github.io/openmodelica-library-testing-action/
