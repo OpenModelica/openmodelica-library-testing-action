@@ -111,7 +111,7 @@ jobs:
         uses: ./
         with:
           package-name: MyLibrary
-          package-version: '1.0.0'
+          package-version: ${{ github.ref }}
           modelica-file: examples/MyLibrary/package.mo
           reference-files-dir: examples/ReferenceFiles
           reference-files-format: csv
