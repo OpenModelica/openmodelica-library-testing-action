@@ -14,39 +14,21 @@ inputs:
     description: 'Path to Modelica file containing package to test. E.g to package.mo'
     required: true
     default: 'package.mo'
-  dependencies:
-    description: 'Modelica library dependencies to install with the OpenModelica package manager.'
-    required: true
-    default: ''
   omc-version:
     description: 'Version of OpenModelica to use for testing'
-    required: true
+    required: false
     default: 'stable'
   reference-files-dir:
     description: 'Path to reference files'
-    required: true
-    default: ''
+    required: false
   reference-files-format:
     description: 'File extension of result files. Allowed values are "mat" and "csv".'
-    required: true
+    required: false
     default: 'mat'
   reference-files-delimiter:
     description: 'Character to separate model names in reference files. E.g. for Modelica.Blocks.Examples.PID_Controller.mat it would be "."'
-    required: true
+    required: false
     default: '.'
-  GITHUB_TOKEN:
-    description: 'Value of secrets.GITHUB_TOKEN to authenticate and write comments in PRs.'
-    required: true
-  publish-gh-pages:
-    description: 'Push results to gh-pages branch.'
-    required: true
-    default: true
-  gh-pages-ref:
-    description: 'Branch GitHub Pages deploys from, e.g. `gh-pages`'
-    required: true
-    default: 'gh-pages'
-  pages-root-url:
-    description: 'Root url GitHub Pages deploys to, e.g. https://<GitHub User>.github.io/<Repository>'
 
 # Action outputs
 outputs:
@@ -64,112 +46,8 @@ outputs:
     value: ${{ steps.summary.outputs.n-verification-passing }}
 
 runs:
-  using: "composite"
-  steps:
-    - name: Setup OpenModelica
-      uses: AnHeuermann/setup-openmodelica@v0.7
-      with:
-        version: ${{ inputs.omc-version }}
-        packages: |
-          'omc'
-        libraries: ${{ inputs.dependencies }}
-        omc-diff: true
-
-    - name: Clone OpenModelicaLibraryTesting repository
-      uses: actions/checkout@v3
-      with:
-        repository: OpenModelica/OpenModelicaLibraryTesting
-        ref: 5a71cc63211d9363eefea6a8cd816739af540d2f
-        path: OpenModelicaLibraryTesting
-        token: ${{ github.token }}
-
-    - name: Setup Python3
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-        cache: 'pip'            # caching pip dependencies
-    - name: Install Python dependencies
-      shell: bash
-      run: |
-        pip install -r requirements.txt
-
-    - name: Create config.json
-      shell: bash
-      run: |
-        python scripts/genConfig.py "OpenModelicaLibraryTesting/configs/myConf.json" "${{ inputs.modelica-file }}" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}" "${{ inputs.reference-files-format }}" "${{ inputs.reference-files-delimiter }}"
-        cat OpenModelicaLibraryTesting/configs/myConf.json
-
-    - name: Run library test
-      working-directory: OpenModelicaLibraryTesting
-      shell: bash
-      run: python test.py --branch="${{ inputs.omc-version }}" --noclean configs/myConf.json
-
-    - name: Generate HTML results
-      working-directory: OpenModelicaLibraryTesting
-      shell: bash
-      run: python report.py --branches="${{ inputs.omc-version }}" configs/myConf.json
-
-    - name: Zip HTML results
-      id: archiveHTML
-      env:
-        ROOT_URL: "${{ inputs.pages-root-url }}"
-      shell: bash
-      run: |
-        python scripts/archiveResults.py "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.omc-version }}" "OpenModelicaLibraryTesting" "html/"
-
-    - name: Summary
-      id: summary
-      env:
-        PAGES_URL: "${{ steps.archiveHTML.outputs.pages-url }}"
-      shell: bash
-      run: |
-        python scripts/createSummary.py "OpenModelicaLibraryTesting" "${{ inputs.package-name }}" "${{ github.ref_name }}" "${{ inputs.reference-files-dir }}"
-
-    - name: Archive sqlite3.db
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: sqlite3.db
-        path: |
-          OpenModelicaLibraryTesting/sqlite3.db
-
-    - name: Archive HTML
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: ${{ inputs.package-name }}.html
-        path: html/
-
-    - name: Checkout GitHub Pages branch
-      if: ${{ inputs.publish-gh-pages }}
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ inputs.gh-pages-ref }}
-        clean: false
-
-    - name: Remove old files/ directory
-      if: ${{ inputs.publish-gh-pages }}
-      shell: bash
-      run: rm -rf ${{ inputs.omc-version }}/files
-
-    - name: Get HTML artifact
-      if: ${{ inputs.publish-gh-pages }}
-      uses: actions/download-artifact@v4
-      with:
-        name: ${{ inputs.package-name }}.html
-
-    - name: Publish results
-      if: ${{ inputs.publish-gh-pages }}
-      uses: EndBug/add-and-commit@v9
-      with:
-        add: '${{ inputs.omc-version }} index.html'
-        default_author: github_actions
-        message: '[${{ github.action }}] Test results from ${{ github.ref }}-${{ github.run_number }}'
-        fetch: false
-        pathspec_error_handling: ignore
-
-    - name: Checkout
-      uses: actions/checkout@v4
+  using: node20
+  main: dist/index.js
 
 branding:
   icon: 'check-square'

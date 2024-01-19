@@ -1,0 +1,99 @@
+{
+  "name": "openmodelica-library-testing-action",
+  "description": "Setup OpenModelicaLibraryTesting scripts and run them on Modelica package and publishes results.",
+  "version": "0.2.0",
+  "author": "AndreasHeuermann",
+  "private": true,
+  "homepage": "https://github.com/AnHeuermann/openmodelica-library-testing-action",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnHeuermann/openmodelica-library-testing-action.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AnHeuermann/openmodelica-library-testing-action/issues"
+  },
+  "keywords": [
+    "continuous-integration",
+    "actions",
+    "modelica-library",
+    "openmodelica"
+  ],
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "bundle": "npm run format:write && npm run package",
+    "ci-test": "jest",
+    "coverage": "make-coverage-badge --output-path ./badges/coverage.svg",
+    "format:write": "prettier --write **/*.ts",
+    "format:check": "prettier --check **/*.ts",
+    "lint": "npx eslint . -c ./.github/linters/.eslintrc.yml",
+    "package": "ncc build src/index.ts --license licenses.txt && npm run copy-files",
+    "package:watch": "npm run package -- --watch",
+    "copy-files": "copyfiles scripts/dygraph-combined.js dist/",
+    "test": "jest",
+    "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
+  },
+  "license": "MIT",
+  "jest": {
+    "preset": "ts-jest",
+    "verbose": true,
+    "clearMocks": true,
+    "testEnvironment": "node",
+    "moduleFileExtensions": [
+      "js",
+      "ts"
+    ],
+    "testMatch": [
+      "**/*.test.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "coverageReporters": [
+      "json-summary",
+      "text",
+      "lcov"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "./src/**"
+    ]
+  },
+  "dependencies": {
+    "@actions/artifact": "^2.0.1",
+    "@actions/core": "^1.10.1",
+    "node-html-parser": "^6.1.12",
+    "simple-git": "^3.22.0",
+    "turndown": "^7.1.2",
+    "turndown-plugin-gfm": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.7",
+    "@types/turndown": "^5.0.4",
+    "@typescript-eslint/eslint-plugin": "^6.18.0",
+    "@typescript-eslint/parser": "^6.18.0",
+    "@vercel/ncc": "^0.38.1",
+    "copyfiles": "^2.4.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-github": "^4.10.1",
+    "eslint-plugin-jest": "^27.6.1",
+    "eslint-plugin-jsonc": "^2.11.2",
+    "eslint-plugin-prettier": "^5.1.2",
+    "jest": "^29.7.0",
+    "make-coverage-badge": "^1.2.0",
+    "prettier": "^3.1.1",
+    "prettier-eslint": "^16.2.0",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
+  }
+}

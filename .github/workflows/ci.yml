@@ -1,14 +1,69 @@
 name: Continuous Integration
 
 on:
-  pull_request:
   push:
     branches:
-      - main
+      - 'main'
       - 'releases/*'
-    tags: '*'
+    tags:
+      - '*'
+  pull_request:
 
 jobs:
+  test-typescript:
+    name: TypeScript Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: pip            # caching pip dependencies
+
+      - name: Update pip
+        run: |
+          pip install --upgrade pip
+
+      - name: Setup OpenModelica
+        uses: AnHeuermann/setup-openmodelica@v0.7
+        with:
+          version: stable
+          packages: |
+            omc
+          libraries: |
+            Modelica 4.0.0
+          omc-diff: true
+
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install Dependencies
+        id: npm-ci
+        run: npm ci
+
+      - name: Check Format
+        id: npm-format-check
+        run: npm run format:check
+
+      - name: Lint
+        id: npm-lint
+        run: npm run lint
+
+      - name: Test
+        id: npm-ci-test
+        run: npm run ci-test
+
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
@@ -21,21 +76,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: pip            # caching pip dependencies
+
+      - name: Update pip
+        run: |
+          pip install --upgrade pip
+
+      - name: Setup OpenModelica
+        uses: AnHeuermann/setup-openmodelica@v0.7
+        with:
+          version: stable
+          packages: |
+            omc
+          libraries: |
+            Modelica 4.0.0
+          omc-diff: true
+
       - name: Test openmodelica-library-testing
         id: test-action
         uses: ./
         with:
           package-name: MyLibrary
-          package-version: 1.0.0
+          package-version: '1.0.0'
           modelica-file: examples/MyLibrary/package.mo
-          dependencies: |
-            Modelica 4.0.0+maint.om
-          omc-version: stable
           reference-files-dir: examples/ReferenceFiles
           reference-files-format: csv
           reference-files-delimiter: .
-          pages-root-url: https://anheuermann.github.io/openmodelica-library-testing-action
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          omc-version: stable
 
       - name: Verify action results
         shell: bash
@@ -43,7 +114,7 @@ jobs:
           echo "simulation-tests-passing: ${{ steps.test-action.outputs.simulation-tests-passing }}"
           echo "verification-tests-passing: ${{ steps.test-action.outputs.verification-tests-passing }}"
 
-          if [ "${{ steps.test-action.outputs.simulation-tests-passing }}" == "True" ] && [ ${{ steps.test-action.outputs.n-simulation-passing }} == 2 ] && [ "${{ steps.test-action.outputs.verification-tests-passing }}" == "False" ] && [ ${{ steps.test-action.outputs.n-verification-passing }} == 1 ]; then
+          if [ "${{ steps.test-action.outputs.simulation-tests-passing }}" == "true" ] && [ ${{ steps.test-action.outputs.n-simulation-passing }} == 2 ] && [ "${{ steps.test-action.outputs.verification-tests-passing }}" == "false" ] && [ ${{ steps.test-action.outputs.n-verification-passing }} == 1 ]; then
             exit 0;
           else
             exit 1;
