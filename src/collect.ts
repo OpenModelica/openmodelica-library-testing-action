@@ -72,9 +72,12 @@ export async function uploadArtifacts(
   const client = new artifact.DefaultArtifactClient()
   const runId = github.context.runId
 
-  const htmlFiles = await fs.promises.readdir(htmlArtifactsDir, {
+  let htmlFiles = await fs.promises.readdir(htmlArtifactsDir, {
     recursive: true
   })
+  for (let index = 0; index < htmlFiles.length; index++) {
+    htmlFiles[index] = path.resolve(path.join(htmlArtifactsDir, htmlFiles[index]))
+  }
 
   const htmlPromise = client.uploadArtifact(
     `${libraryName}-${runId}.html`,
