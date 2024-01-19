@@ -1,6 +1,7 @@
 # openmodelica-library-testing Action
 
 [![Continuous Integration](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml/badge.svg)][1]
+![TS test coverage](badges/coverage.svg)
 
 This GitHub action setups [OpenModelicaLibraryTesting][2]
 scripts and run them on a provided Modelica package and returns a summary of the

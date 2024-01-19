@@ -65,7 +65,7 @@ export async function run(): Promise<void> {
       core.getInput('reference-files-delimiter') !== ''
         ? core.getInput('reference-files-delimiter')
         : undefined
-    const pagesRootUrl = core.getInput('pages-root-url')
+    let pagesRootUrl = core.getInput('pages-root-url')
     const omcVersion = core.getInput('omc-version', { required: true })
 
     // TODO: Make sure OpenModelica and Python 3 are available
@@ -130,7 +130,10 @@ export async function run(): Promise<void> {
     } else {
       libNameBranch = `${packageName}_${packageVersion}`
     }
-    const resultsUrl = `${pagesRootUrl}/${omcVersion}/${libNameBranch}.html`
+    if (!pagesRootUrl.endsWith('/ ')) {
+      pagesRootUrl = `${pagesRootUrl}/`
+    }
+    const resultsUrl = `${pagesRootUrl}${omcVersion}/${libNameBranch}/${libNameBranch}.html`
     const [summary, actionOutputs] = await summaryFromHtmlFile(
       overviewFile,
       resultsUrl,
