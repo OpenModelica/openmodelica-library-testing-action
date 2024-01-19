@@ -37,7 +37,6 @@ function mockFileStructure(
   fs.writeFileSync(`${filesModelPrefix}.sim`, `${modelPrefix}.sim`)
   fs.writeFileSync(`${filesModelPrefix}.json`, `${modelPrefix}.json`)
 
-  fs.writeFileSync(path.join(dest, 'overview.html'), 'overview.html')
   fs.writeFileSync(
     path.join(dest, `${libraryName}_${libraryVersion}.html`),
     '${libraryName}_${libraryVersion}.html'
@@ -97,8 +96,6 @@ describe('collect.ts', () => {
         )
       )
     ).toBe(true)
-
-    expect(fs.existsSync(path.join(targetDir, 'index.html'))).toBe(true)
   })
 
   it('Upload artifacts', async () => {

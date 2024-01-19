@@ -185,8 +185,6 @@ describe('action', () => {
           path.join('html', 'master', 'MyLibrary_0.1.0', 'MyLibrary_0.1.0.html')
         )
       ).toBe(true)
-
-      expect(fs.existsSync(path.join('html', 'index.html'))).toBe(true)
     },
     10 * 60000 /* 10 minutes */
   )

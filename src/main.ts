@@ -121,9 +121,19 @@ export async function run(): Promise<void> {
       'OpenModelicaLibraryTesting',
       `${packageName}_${packageVersion}.html`
     )
+    let libNameBranch: string
+    if (packageVersion.endsWith('/merge')) {
+      libNameBranch = `${packageName}_dev-pr-${packageVersion.replace(
+        '/merge',
+        ''
+      )}`
+    } else {
+      libNameBranch = `${packageName}_${packageVersion}`
+    }
+    const resultsUrl = `${pagesRootUrl}/${omcVersion}/${libNameBranch}.html`
     const [summary, actionOutputs] = await summaryFromHtmlFile(
       overviewFile,
-      pagesRootUrl,
+      resultsUrl,
       referenceFilesDir !== undefined
     )
     await core.summary.addRaw(summary).write()

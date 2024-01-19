@@ -41,12 +41,6 @@ export function copyHtmlFilesSync(
     { recursive: true }
   )
 
-  // Copy overview
-  fs.cpSync(
-    path.join(omLibTestingDir, 'overview.html'),
-    path.join(targetDir, 'index.html')
-  )
-
   fs.cpSync(
     path.join(omLibTestingDir, `${libNameBranch}.html`),
     path.join(targetDir, branchOM, libNameBranch, `${libNameBranch}.html`)

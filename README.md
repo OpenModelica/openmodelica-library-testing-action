@@ -90,6 +90,7 @@ jobs:
           reference-files-dir: 'ReferenceFiles'
           reference-files-format: 'mat'
           reference-files-delimiter: '.'
+          pages-root-url: 'https://USERNAME.github.io/REPOSITORY/'
 ```
 
 ## Outputs
