@@ -11,20 +11,20 @@ The action will set output variables that can be checked if all test passed.
 
 ## Inputs
 
-### `package-name`
+### `library`
 
 Name of Modelica package to test.
 
-### `package-version`
+### `library-version`
 
-Version of the Modelica package `package-name` as specified in version
+Version of the Modelica package `library` as specified in version
 annotation.
 
 > [!NOTE]
 > Wrap numbers in `'` to ensure parsing them as strings and not a number.
 >
 > ```yml
-> package-version: '1.0'
+> library-version: '1.0'
 > ```
 
 ### `modelica-file`
@@ -46,7 +46,7 @@ Relative path (from git repository root) to reference files to compare
 simulation results to.\
 Default: `''`
 
-### `reference-files-format`
+### `reference-files-extension`
 
 File extension of result files.\
 Allowed values: `'mat'`, `'csv'`\
@@ -84,12 +84,12 @@ jobs:
 
       - uses: openmodelica-library-testing@v0.2.0
         with:
-          package-name: 'MyLibrary'
-          package-version: '2.2.0'
+          library: 'MyLibrary'
+          library-version: '2.2.0'
           modelica-file: 'MyLibrary/package.mo'
           omc-version: 'stable'
           reference-files-dir: 'ReferenceFiles'
-          reference-files-format: 'mat'
+          reference-files-extension: 'mat'
           reference-files-delimiter: '.'
           pages-root-url: 'https://USERNAME.github.io/REPOSITORY/'
 ```

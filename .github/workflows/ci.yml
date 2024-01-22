@@ -110,11 +110,11 @@ jobs:
         id: test-action
         uses: ./
         with:
-          package-name: MyLibrary
-          package-version: ${{ github.ref }}
+          library: MyLibrary
+          library-version: ${{ github.ref }}
           modelica-file: examples/MyLibrary/package.mo
           reference-files-dir: examples/ReferenceFiles
-          reference-files-format: csv
+          reference-files-extension: csv
           reference-files-delimiter: .
           omc-version: stable
           pages-root-url: 'https://anheuermann.github.io/openmodelica-library-testing-action/'

@@ -73,15 +73,15 @@ describe('action', () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string => {
         switch (name) {
-          case 'package-name':
+          case 'library':
             return 'MyLibrary'
-          case 'package-version':
+          case 'library-version':
             return '0.1.0'
           case 'modelica-file':
             return modelicaFile
           case 'reference-files-dir':
             return referenceRilesDir
-          case 'reference-files-format':
+          case 'reference-files-extension':
             return 'csv'
           case 'reference-files-delimiter':
             return '.'
