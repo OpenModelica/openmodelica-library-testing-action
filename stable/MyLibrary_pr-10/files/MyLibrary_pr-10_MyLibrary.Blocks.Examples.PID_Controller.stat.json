@@ -1,0 +1,1 @@
+{"parsing": 1.855064260000006, "frontend": 0.241537794, "backend": 0.02998368800000001, "simcode": 0.008276897999999998, "templates": 0.027537604, "build": 2.2438943680000136, "sim": 0.028608843999990086, "diff": {"time": 0.061097073000013324, "vars": ["spring.w_rel", "spring.phi_rel", "inertia1.w", "inertia1.phi"], "numCompared": 7}, "phase": 6, "exectime": 5.162907251999997}
