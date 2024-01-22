@@ -23,9 +23,6 @@ export function copyHtmlFilesSync(
     throw new Error('Empty library version string not allowed')
   }
 
-  if (libraryVersion.endsWith('/merge')) {
-    libraryVersion = `dev-pr-${libraryVersion.replace('/merge', '')}`
-  }
   const libNameBranch = `${libraryName}_${libraryVersion}`
 
   if (!fs.existsSync(path.join(targetDir, branchOM, libNameBranch))) {

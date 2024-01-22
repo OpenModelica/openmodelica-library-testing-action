@@ -68,6 +68,9 @@ export async function run(): Promise<void> {
     let pagesRootUrl = core.getInput('pages-root-url')
     const omcVersion = core.getInput('omc-version', { required: true })
 
+    // Sanitize packageVersion
+    packageVersion.replace('/', '-')
+
     // TODO: Make sure OpenModelica and Python 3 are available
 
     // Clone OpenModelicaLibraryTesting
@@ -88,7 +91,13 @@ export async function run(): Promise<void> {
         )}'`
       )
     }
-    const confFile = path.join('configs', `conf-${packageName}.json`)
+    const confFile = path.resolve(
+      path.join(
+        'OpenModelicaLibraryTesting',
+        'configs',
+        `conf-${packageName}.json`
+      )
+    )
     const config = {
       library: packageName,
       libraryVersion: packageVersion,
@@ -97,7 +106,7 @@ export async function run(): Promise<void> {
       referenceFileExtension: referenceFilesFormat,
       referenceFileNameDelimiter: referenceFilesDelimiter
     } as Configuration
-    genConfigFile(confFile, [config])
+    await genConfigFile(confFile, [config])
     core.info(
       `conf-${packageName}.json:\n\n${fs.readFileSync(confFile, 'utf-8')}`
     )
@@ -109,9 +118,12 @@ export async function run(): Promise<void> {
       await runPythonScript('test.py', [
         `--branch=${omcVersion}`,
         '--noclean',
-        confFile
+        path.join('configs', `conf-${packageName}.json`)
       ])
-      await runPythonScript('report.py', [`--branch=${omcVersion}`, confFile])
+      await runPythonScript('report.py', [
+        `--branch=${omcVersion}`,
+        path.join('configs', `conf-${packageName}.json`)
+      ])
       process.chdir(cwd)
     } catch (error) {
       process.chdir(cwd)
@@ -124,15 +136,7 @@ export async function run(): Promise<void> {
       'OpenModelicaLibraryTesting',
       `${packageName}_${packageVersion}.html`
     )
-    let libNameBranch: string
-    if (packageVersion.endsWith('/merge')) {
-      libNameBranch = `${packageName}_dev-pr-${packageVersion.replace(
-        '/merge',
-        ''
-      )}`
-    } else {
-      libNameBranch = `${packageName}_${packageVersion}`
-    }
+    const libNameBranch = `${packageName}_${packageVersion}`
     if (!pagesRootUrl.endsWith('/ ')) {
       pagesRootUrl = `${pagesRootUrl}/`
     }
@@ -188,5 +192,6 @@ export async function run(): Promise<void> {
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
+    throw error
   }
 }
