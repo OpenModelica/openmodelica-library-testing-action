@@ -57,8 +57,6 @@ export function copyHtmlFilesSync(
       'dygraph-combined.js'
     )
   )
-
-  console.log('In copyHtmlFilesSync 4')
 }
 
 /**

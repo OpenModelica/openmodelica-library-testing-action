@@ -53,9 +53,15 @@ describe('action', () => {
 
     jest.clearAllMocks()
 
-    debugMock = jest.spyOn(core, 'debug').mockImplementation()
-    infoMock = jest.spyOn(core, 'info').mockImplementation()
-    errorMock = jest.spyOn(core, 'error').mockImplementation()
+    debugMock = jest
+      .spyOn(core, 'debug')
+      .mockImplementation(msg => console.log(`::debug::${msg}`))
+    infoMock = jest
+      .spyOn(core, 'info')
+      .mockImplementation(msg => console.log(`::info::${msg}`))
+    errorMock = jest
+      .spyOn(core, 'error')
+      .mockImplementation(msg => console.log(`::error::${msg}`))
     getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
     setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
     setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
@@ -135,15 +141,16 @@ describe('action', () => {
       expect(setOutputMock).toHaveBeenCalledTimes(4)
 
       expect(infoMock).toHaveBeenNthCalledWith(
-        1,
+        2,
         `simulation-tests-passing: true`
       )
-      expect(infoMock).toHaveBeenNthCalledWith(2, `n-simulation-passing: 2`)
+      expect(infoMock).toHaveBeenNthCalledWith(3, `n-simulation-passing: 2`)
       expect(infoMock).toHaveBeenNthCalledWith(
-        3,
+        4,
         `verification-tests-passing: false`
       )
-      expect(infoMock).toHaveBeenNthCalledWith(4, `n-verification-passing: 1`)
+      expect(infoMock).toHaveBeenNthCalledWith(5, `n-verification-passing: 1`)
+      expect(infoMock).toHaveBeenCalledTimes(5)
 
       expect(errorMock).not.toHaveBeenCalled()
       expect(setFailedMock).not.toHaveBeenCalled()

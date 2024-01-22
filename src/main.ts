@@ -98,6 +98,9 @@ export async function run(): Promise<void> {
       referenceFileNameDelimiter: referenceFilesDelimiter
     } as Configuration
     genConfigFile(confFile, [config])
+    core.info(
+      `conf-${packageName}.json:\n\n${fs.readFileSync(confFile, 'utf-8')}`
+    )
 
     // Run OpenModelicaLibraryTesting scripts
     const cwd = process.cwd()
