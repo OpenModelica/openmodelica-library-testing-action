@@ -11,20 +11,28 @@ export interface ActionOutputs {
 }
 
 /**
- * Remove all links from td elements of table.
+ * Update all links from td elements of table.
  *
- * @param table HTML table
- * @returns     table without links
+ * @param table     HTML table
+ * @param rootUrl   Root URL to prepend all links with. If not set remove links instead.
+ * @returns         table without links
  */
-function removeHtmlLinks(
-  table: HTMLParser.HTMLElement
+function updateHtmlLinks(
+  table: HTMLParser.HTMLElement,
+  rootUrl?: string
 ): HTMLParser.HTMLElement {
   for (const td of table.querySelectorAll('td')) {
-    // Check if the <td> contains an <a> element
-    const linkElement = td.querySelector('a')
-    if (linkElement) {
-      // Replace the <a> element with its text content
-      td.set_content(linkElement.text)
+    for (const linkElement of td.querySelectorAll('a')) {
+      if (rootUrl) {
+        // Add rootUrl to the beginning of the href attribute
+        const href = linkElement.getAttribute('href')
+        if (href) {
+          linkElement.setAttribute('href', `${rootUrl}/${href}`)
+        }
+      } else {
+        // Replace the <a> element with its text content
+        td.set_content(td.text)
+      }
     }
   }
 
@@ -63,13 +71,16 @@ function parseStats(
  * Generate summary from HTML overview file.
  *
  * @param html                Content of overview.html.
- * @param pagesUrl            URL where GitHub pages are hosted.
+ * @param rootUrl             URL where GitHub pages are hosted, can be empty.
  * @param verificationTested  `true` if referenceFiles are available and verification should be tested.
  * @returns                   Array with markdown summary and action outputs.
  */
 export function summaryFromHtml(
   html: string,
-  pagesUrl: string,
+  rootUrl: string,
+  omcVersion: string,
+  library: string,
+  libraryVersion: string,
   verificationTested: boolean
 ): [string, ActionOutputs] {
   const root = HTMLParser.parse(html)
@@ -81,8 +92,28 @@ export function summaryFromHtml(
   })
   turndownService.use([turndownPluginGfm.gfm, turndownPluginGfm.tables])
 
-  // TODO: ensure that htmlTables has two elements and that they are the correct tables
-  const resultTable = removeHtmlLinks(htmlTables[1])
+  // Set HTML links to results
+  rootUrl = rootUrl.trim()
+  const addPagesLinks = rootUrl !== ''
+  if (addPagesLinks && rootUrl.endsWith('/')) {
+    rootUrl = rootUrl.slice(0, -1)
+  }
+  let resultTable: HTMLParser.HTMLElement
+  let resultsRootFile = ''
+
+  if (addPagesLinks) {
+    const libNameBranch = `${library}_${libraryVersion}`
+
+    resultsRootFile = `${rootUrl}/${omcVersion}/${libNameBranch}/${libNameBranch}.html`
+
+    // TODO: ensure that htmlTables has two elements and that they are the correct tables
+    resultTable = updateHtmlLinks(
+      htmlTables[1],
+      `${rootUrl}/${omcVersion}/${libNameBranch}`
+    )
+  } else {
+    resultTable = updateHtmlLinks(htmlTables[1])
+  }
 
   const coverage = turndownService.turndown(htmlTables[0].outerHTML)
   const results = turndownService.turndown(resultTable.outerHTML)
@@ -98,11 +129,11 @@ ${coverage}
 ${results}
 `
 
-  if (pagesUrl !== '') {
+  if (addPagesLinks) {
     summary += `
 ## Detailed report
 
-${pagesUrl}
+${resultsRootFile}
 `
   }
 
@@ -113,16 +144,26 @@ ${pagesUrl}
  * Generate summary from HTML overview file.
  *
  * @param htmlFile            Path to overview.html.
- * @param pagesUrl            URL where GitHub pages are hosted.
+ * @param rootUrl             URL where GitHub pages are hosted, can be empty.
  * @param verificationTested  `true` if referenceFiles are available and verification should be tested.
  * @returns                   Array with markdown summary and action outputs.
  */
 export async function summaryFromHtmlFile(
   htmlFile: string,
-  pagesUrl: string,
+  rootUrl: string,
+  omcVersion: string,
+  library: string,
+  libraryVersion: string,
   verificationTested: boolean
 ): Promise<[string, ActionOutputs]> {
   const html = await fsPromise.readFile(htmlFile, 'utf-8')
 
-  return summaryFromHtml(html, pagesUrl, verificationTested)
+  return summaryFromHtml(
+    html,
+    rootUrl,
+    omcVersion,
+    library,
+    libraryVersion,
+    verificationTested
+  )
 }

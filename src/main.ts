@@ -65,7 +65,7 @@ export async function run(): Promise<void> {
       core.getInput('reference-files-delimiter') !== ''
         ? core.getInput('reference-files-delimiter')
         : undefined
-    let pagesRootUrl = core.getInput('pages-root-url')
+    const pagesRootUrl = core.getInput('pages-root-url')
     const omcVersion = core.getInput('omc-version', { required: true })
 
     // Sanitize libraryVersion
@@ -135,14 +135,12 @@ export async function run(): Promise<void> {
       'OpenModelicaLibraryTesting',
       `${library}_${libraryVersion}.html`
     )
-    const libNameBranch = `${library}_${libraryVersion}`
-    if (!pagesRootUrl.endsWith('/ ')) {
-      pagesRootUrl = `${pagesRootUrl}/`
-    }
-    const resultsUrl = `${pagesRootUrl}${omcVersion}/${libNameBranch}/${libNameBranch}.html`
     const [summary, actionOutputs] = await summaryFromHtmlFile(
       overviewFile,
-      resultsUrl,
+      pagesRootUrl,
+      omcVersion,
+      library,
+      libraryVersion,
       referenceFiles !== undefined
     )
     await core.summary.addRaw(summary).write()

@@ -93,12 +93,12 @@ const markdownSummary = `## Summary
 
 | Model | Verified | Simulate | Total buildModel | Parsing | Frontend | Backend | SimCode | Templates | Compile |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| MyLibrary.Blocks.Examples.PID\\_Controller | 4/7 failed | 0.02 | 1.52 | 1.96 | 0.08 | 0.20 | 0.01 | 0.02 | 1.20 |
-| MyLibrary.Mechanics.MultiBody.Examples.Pendulum | 0.01 (3 verified) | 0.06 | 2.32 | 1.95 | 0.29 | 0.22 | 0.03 | 0.06 | 1.72 |
+| [MyLibrary.Blocks.Examples.PID\\_Controller](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.err) ([sim](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.sim)) | 0.05 ([4/7 failed](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.diff.html)) | 0.02 | 1.52 | 1.96 | 0.08 | 0.20 | 0.01 | 0.02 | 1.20 |
+| [MyLibrary.Mechanics.MultiBody.Examples.Pendulum](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err) ([sim](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim)) | 0.01 (3 verified) | 0.06 | 2.32 | 1.95 | 0.29 | 0.22 | 0.03 | 0.06 | 1.72 |
 
 ## Detailed report
 
-https://not/a/valid/url
+https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/MyLibrary_pr-8.html
 `
 
 describe('summary.ts', () => {
@@ -109,7 +109,10 @@ describe('summary.ts', () => {
     fs.writeFileSync(libOverviewFile, htmlLibOverview)
     const [summary, outputs] = await summaryFromHtmlFile(
       libOverviewFile,
-      'https://not/a/valid/url',
+      'https://USERNAME.github.io/REPOSITORY/',
+      'stable',
+      'MyLibrary',
+      'pr-8',
       true
     )
     expect(summary).toEqual(markdownSummary)

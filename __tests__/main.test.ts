@@ -159,7 +159,7 @@ describe('action', () => {
       const summaryContent = fs.readFileSync(gitHubStepSummaryFile, 'utf-8')
       expect(summaryContent).toContain(mdCoverageTable)
       expect(summaryContent).toContain(
-        'MyLibrary.Blocks.Examples.PID\\_Controller | 4/7 failed'
+        '| [MyLibrary.Blocks.Examples.PID\\_Controller](https://USERNAME.github.io/REPOSITORY/master/MyLibrary_pr-123/files/MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.err) ([sim](https://USERNAME.github.io/REPOSITORY/master/MyLibrary_pr-123/files/MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.sim)) | 0.06 ([4/7 failed](https://USERNAME.github.io/REPOSITORY/master/MyLibrary_pr-123/files/MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.html))'
       )
 
       // Verify html/ dir
