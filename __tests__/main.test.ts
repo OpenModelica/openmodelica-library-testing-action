@@ -76,7 +76,7 @@ describe('action', () => {
           case 'library':
             return 'MyLibrary'
           case 'library-version':
-            return '0.1.0'
+            return 'refs/pull/123/merge'
           case 'modelica-file':
             return modelicaFile
           case 'reference-files-dir':
@@ -164,32 +164,37 @@ describe('action', () => {
 
       // Verify html/ dir
       const files = fs.readdirSync(
-        path.join('html', 'master', 'MyLibrary_0.1.0', 'files')
+        path.join('html', 'master', 'MyLibrary_pr-123', 'files')
       )
       expect(files.sort()).toEqual([
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.cmdout',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.html',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.phi.csv',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.phi.html',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.w.csv',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.w.html',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.phi_rel.csv',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.phi_rel.html',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.w_rel.csv',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.w_rel.html',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.err',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.sim',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.stat.json',
-        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.cmdout',
-        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err',
-        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim',
-        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.stat.json',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.cmdout',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.html',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.phi.csv',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.phi.html',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.w.csv',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.w.html',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.phi_rel.csv',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.phi_rel.html',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.w_rel.csv',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.w_rel.html',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.err',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.sim',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.stat.json',
+        'MyLibrary_pr-123_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.cmdout',
+        'MyLibrary_pr-123_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err',
+        'MyLibrary_pr-123_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim',
+        'MyLibrary_pr-123_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.stat.json',
         'dygraph-combined.js'
       ])
 
       expect(
         fs.existsSync(
-          path.join('html', 'master', 'MyLibrary_0.1.0', 'MyLibrary_0.1.0.html')
+          path.join(
+            'html',
+            'master',
+            'MyLibrary_pr-123',
+            'MyLibrary_pr-123.html'
+          )
         )
       ).toBe(true)
     },

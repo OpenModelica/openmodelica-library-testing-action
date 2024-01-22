@@ -49,7 +49,7 @@ export async function run(): Promise<void> {
     // Get inputs
     core.debug('Get inputs') // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
     const library = core.getInput('library', { required: true })
-    const libraryVersion = core.getInput('library-version', { required: true })
+    let libraryVersion = core.getInput('library-version', { required: true })
     const modelicaFile = path.resolve(
       core.getInput('modelica-file', { required: true })
     )
@@ -69,8 +69,12 @@ export async function run(): Promise<void> {
     const omcVersion = core.getInput('omc-version', { required: true })
 
     // Sanitize libraryVersion
-    libraryVersion.replace('refs/', '')
-    libraryVersion.replace('/', '-')
+    libraryVersion = libraryVersion
+      .replace('refs/', '')
+      .replace('pull/', 'pr-')
+      .replaceAll('/merge', '')
+      .replaceAll('/', '-')
+    console.log(libraryVersion)
 
     // TODO: Make sure OpenModelica and Python 3 are available
 
