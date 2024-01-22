@@ -53,9 +53,15 @@ describe('action', () => {
 
     jest.clearAllMocks()
 
-    debugMock = jest.spyOn(core, 'debug').mockImplementation()
-    infoMock = jest.spyOn(core, 'info').mockImplementation()
-    errorMock = jest.spyOn(core, 'error').mockImplementation()
+    debugMock = jest
+      .spyOn(core, 'debug')
+      .mockImplementation(msg => console.log(`::debug::${msg}`))
+    infoMock = jest
+      .spyOn(core, 'info')
+      .mockImplementation(msg => console.log(`::info::${msg}`))
+    errorMock = jest
+      .spyOn(core, 'error')
+      .mockImplementation(msg => console.log(`::error::${msg}`))
     getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
     setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
     setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
@@ -67,20 +73,22 @@ describe('action', () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string => {
         switch (name) {
-          case 'package-name':
+          case 'library':
             return 'MyLibrary'
-          case 'package-version':
-            return '0.1.0'
+          case 'library-version':
+            return 'refs/pull/123/merge'
           case 'modelica-file':
             return modelicaFile
           case 'reference-files-dir':
             return referenceRilesDir
-          case 'reference-files-format':
+          case 'reference-files-extension':
             return 'csv'
           case 'reference-files-delimiter':
             return '.'
           case 'omc-version':
             return 'master'
+          case 'pages-root-url':
+            return 'https://USERNAME.github.io/REPOSITORY/'
           default:
             return ''
         }
@@ -90,7 +98,6 @@ describe('action', () => {
       expect(runMock).toHaveReturned()
 
       // Verify that all of the core library functions were called correctly
-      expect(debugMock).toHaveBeenCalledTimes(12)
       expect(debugMock).toHaveBeenNthCalledWith(1, 'Get inputs')
       expect(debugMock).toHaveBeenNthCalledWith(
         2,
@@ -109,8 +116,8 @@ describe('action', () => {
       expect(debugMock).toHaveBeenNthCalledWith(10, 'Set outputs')
       expect(debugMock).toHaveBeenNthCalledWith(11, 'Collect HTML outputs')
       expect(debugMock).toHaveBeenNthCalledWith(12, 'Upload artifacts')
+      expect(debugMock).toHaveBeenCalledTimes(12)
 
-      expect(setOutputMock).toHaveBeenCalledTimes(4)
       expect(setOutputMock).toHaveBeenNthCalledWith(
         1,
         'simulation-tests-passing',
@@ -131,17 +138,19 @@ describe('action', () => {
         'n-verification-passing',
         1
       )
+      expect(setOutputMock).toHaveBeenCalledTimes(4)
 
       expect(infoMock).toHaveBeenNthCalledWith(
-        1,
+        2,
         `simulation-tests-passing: true`
       )
-      expect(infoMock).toHaveBeenNthCalledWith(2, `n-simulation-passing: 2`)
+      expect(infoMock).toHaveBeenNthCalledWith(3, `n-simulation-passing: 2`)
       expect(infoMock).toHaveBeenNthCalledWith(
-        3,
+        4,
         `verification-tests-passing: false`
       )
-      expect(infoMock).toHaveBeenNthCalledWith(4, `n-verification-passing: 1`)
+      expect(infoMock).toHaveBeenNthCalledWith(5, `n-verification-passing: 1`)
+      expect(infoMock).toHaveBeenCalledTimes(5)
 
       expect(errorMock).not.toHaveBeenCalled()
       expect(setFailedMock).not.toHaveBeenCalled()
@@ -155,36 +164,39 @@ describe('action', () => {
 
       // Verify html/ dir
       const files = fs.readdirSync(
-        path.join('html', 'master', 'MyLibrary_0.1.0', 'files')
+        path.join('html', 'master', 'MyLibrary_pr-123', 'files')
       )
       expect(files.sort()).toEqual([
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.cmdout',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.html',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.phi.csv',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.phi.html',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.w.csv',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.w.html',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.phi_rel.csv',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.phi_rel.html',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.w_rel.csv',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.w_rel.html',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.err',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.sim',
-        'MyLibrary_0.1.0_MyLibrary.Blocks.Examples.PID_Controller.stat.json',
-        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.cmdout',
-        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err',
-        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim',
-        'MyLibrary_0.1.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.stat.json',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.cmdout',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.html',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.phi.csv',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.phi.html',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.w.csv',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.inertia1.w.html',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.phi_rel.csv',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.phi_rel.html',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.w_rel.csv',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.spring.w_rel.html',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.err',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.sim',
+        'MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.stat.json',
+        'MyLibrary_pr-123_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.cmdout',
+        'MyLibrary_pr-123_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err',
+        'MyLibrary_pr-123_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim',
+        'MyLibrary_pr-123_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.stat.json',
         'dygraph-combined.js'
       ])
 
       expect(
         fs.existsSync(
-          path.join('html', 'master', 'MyLibrary_0.1.0', 'MyLibrary_0.1.0.html')
+          path.join(
+            'html',
+            'master',
+            'MyLibrary_pr-123',
+            'MyLibrary_pr-123.html'
+          )
         )
       ).toBe(true)
-
-      expect(fs.existsSync(path.join('html', 'index.html'))).toBe(true)
     },
     10 * 60000 /* 10 minutes */
   )

@@ -4,10 +4,10 @@ author: 'Andreas Heuermann'
 
 # Action inputs
 inputs:
-  package-name:
+  library:
     description: 'Name of Modelica package to test.'
     required: true
-  package-version:
+  library-version:
     description: 'Version of Modelica package to test.'
     required: true
   modelica-file:
@@ -21,7 +21,7 @@ inputs:
   reference-files-dir:
     description: 'Path to reference files'
     required: false
-  reference-files-format:
+  reference-files-extension:
     description: 'File extension of result files. Allowed values are "mat" and "csv".'
     required: false
     default: 'mat'
@@ -29,6 +29,8 @@ inputs:
     description: 'Character to separate model names in reference files. E.g. for Modelica.Blocks.Examples.PID_Controller.mat it would be "."'
     required: false
     default: '.'
+  pages-root-url:
+    description: 'Root url GitHub Pages deploys to, e.g. https://<GitHub User>.github.io/<Repository>'
 
 # Action outputs
 outputs:

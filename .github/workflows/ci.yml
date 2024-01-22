@@ -25,11 +25,16 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-          cache: pip            # caching pip dependencies
 
       - name: Update pip
         run: |
           pip install --upgrade pip
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
 
       - name: Setup OpenModelica
         uses: AnHeuermann/setup-openmodelica@v0.7
@@ -80,11 +85,16 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-          cache: pip            # caching pip dependencies
 
       - name: Update pip
         run: |
           pip install --upgrade pip
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
 
       - name: Setup OpenModelica
         uses: AnHeuermann/setup-openmodelica@v0.7
@@ -100,13 +110,14 @@ jobs:
         id: test-action
         uses: ./
         with:
-          package-name: MyLibrary
-          package-version: '1.0.0'
+          library: MyLibrary
+          library-version: ${{ github.ref }}
           modelica-file: examples/MyLibrary/package.mo
           reference-files-dir: examples/ReferenceFiles
-          reference-files-format: csv
+          reference-files-extension: csv
           reference-files-delimiter: .
           omc-version: stable
+          pages-root-url: 'https://anheuermann.github.io/openmodelica-library-testing-action/'
 
       - name: Verify action results
         shell: bash
@@ -119,3 +130,28 @@ jobs:
           else
             exit 1;
           fi
+
+  deploy:
+    needs: test-action
+    permissions:
+      contents: write
+    if: ${{ always() }}
+    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get HTML artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: html-artifacts/
+          pattern: '*.html'
+          merge-multiple: true
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: html-artifacts/
+          branch: gh-pages

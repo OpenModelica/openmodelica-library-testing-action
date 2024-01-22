@@ -19,6 +19,10 @@ export function copyHtmlFilesSync(
   omLibTestingDir: string,
   targetDir: string
 ): void {
+  if (libraryVersion === '') {
+    throw new Error('Empty library version string not allowed')
+  }
+
   const libNameBranch = `${libraryName}_${libraryVersion}`
 
   if (!fs.existsSync(path.join(targetDir, branchOM, libNameBranch))) {
@@ -32,12 +36,6 @@ export function copyHtmlFilesSync(
     path.join(omLibTestingDir, 'files'),
     path.join(targetDir, branchOM, libNameBranch, 'files'),
     { recursive: true }
-  )
-
-  // Copy overview
-  fs.cpSync(
-    path.join(omLibTestingDir, 'overview.html'),
-    path.join(targetDir, 'index.html')
   )
 
   fs.cpSync(
@@ -104,15 +102,17 @@ async function getAllAbsoluteFileNames(
 export async function uploadArtifacts(
   libraryName: string,
   sqlFile: string,
-  htmlArtifactsDir: string
+  htmlArtifactsDir: string,
+  omcVersion: string
 ): Promise<[artifact.UploadArtifactResponse, artifact.UploadArtifactResponse]> {
   const client = new artifact.DefaultArtifactClient()
   const runId = github.context.runId
+  const jobId = github.context.job
 
   const htmlFiles = await getAllAbsoluteFileNames(htmlArtifactsDir)
 
   const htmlPromise = client.uploadArtifact(
-    `${libraryName}-${runId}.html`,
+    `${omcVersion}-${libraryName}-${runId}-${jobId}.html`,
     htmlFiles,
     htmlArtifactsDir
   )

@@ -1,6 +1,7 @@
 # openmodelica-library-testing Action
 
 [![Continuous Integration](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml/badge.svg)][1]
+![TS test coverage](badges/coverage.svg)
 
 This GitHub action setups [OpenModelicaLibraryTesting][2]
 scripts and run them on a provided Modelica package and returns a summary of the
@@ -10,20 +11,20 @@ The action will set output variables that can be checked if all test passed.
 
 ## Inputs
 
-### `package-name`
+### `library`
 
 Name of Modelica package to test.
 
-### `package-version`
+### `library-version`
 
-Version of the Modelica package `package-name` as specified in version
+Version of the Modelica package `library` as specified in version
 annotation.
 
 > [!NOTE]
 > Wrap numbers in `'` to ensure parsing them as strings and not a number.
 >
 > ```yml
-> package-version: '1.0'
+> library-version: '1.0'
 > ```
 
 ### `modelica-file`
@@ -45,7 +46,7 @@ Relative path (from git repository root) to reference files to compare
 simulation results to.\
 Default: `''`
 
-### `reference-files-format`
+### `reference-files-extension`
 
 File extension of result files.\
 Allowed values: `'mat'`, `'csv'`\
@@ -63,15 +64,13 @@ Default: `'.'`
 jobs:
   library-testing:
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Setup Python 3
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-          cache: pip            # caching pip dependencies
-
-      - name: Update pip
-        run: |
-          pip install --upgrade pip
 
       - name: Setup OpenModelica
         uses: AnHeuermann/setup-openmodelica@v0.7
@@ -84,18 +83,15 @@ jobs:
           omc-diff: true
 
       - uses: openmodelica-library-testing@v0.2.0
-        id: library-testing
         with:
-          package-name: 'MyLibrary'
-          package-version: '2.2.0'
+          library: 'MyLibrary'
+          library-version: '2.2.0'
           modelica-file: 'MyLibrary/package.mo'
           omc-version: 'stable'
           reference-files-dir: 'ReferenceFiles'
-          reference-files-format: 'mat'
+          reference-files-extension: 'mat'
           reference-files-delimiter: '.'
-          publish-gh-pages: true
-          gh-pages-ref: gh-pages
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          pages-root-url: 'https://USERNAME.github.io/REPOSITORY/'
 ```
 
 ## Outputs
@@ -137,8 +133,6 @@ Number of successful verification tests.
 
 ### HTML Results
 
-#### GitHub Pages
-
 Download the `MyLibrary.html.zip` artifact, unzip it and start a HTML server to
 display the results. This can be used to host results on a server or GitHub
 pages.
@@ -146,6 +140,42 @@ pages.
 ```bash
 unzip MyLibrary.html.zip -d html
 python3 -m http.server -d html
+```
+
+#### GitHub Pages
+
+It's possible to deploy the test results to GitHub pages. On option
+
+```yml
+# [...]
+jobs:
+  library-testing:
+    # [...]
+
+  deploy:
+    needs: library-testing
+    permissions:
+      contents: write
+    if: ${{ always() }}
+    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get HTML artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: html/
+          pattern: '*.html'
+          merge-multiple: true
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: html/
+          branch: gh-pages
 ```
 
 ### SQlite
