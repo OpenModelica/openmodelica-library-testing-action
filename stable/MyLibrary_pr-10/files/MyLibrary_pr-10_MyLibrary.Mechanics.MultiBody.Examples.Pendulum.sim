@@ -8,17 +8,17 @@ Regular simulation: ./MyLibrary_pr-10_MyLibrary.Mechanics.MultiBody.Examples.Pen
 LOG_SUCCESS       | info    | The initialization finished successfully without homotopy method.
 LOG_STATS         | info    | ### STATISTICS ###
 |                 | |       | | timer
-|                 | |       | | |    0.0129104s          reading init.xml
-|                 | |       | | |   0.00118181s          reading info.xml
-|                 | |       | | |  0.000251038s [  0.2%] pre-initialization
-|                 | |       | | |     0.134849s [ 81.1%] initialization
-|                 | |       | | |    4.699e-06s [  0.0%] steps
-|                 | |       | | |  0.000558709s [  0.3%] solver (excl. callbacks)
-|                 | |       | | |    0.0036062s [  2.2%] creating output-file
+|                 | |       | | |     0.012778s          reading init.xml
+|                 | |       | | |    0.0013069s          reading info.xml
+|                 | |       | | |  0.000237082s [  0.2%] pre-initialization
+|                 | |       | | |    0.0971754s [ 75.6%] initialization
+|                 | |       | | |    4.718e-06s [  0.0%] steps
+|                 | |       | | |   0.00056978s [  0.4%] solver (excl. callbacks)
+|                 | |       | | |   0.00346398s [  2.7%] creating output-file
 |                 | |       | | |            0s [  0.0%] event-handling
-|                 | |       | | |   0.00145136s [  0.9%] overhead
-|                 | |       | | |    0.0255974s [ 15.4%] simulation
-|                 | |       | | |     0.166373s [100.0%] total
+|                 | |       | | |   0.00142688s [  1.1%] overhead
+|                 | |       | | |    0.0255768s [ 19.9%] simulation
+|                 | |       | | |      0.12851s [100.0%] total
 |                 | |       | | events
 |                 | |       | | |     0 state events
 |                 | |       | | |     0 time events
@@ -28,5 +28,5 @@ LOG_STATS         | info    | ### STATISTICS ###
 |                 | |       | | |    20 evaluations of jacobian
 |                 | |       | | |     2 error test failures
 |                 | |       | | |     0 convergence test failures
-|                 | |       | | | 2.89073e-05s time of jacobian evaluation
+|                 | |       | | | 3.4565e-05s time of jacobian evaluation
 LOG_SUCCESS       | info    | The simulation finished successfully.
