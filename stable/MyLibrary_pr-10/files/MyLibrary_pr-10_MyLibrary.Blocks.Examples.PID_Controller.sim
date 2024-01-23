@@ -8,17 +8,17 @@ Regular simulation: ./MyLibrary_pr-10_MyLibrary.Blocks.Examples.PID_Controller  
 LOG_SUCCESS       | info    | The initialization finished successfully with 3 homotopy steps.
 LOG_STATS         | info    | ### STATISTICS ###
 |                 | |       | | timer
-|                 | |       | | |   0.00241156s          reading init.xml
-|                 | |       | | |  0.000242994s          reading info.xml
-|                 | |       | | |  0.000304638s [  3.5%] pre-initialization
-|                 | |       | | |  0.000117099s [  1.4%] initialization
-|                 | |       | | |     9.12e-07s [  0.0%] steps
-|                 | |       | | |   0.00131777s [ 15.2%] solver (excl. callbacks)
-|                 | |       | | |   0.00126622s [ 14.6%] creating output-file
-|                 | |       | | |   0.00058324s [  6.7%] event-handling
-|                 | |       | | |    0.0005415s [  6.3%] overhead
-|                 | |       | | |   0.00452024s [ 52.2%] simulation
-|                 | |       | | |   0.00865162s [100.0%] total
+|                 | |       | | |   0.00218842s          reading init.xml
+|                 | |       | | |   0.00023098s          reading info.xml
+|                 | |       | | |  0.000233956s [  2.8%] pre-initialization
+|                 | |       | | |   8.3746e-05s [  1.0%] initialization
+|                 | |       | | |     9.22e-07s [  0.0%] steps
+|                 | |       | | |    0.0013545s [ 15.9%] solver (excl. callbacks)
+|                 | |       | | |   0.00122954s [ 14.5%] creating output-file
+|                 | |       | | |  0.000605607s [  7.1%] event-handling
+|                 | |       | | |  0.000637417s [  7.5%] overhead
+|                 | |       | | |   0.00435892s [ 51.3%] simulation
+|                 | |       | | |   0.00850461s [100.0%] total
 |                 | |       | | events
 |                 | |       | | |     5 state events
 |                 | |       | | |     0 time events
@@ -28,5 +28,5 @@ LOG_STATS         | info    | ### STATISTICS ###
 |                 | |       | | |   122 evaluations of jacobian
 |                 | |       | | |    19 error test failures
 |                 | |       | | |     0 convergence test failures
-|                 | |       | | | 0.000202828s time of jacobian evaluation
+|                 | |       | | | 0.000206733s time of jacobian evaluation
 LOG_SUCCESS       | info    | The simulation finished successfully.
