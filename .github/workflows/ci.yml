@@ -118,6 +118,7 @@ jobs:
           reference-files-delimiter: .
           omc-version: stable
           pages-root-url: 'https://anheuermann.github.io/openmodelica-library-testing-action/'
+          allow-failing-tests: true
 
       - name: Verify action results
         if: ${{ always() }}
