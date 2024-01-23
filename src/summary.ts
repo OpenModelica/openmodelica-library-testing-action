@@ -1,13 +1,60 @@
+import * as core from '@actions/core'
 import * as fsPromise from 'fs/promises'
 import * as HTMLParser from 'node-html-parser'
 import TurndownService from 'turndown'
 import * as turndownPluginGfm from 'turndown-plugin-gfm'
 
-export interface ActionOutputs {
+export interface ActionOutputsInterface {
   simulationTestsPassing: boolean
   nSimulationPassing: number
   verificationTestsPassing: boolean
   nVerificationPassing: number
+}
+
+class ActionOutputs implements ActionOutputsInterface {
+  simulationTestsPassing: boolean
+  nSimulationPassing: number
+  verificationTestsPassing: boolean
+  nVerificationPassing: number
+
+  constructor(outputs: ActionOutputsInterface) {
+    this.simulationTestsPassing = outputs.simulationTestsPassing
+    this.nSimulationPassing = outputs.nSimulationPassing
+    this.verificationTestsPassing = outputs.verificationTestsPassing
+    this.nVerificationPassing = outputs.nVerificationPassing
+  }
+
+  /**
+   * Set GitHub outputs.
+   */
+  setOutputs(): void {
+    core.setOutput('simulation-tests-passing', this.simulationTestsPassing)
+    core.setOutput('n-simulation-passing', this.nSimulationPassing)
+    core.setOutput('verification-tests-passing', this.verificationTestsPassing)
+    core.setOutput('n-verification-passing', this.nVerificationPassing)
+  }
+
+  /**
+   * Print outputs to GitHub info.
+   */
+  printInfo(): void {
+    core.info(`simulation-tests-passing: ${this.simulationTestsPassing}`)
+    core.info(`n-simulation-passing: ${this.nSimulationPassing}`)
+    core.info(`verification-tests-passing: ${this.verificationTestsPassing}`)
+    core.info(`n-verification-passing: ${this.nVerificationPassing}`)
+  }
+
+  setStatus(): void {
+    if (!this.simulationTestsPassing) {
+      core.setFailed('Simulation tests failed.')
+      return
+    }
+    if (!this.verificationTestsPassing) {
+      core.setFailed('Verification tests failed.')
+      return
+    }
+    return
+  }
 }
 
 /**
@@ -56,13 +103,13 @@ function parseStats(
   const simulated = Number(rows[1].getElementsByTagName('td')[6].text)
   const verified = Number(rows[1].getElementsByTagName('td')[7].text)
 
-  const outputs = {
+  const outputs = new ActionOutputs({
     simulationTestsPassing: total === simulated,
     nSimulationPassing: simulated,
     verificationTestsPassing:
       !verificationTested || (verificationTested && total === verified),
     nVerificationPassing: verified
-  } as ActionOutputs
+  })
 
   return outputs
 }

@@ -40,6 +40,24 @@ async function runPythonScript(
 }
 
 /**
+ * Return sanitized copy of string by removing all `/`.
+ *
+ * Useful for versions that are GitHub references.
+ *   - Replace 'pull/' with 'pr'
+ *   - Remove 'refs/' and 'merge/'
+ *
+ * @param version Version string
+ * @returns Sanitized version string
+ */
+function sanitize(version: string): string {
+  return version
+    .replace('refs/', '')
+    .replace('pull/', 'pr-')
+    .replaceAll('/merge', '')
+    .replaceAll('/', '-')
+}
+
+/**
  * The main function for the action.
  *
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -49,7 +67,9 @@ export async function run(): Promise<void> {
     // Get inputs
     core.debug('Get inputs') // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
     const library = core.getInput('library', { required: true })
-    let libraryVersion = core.getInput('library-version', { required: true })
+    const libraryVersion = sanitize(
+      core.getInput('library-version', { required: true })
+    )
     const modelicaFile = path.resolve(
       core.getInput('modelica-file', { required: true })
     )
@@ -67,14 +87,6 @@ export async function run(): Promise<void> {
         : undefined
     const pagesRootUrl = core.getInput('pages-root-url')
     const omcVersion = core.getInput('omc-version', { required: true })
-
-    // Sanitize libraryVersion
-    libraryVersion = libraryVersion
-      .replace('refs/', '')
-      .replace('pull/', 'pr-')
-      .replaceAll('/merge', '')
-      .replaceAll('/', '-')
-    console.log(libraryVersion)
 
     // TODO: Make sure OpenModelica and Python 3 are available
 
@@ -145,27 +157,10 @@ export async function run(): Promise<void> {
     )
     await core.summary.addRaw(summary).write()
 
-    // Set outputs
     core.debug('Set outputs')
-    core.setOutput(
-      'simulation-tests-passing',
-      actionOutputs.simulationTestsPassing
-    )
-    core.setOutput('n-simulation-passing', actionOutputs.nSimulationPassing)
-    core.setOutput(
-      'verification-tests-passing',
-      actionOutputs.verificationTestsPassing
-    )
-    core.setOutput('n-verification-passing', actionOutputs.nVerificationPassing)
-
-    core.info(
-      `simulation-tests-passing: ${actionOutputs.simulationTestsPassing}`
-    )
-    core.info(`n-simulation-passing: ${actionOutputs.nSimulationPassing}`)
-    core.info(
-      `verification-tests-passing: ${actionOutputs.verificationTestsPassing}`
-    )
-    core.info(`n-verification-passing: ${actionOutputs.nVerificationPassing}`)
+    actionOutputs.setOutputs()
+    actionOutputs.printInfo()
+    actionOutputs.setStatus()
 
     // Collect HTML files
     core.debug('Collect HTML outputs')

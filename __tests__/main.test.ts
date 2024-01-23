@@ -153,7 +153,7 @@ describe('action', () => {
       expect(infoMock).toHaveBeenCalledTimes(5)
 
       expect(errorMock).not.toHaveBeenCalled()
-      expect(setFailedMock).not.toHaveBeenCalled()
+      expect(setFailedMock).toHaveBeenCalledTimes(1)
 
       // Verify summary file
       const summaryContent = fs.readFileSync(gitHubStepSummaryFile, 'utf-8')

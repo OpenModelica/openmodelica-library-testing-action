@@ -7,7 +7,8 @@ This GitHub action setups [OpenModelicaLibraryTesting][2]
 scripts and run them on a provided Modelica package and returns a summary of the
 test report.
 
-The action will set output variables that can be checked if all test passed.
+The action will set output variables that can be checked how many tests passed
+simulation and verification. It will fail if at least one test is failing.
 
 ## Inputs
 
@@ -96,22 +97,8 @@ jobs:
 
 ## Outputs
 
-The action will not fail if test fail but will return variables that can be
-checked in an additional step in your workflow.
-
-```yml
-  - name: Check test results
-    shell: bash
-    run: |
-      echo "simulation-tests-passing: ${{ steps.library-testing.outputs.simulation-tests-passing }}"
-      echo "verification-tests-passing: ${{ steps.library-testing.outputs.verification-tests-passing }}"
-
-      if [ "${{ steps.library-testing.outputs.verification-tests-passing }}" == "True" ]; then
-        exit 0;
-      else
-        exit 1;
-      fi
-```
+The action will fail if one test fails. In addition the following outputs can be
+used to determine the testing results.
 
 ## `simulation-tests-passing`
 

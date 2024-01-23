@@ -4,7 +4,7 @@
 
 import * as fs from 'fs'
 import { expect } from '@jest/globals'
-import { summaryFromHtmlFile, ActionOutputs } from '../src/summary'
+import { summaryFromHtmlFile, ActionOutputsInterface } from '../src/summary'
 
 const htmlLibOverview = `<!DOCTYPE html>
 <html>
@@ -121,6 +121,6 @@ describe('summary.ts', () => {
       nSimulationPassing: 2,
       verificationTestsPassing: false,
       nVerificationPassing: 1
-    } as ActionOutputs)
+    } as ActionOutputsInterface)
   })
 })
