@@ -1,5 +1,5 @@
-import * as path from 'path'
 import * as fs from 'fs'
+import * as path from 'path'
 import * as child_process from 'child_process'
 import * as core from '@actions/core'
 
@@ -7,6 +7,7 @@ import { cloneScripts } from './clone'
 import { copyHtmlFilesSync, uploadArtifacts } from './collect'
 import { Configuration, genConfigFile } from './config'
 import { installPythonDeps } from './installdeps'
+import { ActionInputs } from './inputs'
 import { summaryFromHtmlFile } from './summary'
 
 /**
@@ -48,33 +49,7 @@ export async function run(): Promise<void> {
   try {
     // Get inputs
     core.debug('Get inputs') // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    const library = core.getInput('library', { required: true })
-    let libraryVersion = core.getInput('library-version', { required: true })
-    const modelicaFile = path.resolve(
-      core.getInput('modelica-file', { required: true })
-    )
-    const referenceFiles =
-      core.getInput('reference-files-dir') !== ''
-        ? path.resolve(core.getInput('reference-files-dir'))
-        : undefined
-    const referenceFileExtension =
-      core.getInput('reference-files-extension') !== ''
-        ? core.getInput('reference-files-extension')
-        : undefined
-    const referenceFileDelimiter =
-      core.getInput('reference-files-delimiter') !== ''
-        ? core.getInput('reference-files-delimiter')
-        : undefined
-    let pagesRootUrl = core.getInput('pages-root-url')
-    const omcVersion = core.getInput('omc-version', { required: true })
-
-    // Sanitize libraryVersion
-    libraryVersion = libraryVersion
-      .replace('refs/', '')
-      .replace('pull/', 'pr-')
-      .replaceAll('/merge', '')
-      .replaceAll('/', '-')
-    console.log(libraryVersion)
+    const inputs = ActionInputs.newFromGitHub()
 
     // TODO: Make sure OpenModelica and Python 3 are available
 
@@ -89,39 +64,38 @@ export async function run(): Promise<void> {
 
     // Generate config
     core.debug('Generating configuration')
-    if (!fs.existsSync(modelicaFile)) {
-      throw new Error(
-        `Can't find file '${modelicaFile}' from input modelica-file: '${core.getInput(
-          'modelica-file'
-        )}'`
-      )
-    }
     const confFile = path.resolve(
-      path.join('OpenModelicaLibraryTesting', 'configs', `conf-${library}.json`)
+      path.join(
+        'OpenModelicaLibraryTesting',
+        'configs',
+        `conf-${inputs.library}.json`
+      )
     )
     const config = {
-      library,
-      libraryVersion,
-      loadFileCommands: [`loadFile("${modelicaFile}")`],
-      referenceFiles,
-      referenceFileExtension,
-      referenceFileDelimiter
+      library: inputs.library,
+      libraryVersion: inputs.libraryVersion,
+      loadFileCommands: [`loadFile("${inputs.modelicaFile}")`],
+      referenceFiles: inputs.referenceFilesDir,
+      referenceFileExtension: inputs.referenceFileExtension,
+      referenceFileDelimiter: inputs.referenceFileDelimiter
     } as Configuration
     await genConfigFile(confFile, [config])
-    core.info(`conf-${library}.json:\n\n${fs.readFileSync(confFile, 'utf-8')}`)
+    core.info(
+      `conf-${inputs.library}.json:\n\n${fs.readFileSync(confFile, 'utf-8')}`
+    )
 
     // Run OpenModelicaLibraryTesting scripts
     const cwd = process.cwd()
     try {
       process.chdir('OpenModelicaLibraryTesting')
       await runPythonScript('test.py', [
-        `--branch=${omcVersion}`,
+        `--branch=${inputs.omcVersion}`,
         '--noclean',
-        path.join('configs', `conf-${library}.json`)
+        path.join('configs', `conf-${inputs.library}.json`)
       ])
       await runPythonScript('report.py', [
-        `--branch=${omcVersion}`,
-        path.join('configs', `conf-${library}.json`)
+        `--branch=${inputs.omcVersion}`,
+        path.join('configs', `conf-${inputs.library}.json`)
       ])
       process.chdir(cwd)
     } catch (error) {
@@ -133,49 +107,32 @@ export async function run(): Promise<void> {
     core.debug('Write summary')
     const overviewFile = path.join(
       'OpenModelicaLibraryTesting',
-      `${library}_${libraryVersion}.html`
+      `${inputs.library}_${inputs.libraryVersion}.html`
     )
-    const libNameBranch = `${library}_${libraryVersion}`
-    if (!pagesRootUrl.endsWith('/ ')) {
-      pagesRootUrl = `${pagesRootUrl}/`
-    }
-    const resultsUrl = `${pagesRootUrl}${omcVersion}/${libNameBranch}/${libNameBranch}.html`
     const [summary, actionOutputs] = await summaryFromHtmlFile(
       overviewFile,
-      resultsUrl,
-      referenceFiles !== undefined
+      inputs.pagesRootUrl,
+      inputs.omcVersion,
+      inputs.library,
+      inputs.libraryVersion,
+      inputs.referenceFilesDir !== undefined
     )
     await core.summary.addRaw(summary).write()
 
-    // Set outputs
     core.debug('Set outputs')
-    core.setOutput(
-      'simulation-tests-passing',
-      actionOutputs.simulationTestsPassing
-    )
-    core.setOutput('n-simulation-passing', actionOutputs.nSimulationPassing)
-    core.setOutput(
-      'verification-tests-passing',
-      actionOutputs.verificationTestsPassing
-    )
-    core.setOutput('n-verification-passing', actionOutputs.nVerificationPassing)
-
-    core.info(
-      `simulation-tests-passing: ${actionOutputs.simulationTestsPassing}`
-    )
-    core.info(`n-simulation-passing: ${actionOutputs.nSimulationPassing}`)
-    core.info(
-      `verification-tests-passing: ${actionOutputs.verificationTestsPassing}`
-    )
-    core.info(`n-verification-passing: ${actionOutputs.nVerificationPassing}`)
+    actionOutputs.setOutputs()
+    actionOutputs.printInfo()
+    if (!inputs.allowFailingTests) {
+      actionOutputs.setStatus()
+    }
 
     // Collect HTML files
     core.debug('Collect HTML outputs')
     const htmlArtifactsDir = 'html'
     copyHtmlFilesSync(
-      library,
-      libraryVersion,
-      omcVersion,
+      inputs.library,
+      inputs.libraryVersion,
+      inputs.omcVersion,
       'OpenModelicaLibraryTesting',
       htmlArtifactsDir
     )
@@ -183,10 +140,10 @@ export async function run(): Promise<void> {
     // Upload artifacts
     core.debug('Upload artifacts')
     await uploadArtifacts(
-      library,
+      inputs.library,
       path.join('OpenModelicaLibraryTesting', 'sqlite3.db'),
       htmlArtifactsDir,
-      omcVersion
+      inputs.omcVersion
     )
   } catch (error) {
     // Fail the workflow run if an error occurs

@@ -19,7 +19,7 @@ const mdCoverageTable = `| Total | Frontend | Backend | SimCode | Templates | Co
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
 const modelicaFile = path.resolve('examples/MyLibrary/package.mo')
-const referenceRilesDir = path.resolve('examples/ReferenceFiles')
+const referenceFilesDir = path.resolve('examples/ReferenceFiles')
 
 // Mock the GitHub Actions core library
 let debugMock: jest.SpyInstance
@@ -80,7 +80,7 @@ describe('action', () => {
           case 'modelica-file':
             return modelicaFile
           case 'reference-files-dir':
-            return referenceRilesDir
+            return referenceFilesDir
           case 'reference-files-extension':
             return 'csv'
           case 'reference-files-delimiter':
@@ -89,6 +89,8 @@ describe('action', () => {
             return 'master'
           case 'pages-root-url':
             return 'https://USERNAME.github.io/REPOSITORY/'
+          case 'allow-failing-tests':
+            return 'true'
           default:
             return ''
         }
@@ -159,7 +161,10 @@ describe('action', () => {
       const summaryContent = fs.readFileSync(gitHubStepSummaryFile, 'utf-8')
       expect(summaryContent).toContain(mdCoverageTable)
       expect(summaryContent).toContain(
-        'MyLibrary.Blocks.Examples.PID\\_Controller | 4/7 failed'
+        '| [MyLibrary.Blocks.Examples.PID\\_Controller](https://USERNAME.github.io/REPOSITORY/master/MyLibrary_pr-123/files/MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.err) ([sim](https://USERNAME.github.io/REPOSITORY/master/MyLibrary_pr-123/files/MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.sim)) |'
+      )
+      expect(summaryContent).toContain(
+        '[4/7 failed](https://USERNAME.github.io/REPOSITORY/master/MyLibrary_pr-123/files/MyLibrary_pr-123_MyLibrary.Blocks.Examples.PID_Controller.diff.html)) |'
       )
 
       // Verify html/ dir

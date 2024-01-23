@@ -16,21 +16,26 @@ inputs:
     default: 'package.mo'
   omc-version:
     description: 'Version of OpenModelica to use for testing'
-    required: false
+    required: true
     default: 'stable'
   reference-files-dir:
     description: 'Path to reference files'
     required: false
   reference-files-extension:
     description: 'File extension of result files. Allowed values are "mat" and "csv".'
-    required: false
+    required: true
     default: 'mat'
   reference-files-delimiter:
     description: 'Character to separate model names in reference files. E.g. for Modelica.Blocks.Examples.PID_Controller.mat it would be "."'
-    required: false
+    required: true
     default: '.'
   pages-root-url:
     description: 'Root url GitHub Pages deploys to, e.g. https://<GitHub User>.github.io/<Repository>'
+    required: false
+  allow-failing-tests:
+    description: 'All some or all tests to fail simulation or verification'
+    required: true
+    default: false
 
 # Action outputs
 outputs:
