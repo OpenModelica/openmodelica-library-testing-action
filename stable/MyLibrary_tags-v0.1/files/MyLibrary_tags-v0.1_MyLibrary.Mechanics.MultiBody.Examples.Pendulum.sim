@@ -1,0 +1,32 @@
+Environment - simulationEnvironment:
+startTime=0
+stopTime=5
+tolerance=1e-06
+numberOfIntervals=2500
+stepSize=0.002
+Regular simulation: ./MyLibrary_tags-v0.1_MyLibrary.Mechanics.MultiBody.Examples.Pendulum  -abortSlowSimulation -alarm=480  -emit_protected -lv LOG_STATS
+LOG_SUCCESS       | info    | The initialization finished successfully without homotopy method.
+LOG_STATS         | info    | ### STATISTICS ###
+|                 | |       | | timer
+|                 | |       | | |    0.0138375s          reading init.xml
+|                 | |       | | |   0.00118244s          reading info.xml
+|                 | |       | | |  0.000281925s [  0.2%] pre-initialization
+|                 | |       | | |      0.11344s [ 78.3%] initialization
+|                 | |       | | |    3.888e-06s [  0.0%] steps
+|                 | |       | | |  0.000582517s [  0.4%] solver (excl. callbacks)
+|                 | |       | | |   0.00356004s [  2.5%] creating output-file
+|                 | |       | | |            0s [  0.0%] event-handling
+|                 | |       | | |   0.00145942s [  1.0%] overhead
+|                 | |       | | |    0.0254893s [ 17.6%] simulation
+|                 | |       | | |     0.144868s [100.0%] total
+|                 | |       | | events
+|                 | |       | | |     0 state events
+|                 | |       | | |     0 time events
+|                 | |       | | solver: dassl
+|                 | |       | | |   312 steps taken
+|                 | |       | | |   332 calls of functionODE
+|                 | |       | | |    20 evaluations of jacobian
+|                 | |       | | |     2 error test failures
+|                 | |       | | |     0 convergence test failures
+|                 | |       | | | 3.52428e-05s time of jacobian evaluation
+LOG_SUCCESS       | info    | The simulation finished successfully.
