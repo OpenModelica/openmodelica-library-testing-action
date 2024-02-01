@@ -37,7 +37,7 @@ jobs:
           key: ${{ runner.os }}-pip
 
       - name: Setup OpenModelica
-        uses: AnHeuermann/setup-openmodelica@v0.7
+        uses: OpenModelica/setup-openmodelica@v1
         with:
           version: stable
           packages: |
@@ -97,7 +97,7 @@ jobs:
           key: ${{ runner.os }}-pip
 
       - name: Setup OpenModelica
-        uses: AnHeuermann/setup-openmodelica@v0.7
+        uses: OpenModelica/setup-openmodelica@v1
         with:
           version: stable
           packages: |
@@ -117,7 +117,7 @@ jobs:
           reference-files-extension: csv
           reference-files-delimiter: .
           omc-version: stable
-          pages-root-url: 'https://anheuermann.github.io/openmodelica-library-testing-action/'
+          pages-root-url: 'https://openmodelica.github.io/openmodelica-library-testing-action/'
           allow-failing-tests: true
 
       - name: Verify action results

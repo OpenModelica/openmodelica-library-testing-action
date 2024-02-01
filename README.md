@@ -1,11 +1,11 @@
 # openmodelica-library-testing Action
 
-[![Continuous Integration](https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml/badge.svg)][1]
+[![Continuous Integration][ci-badge]][ci-link]
 ![TS test coverage](badges/coverage.svg)
 
-This GitHub action setups [OpenModelicaLibraryTesting][2]
-scripts and run them on a provided Modelica package and returns a summary of the
-test report.
+This GitHub action sets [OpenModelicaLibraryTesting][om-library-testing-link]
+scripts up and runs them on a provided Modelica package and returns a summary of
+the test report.
 
 The action will set output variables that can be checked how many tests passed
 simulation and verification. It will fail if at least one test is failing.
@@ -37,7 +37,7 @@ Default: `'package.mo'`
 ### `omc-version`
 
 Version of OpenModelica used for testing.
-Add [AnHeuermann/setup-openmodelica][3]
+Add [OpenModelica/setup-openmodelica][setup-openmodelica-link]
 to your workflow to setup OpenModelica.\
 Default: `'stable'`
 
@@ -64,6 +64,8 @@ Default: `'.'`
 ```yaml
 jobs:
   library-testing:
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -74,7 +76,7 @@ jobs:
           python-version: '3.10'
 
       - name: Setup OpenModelica
-        uses: AnHeuermann/setup-openmodelica@v0.7
+        uses: OpenModelica/setup-openmodelica@v1
         with:
           version: stable
           packages: |
@@ -83,7 +85,7 @@ jobs:
             Modelica 4.0.0
           omc-diff: true
 
-      - uses: openmodelica-library-testing@v0.2.0
+      - uses: openmodelica-library-testing@v0.3
         with:
           library: 'MyLibrary'
           library-version: '2.2.0'
@@ -175,7 +177,7 @@ This action tests Modelica library [MyLibrary](examples/MyLibrary/package.mo)
 consisting of two models from the Modelica Standard Library and compares them to
 reference results in [examples/ReferenceFiles](examples/ReferenceFiles) taken
 from
-[https://github.com/modelica/MAP-LIB_ReferenceResults][4].
+[https://github.com/modelica/MAP-LIB_ReferenceResults][map-lib-link].
 The reference results for MyLibrary.Blocks.Examples.PID_Controller are altered
 to check that verification will fail for variables `spring.w_rel`,
 `spring.phi_rel`, `inertia1.w` and `inertia1.phi`.
@@ -199,10 +201,27 @@ The expected output is:
 
 The HTML results can be hosted with GitHub Pages, for this example they can be
 found at
-[https://anheuermann.github.io/openmodelica-library-testing-action][5].
+[OpenModelica.github.io/openmodelica-library-testing-action][gh-pages-link].
 
-[1]: https://github.com/AnHeuermann/openmodelica-library-testing-action/actions/workflows/ci.yml
-[2]: https://github.com/OpenModelica/OpenModelicaLibraryTesting
-[3]: https://github.com/AnHeuermann/setup-openmodelica#available-openmodelica-versions
-[4]: https://github.com/modelica/MAP-LIB_ReferenceResults/blob/v4.0.0
-[5]: https://anheuermann.github.io/openmodelica-library-testing-action/
+## License
+
+This action is licensed with the OSMC Public License v1.8, see
+[OSMC-License.txt](./OSMC-License.txt).
+
+## Acknowledgments
+
+This package was initially developed by
+[Hochschule Bielefeld - University of Applied Sciences and Arts](hsbi.de)
+as part of the
+[Proper Hybrid Models for Smarter Vehicles (PHyMoS)](https://phymos.de/en/)
+project, supported by the German
+[Federal Ministry for Economic Affairs and Climate Action][bmwk]
+with project number `19|200022G`.
+
+[ci-badge]: https://github.com/OpenModelica/openmodelica-library-testing-action/actions/workflows/ci.yml/badge.svg
+[ci-link]: https://github.com/OpenModelica/openmodelica-library-testing-action/actions/workflows/ci.yml
+[om-library-testing-link]: https://github.com/OpenModelica/OpenModelicaLibraryTesting
+[setup-openmodelica-link]: https://github.com/OpenModelica/setup-openmodelica#available-openmodelica-versions
+[map-lib-link]: https://github.com/modelica/MAP-LIB_ReferenceResults/blob/v4.0.0
+[gh-pages-link]: https://openmodelica.github.io/openmodelica-library-testing-action/
+[bmwk]: https://www.bmwk.de/Navigation/EN/Home/home.html
