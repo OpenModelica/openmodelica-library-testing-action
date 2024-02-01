@@ -1,0 +1,61 @@
+name: 'openmodelica-library-testing'
+description: 'Setup OpenModelicaLibraryTesting scripts and run them on Modelica package and publishes results.'
+author: 'Andreas Heuermann'
+
+# Action inputs
+inputs:
+  library:
+    description: 'Name of Modelica package to test.'
+    required: true
+  library-version:
+    description: 'Version of Modelica package to test.'
+    required: true
+  modelica-file:
+    description: 'Path to Modelica file containing package to test. E.g to package.mo'
+    required: true
+    default: 'package.mo'
+  omc-version:
+    description: 'Version of OpenModelica to use for testing'
+    required: true
+    default: 'stable'
+  reference-files-dir:
+    description: 'Path to reference files'
+    required: false
+  reference-files-extension:
+    description: 'File extension of result files. Allowed values are "mat" and "csv".'
+    required: true
+    default: 'mat'
+  reference-files-delimiter:
+    description: 'Character to separate model names in reference files. E.g. for Modelica.Blocks.Examples.PID_Controller.mat it would be "."'
+    required: true
+    default: '.'
+  pages-root-url:
+    description: 'Root url GitHub Pages deploys to, e.g. https://<GitHub User>.github.io/<Repository>'
+    required: false
+  allow-failing-tests:
+    description: 'All some or all tests to fail simulation or verification'
+    required: true
+    default: false
+
+# Action outputs
+outputs:
+  simulation-tests-passing:
+    description: 'True if all simulation tests are passing'
+    value: ${{ steps.summary.outputs.simulation-tests-passing }}
+  n-simulation-passing:
+    description: 'Number of successful simulation tests'
+    value: ${{ steps.summary.outputs.n-simulation-passing }}
+  verification-tests-passing:
+    description: 'True if all verification tests are passing'
+    value: ${{ steps.summary.outputs.verification-tests-passing }}
+  n-verification-passing:
+    description: 'Number of successful verification tests'
+    value: ${{ steps.summary.outputs.n-verification-passing }}
+
+runs:
+  using: node20
+  main: dist/index.js
+
+branding:
+  icon: 'check-square'
+  color: 'blue'

@@ -1,0 +1,159 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/*'
+    tags:
+      - '*'
+  pull_request:
+
+jobs:
+  test-typescript:
+    name: TypeScript Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Update pip
+        run: |
+          pip install --upgrade pip
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
+
+      - name: Setup OpenModelica
+        uses: OpenModelica/setup-openmodelica@v1
+        with:
+          version: stable
+          packages: |
+            omc
+          libraries: |
+            Modelica 4.0.0
+          omc-diff: true
+
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install Dependencies
+        id: npm-ci
+        run: npm ci
+
+      - name: Check Format
+        id: npm-format-check
+        run: npm run format:check
+
+      - name: Lint
+        id: npm-lint
+        run: npm run lint
+
+      - name: Test
+        id: npm-ci-test
+        run: npm run ci-test
+
+  test-action:
+    name: GitHub Actions Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Update pip
+        run: |
+          pip install --upgrade pip
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
+
+      - name: Setup OpenModelica
+        uses: OpenModelica/setup-openmodelica@v1
+        with:
+          version: stable
+          packages: |
+            omc
+          libraries: |
+            Modelica 4.0.0
+          omc-diff: true
+
+      - name: Test openmodelica-library-testing
+        id: test-action
+        uses: ./
+        with:
+          library: MyLibrary
+          library-version: ${{ github.ref }}
+          modelica-file: examples/MyLibrary/package.mo
+          reference-files-dir: examples/ReferenceFiles
+          reference-files-extension: csv
+          reference-files-delimiter: .
+          omc-version: stable
+          pages-root-url: 'https://openmodelica.github.io/openmodelica-library-testing-action/'
+          allow-failing-tests: true
+
+      - name: Verify action results
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          echo "simulation-tests-passing: ${{ steps.test-action.outputs.simulation-tests-passing }}"
+          echo "verification-tests-passing: ${{ steps.test-action.outputs.verification-tests-passing }}"
+
+          if [ "${{ steps.test-action.outputs.simulation-tests-passing }}" == "true" ] && [ ${{ steps.test-action.outputs.n-simulation-passing }} == 2 ] && [ "${{ steps.test-action.outputs.verification-tests-passing }}" == "false" ] && [ ${{ steps.test-action.outputs.n-verification-passing }} == 1 ]; then
+            exit 0;
+          else
+            exit 1;
+          fi
+
+  deploy:
+    needs: test-action
+    permissions:
+      contents: write
+    if: ${{ always() }}
+    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get HTML artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: html-artifacts/
+          pattern: '*.html'
+          merge-multiple: true
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: html-artifacts/
+          branch: gh-pages
