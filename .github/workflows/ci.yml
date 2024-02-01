@@ -6,7 +6,7 @@ on:
       - 'main'
       - 'releases/*'
     tags:
-      - '*'
+      - 'v*'
   pull_request:
 
 jobs:
@@ -137,7 +137,7 @@ jobs:
     needs: test-action
     permissions:
       contents: write
-    if: ${{ always() }}
+    if: startsWith(github.ref, 'refs/tags/v')
     concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
 

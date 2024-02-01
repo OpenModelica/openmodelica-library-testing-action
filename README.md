@@ -85,7 +85,7 @@ jobs:
             Modelica 4.0.0
           omc-diff: true
 
-      - uses: openmodelica-library-testing@v0.3
+      - uses: OpenModelica/openmodelica-library-testing@v0.1
         with:
           library: 'MyLibrary'
           library-version: '2.2.0'

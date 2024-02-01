@@ -153,7 +153,7 @@ export async function uploadArtifacts(
   )
 
   const sqlitePromise = client.uploadArtifact(
-    `sqlite3-${runId}.db`,
+    `${omcVersion}-sqlite3-${runId}-${jobId}.db`,
     [sqlFile],
     path.dirname(sqlFile)
   )

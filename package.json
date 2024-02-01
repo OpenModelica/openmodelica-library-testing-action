@@ -1,5 +1,5 @@
 {
-  "name": "openmodelica-library-testing-action",
+  "name": "openmodelica-library-testing",
   "description": "Setup OpenModelicaLibraryTesting scripts and run them on Modelica package and publishes results.",
   "version": "0.1.0",
   "author": "AndreasHeuermann",
