@@ -131,11 +131,10 @@ export async function run(): Promise<void> {
 
       // Verify that library has tests
       if (stdout.includes('Not executing any tests.')) {
-        core.error('No tests to execute, aborting.')
-        core.info(
+        core.notice(
           `Ensure that ${inputs.library} has models with experiment annotations.`
         )
-        throw new Error('No tests found.')
+        throw new Error('No tests to execute, aborting.')
       }
 
       await runPythonScript('report.py', [
