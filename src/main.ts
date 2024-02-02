@@ -123,11 +123,21 @@ export async function run(): Promise<void> {
     const cwd = process.cwd()
     try {
       process.chdir('OpenModelicaLibraryTesting')
-      await runPythonScript('test.py', [
+      const { stdout } = await runPythonScript('test.py', [
         `--branch=${inputs.omcVersion}`,
         '--noclean',
         path.join('configs', `conf-${inputs.library}.json`)
       ])
+
+      // Verify that library has tests
+      if (stdout.includes('Not executing any tests.')) {
+        core.error('No tests to execute, aborting.')
+        core.info(
+          `Ensure that ${inputs.library} has models with experiment annotations.`
+        )
+        throw new Error('No tests found.')
+      }
+
       await runPythonScript('report.py', [
         `--branch=${inputs.omcVersion}`,
         path.join('configs', `conf-${inputs.library}.json`)
