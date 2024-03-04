@@ -1,8 +1,8 @@
 {
   "name": "openmodelica-library-testing",
-  "description": "Setup OpenModelicaLibraryTesting scripts and run them on Modelica package and publishes results.",
+  "description": "Setup OpenModelicaLibraryTesting scripts and runs them on a Modelica package and publishes results.",
   "version": "0.2.0",
-  "author": "AndreasHeuermann",
+  "author": "Andreas Heuermann",
   "license": "OSMC-PL-1-8",
   "private": true,
   "homepage": "https://github.com/OpenModelica/openmodelica-library-testing-action",
