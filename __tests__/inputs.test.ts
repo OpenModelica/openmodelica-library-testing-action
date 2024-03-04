@@ -1,5 +1,5 @@
 /**
- * Unit tests for src/config.ts
+ * Unit tests for src/inputs.ts
  */
 
 import * as path from 'path'

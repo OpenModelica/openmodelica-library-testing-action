@@ -7,6 +7,7 @@
  */
 
 import * as fs from 'fs'
+import * as os from 'os'
 import * as path from 'path'
 import * as core from '@actions/core'
 import * as main from '../src/main'
@@ -108,7 +109,7 @@ describe('action', () => {
       expect(debugMock).toHaveBeenNthCalledWith(4, 'Generating configuration')
       expect(debugMock).toHaveBeenNthCalledWith(
         5,
-        'Running python test.py --branch=master --noclean configs/conf-MyLibrary.json'
+        `Running python test.py --verbose --branch=master --noclean ${os.platform() === 'win32' ? 'ucrt64' : ''} configs/conf-MyLibrary.json`
       )
       expect(debugMock).toHaveBeenNthCalledWith(
         7,

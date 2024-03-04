@@ -190,11 +190,11 @@ export function summaryFromHtml(
 
     // TODO: ensure that htmlTables has two elements and that they are the correct tables
     resultTable = updateHtmlLinks(
-      htmlTables[1],
+      htmlTables[2],
       `${rootUrl}/${omcVersion}/${libNameBranch}`
     )
   } else {
-    resultTable = updateHtmlLinks(htmlTables[1])
+    resultTable = updateHtmlLinks(htmlTables[2])
   }
 
   const coverage = turndownService.turndown(htmlTables[0].outerHTML)

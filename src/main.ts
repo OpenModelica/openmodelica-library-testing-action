@@ -33,17 +33,19 @@
  *
  */
 
-import * as fs from 'fs'
-import * as path from 'path'
 import * as child_process from 'child_process'
 import * as core from '@actions/core'
+import * as fs from 'fs'
+import * as os from 'os'
+import * as path from 'path'
 
-import { cloneScripts } from './clone'
-import { copyHtmlFilesSync, uploadArtifacts } from './collect'
-import { Configuration, genConfigFile } from './config'
-import { installPythonDeps } from './installdeps'
 import { ActionInputs } from './inputs'
+import { cloneScripts } from './clone'
+import { Configuration, genConfigFile } from './config'
+import { copyHtmlFilesSync, uploadArtifacts } from './collect'
+import { installPythonDeps } from './installdeps'
 import { summaryFromHtmlFile } from './summary'
+import { getMSYS } from './get-msys'
 
 /**
  * Run Python script.
@@ -90,7 +92,7 @@ export async function run(): Promise<void> {
 
     // Clone OpenModelicaLibraryTesting
     core.debug('clone OpenModelicaLibraryTesting')
-    await cloneScripts('cdf827130ce7df206264f673972a691fb469533a')
+    await cloneScripts('981cf232ae834f5b3fe7c530bc02733378fb840b')
 
     // Install Python dependencies
     await installPythonDeps(
@@ -120,12 +122,19 @@ export async function run(): Promise<void> {
     )
 
     // Run OpenModelicaLibraryTesting scripts
+    let msysEnv = ''
+    if (os.platform() === 'win32') {
+      msysEnv = `--msysEnvironment=${getMSYS()}`
+    }
+
     const cwd = process.cwd()
     try {
       process.chdir('OpenModelicaLibraryTesting')
       const { stdout } = await runPythonScript('test.py', [
+        '--verbose',
         `--branch=${inputs.omcVersion}`,
         '--noclean',
+        msysEnv,
         path.join('configs', `conf-${inputs.library}.json`)
       ])
 
