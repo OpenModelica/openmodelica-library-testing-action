@@ -216,7 +216,6 @@ found at
 
 ## Development
 
-
 To install and build run:
 
 ```bash
@@ -232,6 +231,12 @@ python -m venv .venv
 source .venv/bin/activate
 npm run test
 ```
+
+> [!TIP]
+> On Windows use Conda to choose a Python interpreter and then setup a virtual
+> environment.
+> Use PowerShell to activate `.\.venv\Scripts\activate` the environment.
+> Msys2 doesn't install Python packages via pip, so it won't work with this script.
 
 ## License
 

@@ -109,11 +109,11 @@ describe('action', () => {
       expect(debugMock).toHaveBeenNthCalledWith(4, 'Generating configuration')
       expect(debugMock).toHaveBeenNthCalledWith(
         5,
-        `Running python test.py --verbose --branch=master --noclean ${os.platform() === 'win32' ? 'ucrt64' : ''} configs/conf-MyLibrary.json`
+        `Running python test.py --verbose --branch=master --noclean ${os.platform() === 'win32' ? '--msysEnvironment=ucrt64' : ''} ${path.join('configs', 'conf-MyLibrary.json')}`
       )
       expect(debugMock).toHaveBeenNthCalledWith(
         7,
-        'Running python report.py --branch=master configs/conf-MyLibrary.json'
+        `Running python report.py --branch=master ${path.join('configs', 'conf-MyLibrary.json')}`
       )
       expect(debugMock).toHaveBeenNthCalledWith(9, 'Write summary')
       expect(debugMock).toHaveBeenNthCalledWith(10, 'Set outputs')

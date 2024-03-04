@@ -34,6 +34,7 @@
  */
 
 import * as fsPromise from 'fs/promises'
+import * as os from 'os'
 import * as path from 'path'
 
 type Library = [string, string]
@@ -45,7 +46,7 @@ export interface ReferenceFiles {
   destination: string
 }
 
-export interface Configuration {
+export interface ConfigurationInterface {
   library: string
   libraryVersion: string
   libraryVersionNameForTests?: string
@@ -69,6 +70,69 @@ export interface Configuration {
   extraCustomCommands?: string[]
   environmentSimulation?: [string, string][]
   configExtraName?: string
+}
+
+export class Configuration implements ConfigurationInterface {
+  library: string
+  libraryVersion: string
+  libraryVersionNameForTests?: string
+  libraryVersionLatestInPackageManager?: boolean
+  extraLibraries?: Library[]
+  ignoreModelPrefix?: string
+  referenceFileExtension?: ReferenceFileExtension
+  referenceFileNameDelimiter?: ReferenceFileNameDelimiter
+  referenceFileNameExtraName?: string
+  referenceFinalDot?: string
+  referenceFiles?: string | ReferenceFiles
+  allReferenceFilesExist?: boolean
+  simCodeTarget?: string
+  ulimitOmc?: number
+  ulimitExe?: number
+  ulimitMemory?: number
+  optlevel?: string
+  alarmFlag?: string
+  abortSlowSimulation?: string
+  loadFileCommands?: string[]
+  extraCustomCommands?: string[]
+  environmentSimulation?: [string, string][]
+  configExtraName?: string
+
+  constructor(config: ConfigurationInterface) {
+    this.library = config.library
+    this.libraryVersion = config.libraryVersion
+    this.libraryVersionNameForTests = config.libraryVersionNameForTests
+    this.libraryVersionLatestInPackageManager =
+      config.libraryVersionLatestInPackageManager
+    this.extraLibraries = config.extraLibraries
+    this.ignoreModelPrefix = config.ignoreModelPrefix
+    this.referenceFileExtension = config.referenceFileExtension
+    this.referenceFileNameDelimiter = config.referenceFileNameDelimiter
+    this.referenceFileNameExtraName = config.referenceFileNameExtraName
+    this.referenceFinalDot = config.referenceFinalDot
+    this.referenceFiles = config.referenceFiles
+    this.allReferenceFilesExist = config.allReferenceFilesExist
+    this.simCodeTarget = config.simCodeTarget
+    this.ulimitOmc = config.ulimitOmc
+    this.ulimitExe = config.ulimitExe
+    this.ulimitMemory = config.ulimitMemory
+    this.optlevel = config.optlevel
+    this.alarmFlag = config.alarmFlag
+    this.abortSlowSimulation = config.abortSlowSimulation
+    if (os.platform() === 'win32') {
+      // Replace \ with / and C: with /c/
+      this.loadFileCommands =
+        config.loadFileCommands?.map(command =>
+          command
+            .replace(/"([a-zA-Z]:\\)/i, match => `"/${match[1].toLowerCase()}/`)
+            .replace(/\\/g, '/')
+        ) ?? []
+    } else {
+      this.loadFileCommands = config.loadFileCommands
+    }
+    this.extraCustomCommands = config.extraCustomCommands
+    this.environmentSimulation = config.environmentSimulation
+    this.configExtraName = config.configExtraName
+  }
 }
 
 /**
