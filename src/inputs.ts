@@ -37,13 +37,15 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as core from '@actions/core'
 
+import { ReferenceFileExtension, ReferenceFileNameDelimiter } from './config'
+
 export interface ActionInputsInterface {
   library: string
   libraryVersion: string
   modelicaFile: string
   referenceFilesDir?: string
-  referenceFileExtension?: string
-  referenceFileDelimiter?: string
+  referenceFileExtension?: ReferenceFileExtension
+  referenceFileNameDelimiter?: ReferenceFileNameDelimiter
   pagesRootUrl: string
   omcVersion: string
   allowFailingTests: boolean
@@ -54,8 +56,8 @@ export class ActionInputs implements ActionInputsInterface {
   libraryVersion: string
   modelicaFile: string
   referenceFilesDir?: string
-  referenceFileExtension?: string
-  referenceFileDelimiter?: string
+  referenceFileExtension?: ReferenceFileExtension
+  referenceFileNameDelimiter?: ReferenceFileNameDelimiter
   pagesRootUrl: string
   omcVersion: string
   allowFailingTests: boolean
@@ -66,7 +68,7 @@ export class ActionInputs implements ActionInputsInterface {
     this.modelicaFile = inputs.modelicaFile
     this.referenceFilesDir = inputs.referenceFilesDir
     this.referenceFileExtension = inputs.referenceFileExtension
-    this.referenceFileDelimiter = inputs.referenceFileDelimiter
+    this.referenceFileNameDelimiter = inputs.referenceFileNameDelimiter
     this.pagesRootUrl = inputs.pagesRootUrl
     this.omcVersion = inputs.omcVersion
     this.allowFailingTests = inputs.allowFailingTests
@@ -117,7 +119,7 @@ export class ActionInputs implements ActionInputsInterface {
       modelicaFile,
       referenceFilesDir,
       referenceFileExtension,
-      referenceFileDelimiter,
+      referenceFileNameDelimiter: referenceFileDelimiter,
       pagesRootUrl,
       omcVersion,
       allowFailingTests

@@ -38,8 +38,8 @@ import * as os from 'os'
 import * as path from 'path'
 
 type Library = [string, string]
-type ReferenceFileExtension = 'csv' | 'mat'
-type ReferenceFileNameDelimiter = '.' | '/' | '_'
+export type ReferenceFileExtension = 'csv' | 'mat'
+export type ReferenceFileNameDelimiter = '.' | '/' | '_'
 
 export interface ReferenceFiles {
   giturl: string
@@ -123,7 +123,7 @@ export class Configuration implements ConfigurationInterface {
       this.loadFileCommands =
         config.loadFileCommands?.map(command =>
           command
-            .replace(/"([a-zA-Z]:\\)/i, match => `"/${match[1].toLowerCase()}/`)
+            .replace(/"([a-zA-Z]:\\)/i, match => `"${match[1].toUpperCase()}:/`)
             .replace(/\\/g, '/')
         ) ?? []
     } else {

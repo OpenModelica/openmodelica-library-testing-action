@@ -12,7 +12,7 @@ const tempTestDir = path.join('__tests__', 'tmp-configs')
 
 describe('config.ts', () => {
   beforeAll(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
-  //afterEach(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
+  afterEach(() => fs.rmSync(tempTestDir, { recursive: true, force: true }))
 
   it('Generate minimal configuration', async () => {
     let modelicaFile: string
@@ -31,7 +31,7 @@ describe('config.ts', () => {
 
     const expectedPath =
       os.platform() === 'win32'
-        ? '/c/path/to/MyLibrary/package.mo'
+        ? 'C:/path/to/MyLibrary/package.mo'
         : '/path/to/MyLibrary/package.mo'
     expect(config.loadFileCommands).toEqual([`loadFile("${expectedPath}")`])
   })

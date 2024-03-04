@@ -53,7 +53,7 @@ describe('inputs.ts', () => {
       modelicaFile,
       referenceFilesDir,
       referenceFileExtension: 'csv',
-      referenceFileDelimiter: '.',
+      referenceFileNameDelimiter: '.',
       pagesRootUrl: 'https://USERNAME.github.io/REPOSITORY/',
       omcVersion: 'master',
       allowFailingTests: false

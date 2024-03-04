@@ -12,14 +12,14 @@ simulation and verification. It will fail if at least one test is failing.
 
 ## Table of Contents
 
-  - [Inputs](#inputs)
-  - [Outputs](#outputs)
-  - [Example usage](#example-usage)
-  - [Artifacts](#artifacts)
-  - [Demo](#demo)
-  - [Development](#development)
-  - [License](#license)
-  - [Acknowledgments](#acknowledgments)
+- [Inputs](#inputs)
+- [Outputs](#outputs)
+- [Example usage](#example-usage)
+- [Artifacts](#artifacts)
+- [Demo](#demo)
+- [Development](#development)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
 
 ## Inputs
 

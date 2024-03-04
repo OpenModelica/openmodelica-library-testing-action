@@ -108,14 +108,14 @@ export async function run(): Promise<void> {
         `conf-${inputs.library}.json`
       )
     )
-    const config = {
+    const config = new Configuration({
       library: inputs.library,
       libraryVersion: inputs.libraryVersion,
       loadFileCommands: [`loadFile("${inputs.modelicaFile}")`],
       referenceFiles: inputs.referenceFilesDir,
       referenceFileExtension: inputs.referenceFileExtension,
-      referenceFileDelimiter: inputs.referenceFileDelimiter
-    } as Configuration
+      referenceFileNameDelimiter: inputs.referenceFileNameDelimiter
+    })
     await genConfigFile(confFile, [config])
     core.info(
       `conf-${inputs.library}.json:\n\n${fs.readFileSync(confFile, 'utf-8')}`
