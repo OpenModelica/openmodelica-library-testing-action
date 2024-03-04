@@ -19,9 +19,7 @@ describe('config.ts', () => {
     if (os.platform() === 'win32') {
       modelicaFile = path.join('C:', 'path', 'to', 'MyLibrary', 'package.mo')
     } else {
-      modelicaFile = path.resolve(
-        path.join('path', 'to', 'MyLibrary', 'package.mo')
-      )
+      modelicaFile = path.join('path', 'to', 'MyLibrary', 'package.mo')
     }
     const config = new Configuration({
       library: 'MyLibrary',
