@@ -34,9 +34,7 @@
     "package": "ncc build src/index.ts --license licenses.txt && npm run copy-files",
     "package:watch": "npm run package -- --watch",
     "copy-files": "copyfiles scripts/dygraph-combined.js dist/",
-    "test:modules": "jest --testPathIgnorePatterns=main.test.ts",
-    "test:main": "jest main.test.ts",
-    "test": "npm run test:modules && npm run test:main",
+    "test": "jest",
     "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
   },
   "jest": {
@@ -48,16 +46,37 @@
       "js",
       "ts"
     ],
-    "testMatch": [
-      "**/*.test.ts"
+    "projects": [
+      {
+        "displayName": "unit-tests",
+        "testEnvironment": "node",
+        "testMatch": [
+          "**/*.test.ts"
+        ],
+        "testPathIgnorePatterns": [
+          "main.test.ts",
+          "/node_modules/",
+          "/dist/"
+        ],
+        "transform": {
+          "^.+\\.ts$": "ts-jest"
+        }
+      },
+      {
+        "displayName": "main-test",
+        "testEnvironment": "node",
+        "testMatch": [
+          "**/main.test.ts"
+        ],
+        "testPathIgnorePatterns": [
+          "/node_modules/",
+          "/dist/"
+        ],
+        "transform": {
+          "^.+\\.ts$": "ts-jest"
+        }
+      }
     ],
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
-    ],
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
     "coverageReporters": [
       "json-summary",
       "text",
