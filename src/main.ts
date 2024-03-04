@@ -92,7 +92,7 @@ export async function run(): Promise<void> {
 
     // Clone OpenModelicaLibraryTesting
     core.debug('clone OpenModelicaLibraryTesting')
-    await cloneScripts('981cf232ae834f5b3fe7c530bc02733378fb840b')
+    await cloneScripts('4faba709fd4aa629ed568f3eb1c9459a8a6c223b')
 
     // Install Python dependencies
     await installPythonDeps(
