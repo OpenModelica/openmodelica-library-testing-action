@@ -8,8 +8,6 @@ import * as path from 'path'
 import { expect } from '@jest/globals'
 import { getMSYS } from '../src/get-msys'
 
-// TODO: Mock OMDEV and OPENMODLEICAHOME as well as tools/msys directories.
-
 interface ProcessEnv {
   [key: string]: string | undefined
 }
