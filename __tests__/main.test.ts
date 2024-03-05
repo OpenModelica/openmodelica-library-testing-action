@@ -7,9 +7,11 @@
  */
 
 import * as fs from 'fs'
+import * as os from 'os'
 import * as path from 'path'
 import * as core from '@actions/core'
 import * as main from '../src/main'
+import { getMSYS } from '../src/get-msys'
 
 // Some expected string
 const mdCoverageTable = `| Total | Frontend | Backend | SimCode | Templates | Compilation | Simulation | Verification |
@@ -18,8 +20,10 @@ const mdCoverageTable = `| Total | Frontend | Backend | SimCode | Templates | Co
 
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
-const modelicaFile = path.resolve('examples/MyLibrary/package.mo')
-const referenceFilesDir = path.resolve('examples/ReferenceFiles')
+const modelicaFile = path.resolve(
+  path.join('examples', 'MyLibrary', 'package.mo')
+)
+const referenceFilesDir = path.resolve(path.join('examples', 'ReferenceFiles'))
 
 // Mock the GitHub Actions core library
 let debugMock: jest.SpyInstance
@@ -108,11 +112,14 @@ describe('action', () => {
       expect(debugMock).toHaveBeenNthCalledWith(4, 'Generating configuration')
       expect(debugMock).toHaveBeenNthCalledWith(
         5,
-        'Running python test.py --branch=master --noclean configs/conf-MyLibrary.json'
+        'Running python test.py --verbose --branch=master --noclean' +
+          ` ${os.platform() === 'win32' ? `--msysEnvironment=${getMSYS()}` : ''}` +
+          ` ${path.join('configs', 'conf-MyLibrary.json')}`
       )
       expect(debugMock).toHaveBeenNthCalledWith(
         7,
-        'Running python report.py --branch=master configs/conf-MyLibrary.json'
+        'Running python report.py --branch=master' +
+          ` ${path.join('configs', 'conf-MyLibrary.json')}`
       )
       expect(debugMock).toHaveBeenNthCalledWith(9, 'Write summary')
       expect(debugMock).toHaveBeenNthCalledWith(10, 'Set outputs')

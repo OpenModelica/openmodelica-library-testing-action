@@ -33,17 +33,19 @@
  *
  */
 
-import * as fs from 'fs'
-import * as path from 'path'
 import * as child_process from 'child_process'
 import * as core from '@actions/core'
+import * as fs from 'fs'
+import * as os from 'os'
+import * as path from 'path'
 
-import { cloneScripts } from './clone'
-import { copyHtmlFilesSync, uploadArtifacts } from './collect'
-import { Configuration, genConfigFile } from './config'
-import { installPythonDeps } from './installdeps'
 import { ActionInputs } from './inputs'
+import { cloneScripts } from './clone'
+import { Configuration, genConfigFile } from './config'
+import { copyHtmlFilesSync, uploadArtifacts } from './collect'
+import { installPythonDeps } from './installdeps'
 import { summaryFromHtmlFile } from './summary'
+import { getMSYS } from './get-msys'
 
 /**
  * Run Python script.
@@ -90,7 +92,7 @@ export async function run(): Promise<void> {
 
     // Clone OpenModelicaLibraryTesting
     core.debug('clone OpenModelicaLibraryTesting')
-    await cloneScripts('cdf827130ce7df206264f673972a691fb469533a')
+    await cloneScripts('6ec233f4f1688d2ea8bf41367f0face18b7ba91f')
 
     // Install Python dependencies
     await installPythonDeps(
@@ -106,26 +108,33 @@ export async function run(): Promise<void> {
         `conf-${inputs.library}.json`
       )
     )
-    const config = {
+    const config = new Configuration({
       library: inputs.library,
       libraryVersion: inputs.libraryVersion,
       loadFileCommands: [`loadFile("${inputs.modelicaFile}")`],
       referenceFiles: inputs.referenceFilesDir,
       referenceFileExtension: inputs.referenceFileExtension,
-      referenceFileDelimiter: inputs.referenceFileDelimiter
-    } as Configuration
+      referenceFileNameDelimiter: inputs.referenceFileNameDelimiter
+    })
     await genConfigFile(confFile, [config])
     core.info(
       `conf-${inputs.library}.json:\n\n${fs.readFileSync(confFile, 'utf-8')}`
     )
 
     // Run OpenModelicaLibraryTesting scripts
+    let msysEnv = ''
+    if (os.platform() === 'win32') {
+      msysEnv = `--msysEnvironment=${getMSYS()}`
+    }
+
     const cwd = process.cwd()
     try {
       process.chdir('OpenModelicaLibraryTesting')
       const { stdout } = await runPythonScript('test.py', [
+        '--verbose',
         `--branch=${inputs.omcVersion}`,
         '--noclean',
+        msysEnv,
         path.join('configs', `conf-${inputs.library}.json`)
       ])
 

@@ -12,7 +12,12 @@ on:
 jobs:
   test-typescript:
     name: TypeScript Tests
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: read
 
@@ -28,7 +33,21 @@ jobs:
 
       - name: Update pip
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
+
+      - name: Install Python packages (Windows only)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          pip install --user `
+            datetime `
+            matplotlib `
+            monotonic `
+            natsort `
+            joblib `
+            ompython `
+            simplejson `
+            psutil
 
       - name: Cache pip dependencies
         uses: actions/cache@v4
@@ -66,12 +85,16 @@ jobs:
         run: npm run lint
 
       - name: Test
-        id: npm-ci-test
-        run: npm run ci-test
+        id: npm-test
+        run: npm run test
 
   test-action:
     name: GitHub Actions Test
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     permissions:
       contents: write

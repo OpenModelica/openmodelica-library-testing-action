@@ -45,7 +45,7 @@ import * as core from '@actions/core'
 export async function installPythonDeps(
   requirementsFile: string
 ): Promise<{ stdout: string; stderr: string }> {
-  const command = `pip install -r ${requirementsFile}`
+  const command = `pip install -r ${requirementsFile} --user`
 
   return new Promise((resolve, reject) => {
     child_process.exec(command, (error, stdout, stderr) => {

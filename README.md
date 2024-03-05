@@ -10,6 +10,17 @@ the test report.
 The action will set output variables that can be checked how many tests passed
 simulation and verification. It will fail if at least one test is failing.
 
+## Table of Contents
+
+- [Inputs](#inputs)
+- [Outputs](#outputs)
+- [Example usage](#example-usage)
+- [Artifacts](#artifacts)
+- [Demo](#demo)
+- [Development](#development)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+
 ## Inputs
 
 ### `library`
@@ -59,6 +70,27 @@ Character to separate model names in reference files.
 E.g. for `Modelica.Blocks.Examples.PID_Controller.mat` it would be `'.'`\
 Default: `'.'`
 
+## Outputs
+
+The action will fail if one test fails. In addition the following outputs can be
+used to determine the testing results.
+
+### `simulation-tests-passing`
+
+`'True'` if all simulation tests are passing, `'False'` otherwise.
+
+### `n-simulation-passing`
+
+Number of successful simulation tests.
+
+### `verification-tests-passing`
+
+`'True'` if all verification tests are passing, `'False'` otherwise.
+
+### `n-verification-passing`
+
+Number of successful verification tests.
+
 ## Example usage
 
 ```yaml
@@ -97,27 +129,6 @@ jobs:
           pages-root-url: 'https://USERNAME.github.io/REPOSITORY/'
 ```
 
-## Outputs
-
-The action will fail if one test fails. In addition the following outputs can be
-used to determine the testing results.
-
-## `simulation-tests-passing`
-
-`'True'` if all simulation tests are passing, `'False'` otherwise.
-
-## `n-simulation-passing`
-
-Number of successful simulation tests.
-
-## `verification-tests-passing`
-
-`'True'` if all verification tests are passing, `'False'` otherwise.
-
-## `n-verification-passing`
-
-Number of successful verification tests.
-
 ## Artifacts
 
 ### HTML Results
@@ -128,7 +139,7 @@ pages.
 
 ```bash
 unzip MyLibrary.html.zip -d html
-python3 -m http.server -d html
+python -m http.server -d html
 ```
 
 #### GitHub Pages
@@ -169,7 +180,7 @@ jobs:
 
 ### SQlite
 
-For future test the SQlite data base `sqlite3.db` is achieved.
+For future tests the SQlite data base `sqlite3.db` is archived.
 
 ## Demo
 
@@ -202,6 +213,30 @@ The expected output is:
 The HTML results can be hosted with GitHub Pages, for this example they can be
 found at
 [OpenModelica.github.io/openmodelica-library-testing-action][gh-pages-link].
+
+## Development
+
+To install and build run:
+
+```bash
+npm install
+npm run package
+```
+
+Testing will install some Python packages. It's useful to setup a virtual Python
+environment in your shell before starting the tests:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+npm run test
+```
+
+> [!TIP]
+> On Windows use Conda to choose a Python interpreter and then setup a virtual
+> environment.
+> Use PowerShell to activate `.\.venv\Scripts\activate` the environment.
+> Msys2 doesn't install Python packages via pip, so it won't work with this script.
 
 ## License
 
