@@ -11,6 +11,7 @@ import * as os from 'os'
 import * as path from 'path'
 import * as core from '@actions/core'
 import * as main from '../src/main'
+import { getMSYS } from '../src/get-msys'
 
 // Some expected string
 const mdCoverageTable = `| Total | Frontend | Backend | SimCode | Templates | Compilation | Simulation | Verification |
@@ -112,7 +113,7 @@ describe('action', () => {
       expect(debugMock).toHaveBeenNthCalledWith(
         5,
         'Running python test.py --verbose --branch=master --noclean' +
-          ` ${os.platform() === 'win32' ? '--msysEnvironment=ucrt64' : ''}` +
+          ` ${os.platform() === 'win32' ? `--msysEnvironment=${getMSYS()}` : ''}` +
           ` ${path.join('configs', 'conf-MyLibrary.json')}`
       )
       expect(debugMock).toHaveBeenNthCalledWith(
