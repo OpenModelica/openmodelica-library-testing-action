@@ -33,7 +33,12 @@ jobs:
 
       - name: Update pip
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
+
+      - name: Install Python packages (Windows only)
+        if: ${{ matrix.os }} == 'windows-latest'
+        run: |
+          pip install --user datetime matplotlib monotonic natsort joblib ompython simplejson psutil
 
       - name: Cache pip dependencies
         uses: actions/cache@v4
