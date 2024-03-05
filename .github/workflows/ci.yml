@@ -36,16 +36,17 @@ jobs:
           python -m pip install --upgrade pip
 
       - name: Install Python packages (Windows only)
-        if: ${{ matrix.os }} == 'windows-latest'
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
         run: |
-          pip install --user \
-            datetime \
-            matplotlib \
-            monotonic \
-            natsort \
-            joblib \
-            ompython \
-            simplejson \
+          pip install --user `
+            datetime `
+            matplotlib `
+            monotonic `
+            natsort `
+            joblib `
+            ompython `
+            simplejson `
             psutil
 
       - name: Cache pip dependencies
