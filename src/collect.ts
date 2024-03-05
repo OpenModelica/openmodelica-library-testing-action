@@ -34,6 +34,7 @@
  */
 
 import * as fs from 'fs'
+import * as os from 'os'
 import * as path from 'path'
 import * as artifact from '@actions/artifact'
 import * as github from '@actions/github'
@@ -143,17 +144,18 @@ export async function uploadArtifacts(
   const client = new artifact.DefaultArtifactClient()
   const runId = github.context.runId
   const jobId = github.context.job
+  const runner = `${os.platform()}-${os.arch()}`
 
   const htmlFiles = await getAllAbsoluteFileNames(htmlArtifactsDir)
 
   const htmlPromise = client.uploadArtifact(
-    `${omcVersion}-${libraryName}-${runId}-${jobId}.html`,
+    `${runner}-${omcVersion}-${libraryName}-${runId}-${jobId}.html`,
     htmlFiles,
     htmlArtifactsDir
   )
 
   const sqlitePromise = client.uploadArtifact(
-    `${omcVersion}-sqlite3-${runId}-${jobId}.db`,
+    `${runner}-${omcVersion}-sqlite3-${runId}-${jobId}.db`,
     [sqlFile],
     path.dirname(sqlFile)
   )
