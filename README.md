@@ -1,4 +1,4 @@
-# openmodelica-library-testing Action
+# openmodelica-library-testing-action
 
 [![Continuous Integration][ci-badge]][ci-link]
 ![TS test coverage](badges/coverage.svg)
@@ -117,7 +117,8 @@ jobs:
             Modelica 4.0.0
           omc-diff: true
 
-      - uses: OpenModelica/openmodelica-library-testing@v0.1
+      - name: openmodelica-library-testing
+        uses: OpenModelica/openmodelica-library-testing-action@v0.2.0
         with:
           library: 'MyLibrary'
           library-version: '2.2.0'
@@ -258,5 +259,5 @@ with project number `19|200022G`.
 [om-library-testing-link]: https://github.com/OpenModelica/OpenModelicaLibraryTesting
 [setup-openmodelica-link]: https://github.com/OpenModelica/setup-openmodelica#available-openmodelica-versions
 [map-lib-link]: https://github.com/modelica/MAP-LIB_ReferenceResults/blob/v4.0.0
-[gh-pages-link]: https://openmodelica.github.io/openmodelica-library-testing-action/stable/MyLibrary_tags-v0.1.0/MyLibrary_tags-v0.1.0.html
+[gh-pages-link]: https://openmodelica.github.io/openmodelica-library-testing-action/stable/MyLibrary_tags-v0.2.0/MyLibrary_tags-v0.2.0.html
 [bmwk]: https://www.bmwk.de/Navigation/EN/Home/home.html
