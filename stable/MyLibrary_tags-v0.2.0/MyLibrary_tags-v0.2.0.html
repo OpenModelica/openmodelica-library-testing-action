@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>MyLibrary_tags-v0.2.0 test using OpenModelica</title>
+</head>
+<body>
+<h1>MyLibrary_tags-v0.2.0 test using OpenModelica</h1>
+
+<table>
+<tr>
+<th>Total</th>
+<th>Frontend</th>
+<th>Backend</th>
+<th>SimCode</th>
+<th>Templates</th>
+<th>Compilation</th>
+<th>Simulation</th>
+<th>Verification</th>
+</tr>
+<tr>
+<td>2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#00FF00">2</td>
+<td bgcolor="#FFCC66">1</td>
+</tr>
+</table>
+
+<p>
+Test started: 2024-03-06 14:20:51<br/>
+Total time taken: 0:00:11<br>
+System info: AMD EPYC 7763 64-Core Processor, 16 GB RAM, Ubuntu 22.04.4 LTS</p>
+<p>OpenModelica Version: OpenModelica 1.22.2~13-g935930e<br>
+<br>
+OpenModelicaLibraryTesting Changes<br>
+<table><tr><th>Commit</th><th>Date</th><th>Author</th><th>Summary</th></tr><tr><td><a href="https://github.com/OpenModelica/OpenModelicaLibraryTesting/commit//6ec233f">6ec233f</a></td><td>2024-03-05 00:21:56 +0100</td><td>Adrian Pop</td><td>fix Buildings 10 addition (#74)</td></tr></table>
+</p>
+<p>Tested Library: MyLibrary_tags-v0.2.0 1.0.0<pre>
+</pre></p>
+<p>
+BuildModel time limit: 660s<br>
+Simulation time limit: 480s<br>
+Default tolerance: 1e-06<br>
+Optimization level: Tool default</p>
+<p>Reference Files: /home/runner/work/openmodelica-library-testing-action/openmodelica-library-testing-action/examples/ReferenceFiles</p>
+<p>Verified using: OpenModelica 1.22.2~13-g935930e (diffSimulationResults)</p>
+Flags: <pre>setCommandLineOptions(&quot;-d=nogen&quot;);
+setCommandLineOptions(&quot;-d=initialization&quot;);
+setCommandLineOptions(&quot;-d=backenddaeinfo&quot;);
+setCommandLineOptions(&quot;-d=discreteinfo&quot;);
+setCommandLineOptions(&quot;-d=stateselection&quot;);
+setCommandLineOptions(&quot;-d=execstat&quot;);
+setMatchingAlgorithm(&quot;PFPlusExt&quot;);
+setIndexReductionMethod(&quot;dynamicStateSelection&quot;);</pre>
+Config: <pre>{
+ &quot;library&quot;: &quot;MyLibrary&quot;,
+ &quot;libraryVersion&quot;: &quot;tags-v0.2.0&quot;,
+ &quot;loadFileCommands&quot;: [
+  &quot;loadFile(\&quot;/home/runner/work/openmodelica-library-testing-action/openmodelica-library-testing-action/examples/MyLibrary/package.mo\&quot;)&quot;
+ ],
+ &quot;referenceFileExtension&quot;: &quot;csv&quot;,
+ &quot;referenceFileNameDelimiter&quot;: &quot;.&quot;,
+ &quot;referenceFiles&quot;: &quot;/home/runner/work/openmodelica-library-testing-action/openmodelica-library-testing-action/examples/ReferenceFiles&quot;
+}</pre>
+<p>Links are provided if getErrorString() or the simulation generates output. The links are coded with <font style="#FF0000">red</font> if there were errors, <font style="#FFCC66">yellow</font> if there were warnings, and normal links if there are only notifications.</p>
+<table>
+<tr><th>Model</th><th>Verified</th><th>Simulate</th><th>Total buildModel</th><th>Parsing</th><th>Frontend</th><th>Backend</th><th>SimCode</th><th>Templates</th><th>Compile</th><th>Total Execution</th></tr>
+<tr><td><a href="files/MyLibrary_tags-v0.2.0_MyLibrary.Blocks.Examples.PID_Controller.err">MyLibrary.Blocks.Examples.PID_Controller</a> (<a href="files/MyLibrary_tags-v0.2.0_MyLibrary.Blocks.Examples.PID_Controller.sim">sim</a>)</td><td bgcolor="#FFCC66">0.06 (<a href="files/MyLibrary_tags-v0.2.0_MyLibrary.Blocks.Examples.PID_Controller.diff.html">4/7 failed</a>)</td><td bgcolor="#00FF00">0.03</td><td bgcolor="#00FF00">2.52</td><td>1.93</td><td bgcolor="#00FF00">0.25</td><td bgcolor="#00FF00">0.03</td><td bgcolor="#00FF00">0.01</td><td bgcolor="#00FF00">0.03</td><td bgcolor="#00FF00">2.20</td><td>5.26</td></tr>
+
+<tr><td><a href="files/MyLibrary_tags-v0.2.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err">MyLibrary.Mechanics.MultiBody.Examples.Pendulum</a> (<a href="files/MyLibrary_tags-v0.2.0_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim">sim</a>)</td><td bgcolor="#00FF00">0.01 (3 verified)</td><td bgcolor="#00FF00">0.20</td><td bgcolor="#00FF00">3.42</td><td>1.94</td><td bgcolor="#00FF00">0.27</td><td bgcolor="#00FF00">0.39</td><td bgcolor="#00FF00">0.02</td><td bgcolor="#00FF00">0.06</td><td bgcolor="#00FF00">2.68</td><td>6.27</td></tr>
+
+</table>
+</body>
+</html>
