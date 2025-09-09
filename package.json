@@ -30,7 +30,7 @@
     "coverage": "make-coverage-badge --output-path ./badges/coverage.svg",
     "format:write": "prettier --write **/*.ts",
     "format:check": "prettier --check **/*.ts",
-    "lint": "npx eslint . -c ./.github/linters/.eslintrc.yml",
+    "lint": "npx eslint . -c ./.github/linters/eslint.config.mjs",
     "package": "ncc build src/index.ts --license licenses.txt && npm run copy-files",
     "package:watch": "npm run package -- --watch",
     "copy-files": "copyfiles scripts/dygraph-combined.js dist/",
@@ -96,6 +96,9 @@
     "turndown-plugin-gfm": "^1.0.2"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.35.0",
+    "@stylistic/eslint-plugin": "^5.3.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.3.1",
     "@types/turndown": "^5.0.5",
