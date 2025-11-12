@@ -188,7 +188,7 @@ export function summaryFromHtml(
 
     resultsRootFile = `${rootUrl}/${omcVersion}/${libNameBranch}/${libNameBranch}.html`
 
-    // TODO: ensure that htmlTables has two elements and that they are the correct tables
+    // TODO: ensure that htmlTables has three elements and that they are the correct tables
     resultTable = updateHtmlLinks(
       htmlTables[3],
       `${rootUrl}/${omcVersion}/${libNameBranch}`
