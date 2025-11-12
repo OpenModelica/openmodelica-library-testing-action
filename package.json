@@ -88,7 +88,7 @@
     ]
   },
   "dependencies": {
-    "@actions/artifact": "^2.3.2",
+    "@actions/artifact": "^4.0.0",
     "@actions/core": "^1.11.1",
     "node-html-parser": "^7.0.1",
     "simple-git": "^3.28.0",
