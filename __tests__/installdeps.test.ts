@@ -14,7 +14,7 @@ matplotlib
 monotonic
 natsort
 joblib
-ompython
+ompython==3.6
 simplejson
 psutil
 `
