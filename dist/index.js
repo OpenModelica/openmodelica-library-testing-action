@@ -81470,6 +81470,10 @@ function trimTrailingNewlines (string) {
   return string.substring(0, indexEnd)
 }
 
+function trimNewlines (string) {
+  return trimTrailingNewlines(trimLeadingNewlines(string))
+}
+
 var blockElements = [
   'ADDRESS', 'ARTICLE', 'ASIDE', 'AUDIO', 'BLOCKQUOTE', 'BODY', 'CANVAS',
   'CENTER', 'DD', 'DIR', 'DIV', 'DL', 'DT', 'FIELDSET', 'FIGCAPTION', 'FIGURE',
@@ -81561,8 +81565,7 @@ rules.blockquote = {
   filter: 'blockquote',
 
   replacement: function (content) {
-    content = content.replace(/^\n+|\n+$/g, '');
-    content = content.replace(/^/gm, '> ');
+    content = trimNewlines(content).replace(/^/gm, '> ');
     return '\n\n' + content + '\n\n'
   }
 };
@@ -81591,12 +81594,11 @@ rules.listItem = {
       var index = Array.prototype.indexOf.call(parent.children, node);
       prefix = (start ? Number(start) + index : index + 1) + '.  ';
     }
-    content = content
-      .replace(/^\n+/, '') // remove leading newlines
-      .replace(/\n+$/, '\n') // replace trailing newlines with just a single one
-      .replace(/\n/gm, '\n' + ' '.repeat(prefix.length)); // indent
+    var isParagraph = /\n$/.test(content);
+    content = trimNewlines(content) + (isParagraph ? '\n' : '');
+    content = content.replace(/\n/gm, '\n' + ' '.repeat(prefix.length)); // indent
     return (
-      prefix + content + (node.nextSibling && !/\n$/.test(content) ? '\n' : '')
+      prefix + content + (node.nextSibling ? '\n' : '')
     )
   }
 };
