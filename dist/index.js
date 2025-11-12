@@ -108916,7 +108916,7 @@ async function run() {
         // TODO: Make sure OpenModelica and Python 3 are available
         // Clone OpenModelicaLibraryTesting
         core.debug('clone OpenModelicaLibraryTesting');
-        await (0, clone_1.cloneScripts)('6ec233f4f1688d2ea8bf41367f0face18b7ba91f');
+        await (0, clone_1.cloneScripts)('601633f38aa1ad4c8c0f1d313ecc77aa7ee177aa');
         // Install Python dependencies
         await (0, installdeps_1.installPythonDeps)(path.join('OpenModelicaLibraryTesting', 'requirements.txt'));
         // Generate config
@@ -109188,10 +109188,10 @@ function summaryFromHtml(html, rootUrl, omcVersion, library, libraryVersion, ver
         const libNameBranch = `${library}_${libraryVersion}`;
         resultsRootFile = `${rootUrl}/${omcVersion}/${libNameBranch}/${libNameBranch}.html`;
         // TODO: ensure that htmlTables has two elements and that they are the correct tables
-        resultTable = updateHtmlLinks(htmlTables[2], `${rootUrl}/${omcVersion}/${libNameBranch}`);
+        resultTable = updateHtmlLinks(htmlTables[3], `${rootUrl}/${omcVersion}/${libNameBranch}`);
     }
     else {
-        resultTable = updateHtmlLinks(htmlTables[2]);
+        resultTable = updateHtmlLinks(htmlTables[3]);
     }
     const coverage = turndownService.turndown(htmlTables[0].outerHTML);
     const results = turndownService.turndown(resultTable.outerHTML);

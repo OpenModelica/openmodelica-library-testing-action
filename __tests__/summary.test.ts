@@ -38,22 +38,27 @@ const htmlLibOverview = `<!DOCTYPE html>
 </table>
 
 <p>
-Test started: 2024-03-01 17:06:15<br/>
-Total time taken: 0:00:10<br>
-System info: 12th Gen Intel(R) Core(TM) i7-12800H, 16 GB RAM, Ubuntu 22.04.3 LTS</p>
-<p>OpenModelica Version: v1.23.0-dev-327-g472467ba99-cmake<br>
-<br>
+Test started: 2025-11-12 14:21:56<br/>
+Total time taken: 0:00:15<br>
+System info: Intel(R) Core(TM) i7-10700KF CPU @ 3.80GHz, 16 GB RAM, Ubuntu 24.04.3 LTS</p>
+<p>OpenModelica Version: v1.26.0-dev-471-g729822b244-cmake<br>
+
+
 OpenModelicaLibraryTesting Changes<br>
-<table><tr><th>Commit</th><th>Date</th><th>Author</th><th>Summary</th></tr><tr><td><a href="https://github.com/OpenModelica/OpenModelicaLibraryTesting/commit//981cf23">981cf23</a></td><td>2024-03-01 11:47:30 +0100</td><td>Andreas</td><td>Updating README (#60)</td></tr></table>
+<table><tr><th>Commit</th><th>Date</th><th>Author</th><th>Summary</th></tr><tr><td><a href="https://github.com/OpenModelica/OpenModelicaLibraryTesting/commit//601633f">601633f</a></td><td>2025-11-12 12:03:57 +0100</td><td>Andreas</td><td>Fixing OMPython at v3.6 (#245)</td></tr></table>
 </p>
 <p>Tested Library: 1.0.0<pre>
 </pre></p>
-<p>BuildModel time limit: 660s</p>
-<p>Simulation time limit: 480s</p>
-<p>Default tolerance: 1e-06</p>
-<p>Optimization level: -Os -march=native</p>
-<p>Reference Files: /path/to/ReferenceFiles</p>
-<p>Verified using: v1.23.0-dev-203-g5904d1ea84-cmake (diffSimulationResults)</p>
+<p>
+BuildModel time limit: 660s<br>
+Simulation time limit: 480s<br>
+Default tolerance: 1e-06<br>
+Default number of intervals: 2500<br>
+Optimization level: Tool default</p>
+<p>Reference Files: /path/to/ReferenceFiles</p><table><tr><th>Commit</th><th>Date</th><th>Author</th><th>Summary</th></tr><tr><td><a href="git@github.com:OpenModelica/openmodelica-library-testing-action.git
+/996916f">996916f</a></td><td>2025-11-12 12:36:21 +0100</td><td>AnHeuermann</td><td>Update OpenModelicaLibraryTesting SHA</td></tr></table>
+
+<p>Verified using: v1.26.0-dev-471-g729822b244-cmake (diffSimulationResults)</p>
 Flags: <pre>setCommandLineOptions(&quot;-d=nogen&quot;);
 setCommandLineOptions(&quot;-d=initialization&quot;);
 setCommandLineOptions(&quot;-d=backenddaeinfo&quot;);
@@ -68,7 +73,6 @@ Config: <pre>{
  &quot;loadFileCommands&quot;: [
   &quot;loadFile(\\&quot;/path/to/MyLibrary/package.mo\\&quot;)&quot;
  ],
- &quot;optlevel&quot;: &quot;-Os -march=native&quot;,
  &quot;referenceFileExtension&quot;: &quot;csv&quot;,
  &quot;referenceFileNameDelimiter&quot;: &quot;.&quot;,
  &quot;referenceFiles&quot;: &quot;/path/to/ReferenceFiles&quot;
@@ -76,9 +80,9 @@ Config: <pre>{
 <p>Links are provided if getErrorString() or the simulation generates output. The links are coded with <font style="#FF0000">red</font> if there were errors, <font style="#FFCC66">yellow</font> if there were warnings, and normal links if there are only notifications.</p>
 <table>
 <tr><th>Model</th><th>Verified</th><th>Simulate</th><th>Total buildModel</th><th>Parsing</th><th>Frontend</th><th>Backend</th><th>SimCode</th><th>Templates</th><th>Compile</th><th>Total Execution</th></tr>
-<tr><td><a href="files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.err">MyLibrary.Blocks.Examples.PID_Controller</a> (<a href="files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.sim">sim</a>)</td><td bgcolor="#FFCC66">0.05 (<a href="files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.diff.html">4/7 failed</a>)</td><td bgcolor="#00FF00">0.02</td><td bgcolor="#00FF00">1.52</td><td>1.96</td><td bgcolor="#00FF00">0.08</td><td bgcolor="#00FF00">0.20</td><td bgcolor="#00FF00">0.01</td><td bgcolor="#00FF00">0.02</td><td bgcolor="#00FF00">1.20</td><td>4.60</td></tr>
+<tr><td><a href="files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.err">MyLibrary.Blocks.Examples.PID_Controller</a> (<a href="files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.sim">sim</a>)</td><td bgcolor="#FFCC66">0.08 (<a href="files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.diff.html">4/7 failed</a>)</td><td bgcolor="#00FF00">0.02</td><td bgcolor="#00FF00">2.25</td><td>3.68</td><td bgcolor="#00FF00">0.12</td><td bgcolor="#00FF00">0.07</td><td bgcolor="#00FF00">0.02</td><td bgcolor="#00FF00">0.05</td><td bgcolor="#00FF00">1.99</td><td>7.04</td></tr>
 
-<tr><td><a href="files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err">MyLibrary.Mechanics.MultiBody.Examples.Pendulum</a> (<a href="files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim">sim</a>)</td><td bgcolor="#00FF00">0.01 (3 verified)</td><td bgcolor="#00FF00">0.06</td><td bgcolor="#00FF00">2.32</td><td>1.95</td><td bgcolor="#00FF00">0.29</td><td bgcolor="#00FF00">0.22</td><td bgcolor="#00FF00">0.03</td><td bgcolor="#00FF00">0.06</td><td bgcolor="#00FF00">1.72</td><td>5.63</td></tr>
+<tr><td><a href="files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err">MyLibrary.Mechanics.MultiBody.Examples.Pendulum</a> (<a href="files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim">sim</a>)</td><td bgcolor="#00FF00">0.03 (3 verified)</td><td bgcolor="#00FF00">0.09</td><td bgcolor="#00FF00">3.76</td><td>3.68</td><td bgcolor="#00FF00">0.18</td><td bgcolor="#00FF00">0.71</td><td bgcolor="#00FF00">0.05</td><td bgcolor="#00FF00">0.10</td><td bgcolor="#00FF00">2.73</td><td>8.59</td></tr>
 
 </table>
 </body>
@@ -97,8 +101,8 @@ const markdownSummary = `## Summary
 
 | Model | Verified | Simulate | Total buildModel | Parsing | Frontend | Backend | SimCode | Templates | Compile | Total Execution |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| [MyLibrary.Blocks.Examples.PID\\_Controller](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.err) ([sim](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.sim)) | 0.05 ([4/7 failed](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.diff.html)) | 0.02 | 1.52 | 1.96 | 0.08 | 0.20 | 0.01 | 0.02 | 1.20 | 4.60 |
-| [MyLibrary.Mechanics.MultiBody.Examples.Pendulum](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err) ([sim](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim)) | 0.01 (3 verified) | 0.06 | 2.32 | 1.95 | 0.29 | 0.22 | 0.03 | 0.06 | 1.72 | 5.63 |
+| [MyLibrary.Blocks.Examples.PID\\_Controller](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.err) ([sim](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.sim)) | 0.08 ([4/7 failed](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Blocks.Examples.PID_Controller.diff.html)) | 0.02 | 2.25 | 3.68 | 0.12 | 0.07 | 0.02 | 0.05 | 1.99 | 7.04 |
+| [MyLibrary.Mechanics.MultiBody.Examples.Pendulum](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.err) ([sim](https://USERNAME.github.io/REPOSITORY/stable/MyLibrary_pr-8/files/MyLibrary_main_MyLibrary.Mechanics.MultiBody.Examples.Pendulum.sim)) | 0.03 (3 verified) | 0.09 | 3.76 | 3.68 | 0.18 | 0.71 | 0.05 | 0.10 | 2.73 | 8.59 |
 
 ## Detailed report
 
