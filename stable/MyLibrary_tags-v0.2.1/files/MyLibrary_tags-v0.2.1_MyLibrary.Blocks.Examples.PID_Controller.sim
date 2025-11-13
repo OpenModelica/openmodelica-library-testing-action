@@ -1,0 +1,32 @@
+Environment - simulationEnvironment:
+startTime=0
+stopTime=4
+tolerance=1e-06
+numberOfIntervals=5012
+stepSize=0.000798085
+Regular simulation: ./MyLibrary_tags-v0.2.1_MyLibrary.Blocks.Examples.PID_Controller  -abortSlowSimulation -alarm=480  -emit_protected -lv LOG_STATS
+LOG_SUCCESS       | info    | The initialization finished successfully with 3 homotopy steps.
+LOG_STATS         | info    | ### STATISTICS ###
+|                 | |       | | timer
+|                 | |       | | |   0.00236666s          reading init.xml
+|                 | |       | | |  0.000222025s          reading info.xml
+|                 | |       | | |  0.000233496s [  2.5%] pre-initialization
+|                 | |       | | |    8.012e-05s [  0.9%] initialization
+|                 | |       | | |    1.072e-06s [  0.0%] steps
+|                 | |       | | |   0.00155542s [ 16.6%] solver (excl. callbacks)
+|                 | |       | | |   0.00104966s [ 11.2%] creating output-file
+|                 | |       | | |  0.000604707s [  6.5%] event-handling
+|                 | |       | | |  0.000517635s [  5.5%] overhead
+|                 | |       | | |   0.00532709s [ 56.9%] simulation
+|                 | |       | | |    0.0093692s [100.0%] total
+|                 | |       | | events
+|                 | |       | | |     5 state events
+|                 | |       | | |     0 time events
+|                 | |       | | solver: dassl
+|                 | |       | | |   417 steps taken
+|                 | |       | | |   553 calls of functionODE
+|                 | |       | | |   126 evaluations of jacobian
+|                 | |       | | |    20 error test failures
+|                 | |       | | |     0 convergence test failures
+|                 | |       | | | 0.000283036s time of jacobian evaluation
+LOG_SUCCESS       | info    | The simulation finished successfully.
