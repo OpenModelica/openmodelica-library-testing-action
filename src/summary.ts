@@ -107,7 +107,9 @@ function findTableByHeaders(
     const headerCells = table.querySelectorAll('th')
     if (headerCells.length < headers.length) continue
 
-    const tableHeaders = headerCells.map((th: HTMLParser.HTMLElement) => th.text.trim())
+    const tableHeaders = headerCells.map((th: HTMLParser.HTMLElement) =>
+      th.text.trim()
+    )
     const matches = headers.every(
       (header, index) => tableHeaders[index] === header
     )
