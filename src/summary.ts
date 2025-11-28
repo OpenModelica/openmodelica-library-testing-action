@@ -93,6 +93,34 @@ class ActionOutputs implements ActionOutputsInterface {
 }
 
 /**
+ * Find a table by its header row content.
+ *
+ * @param tables      Array of HTML tables
+ * @param headers     Expected header values (in order)
+ * @returns           Table matching the headers, or undefined if not found
+ */
+function findTableByHeaders(
+  tables: HTMLParser.HTMLElement[],
+  headers: string[]
+): HTMLParser.HTMLElement | undefined {
+  for (const table of tables) {
+    const headerCells = table.querySelectorAll('th')
+    if (headerCells.length < headers.length) continue
+
+    const tableHeaders = headerCells.map((th: HTMLParser.HTMLElement) => th.text.trim())
+    const matches = headers.every(
+      (header, index) => tableHeaders[index] === header
+    )
+
+    if (matches) {
+      return table
+    }
+  }
+
+  return undefined
+}
+
+/**
  * Update all links from td elements of table.
  *
  * @param table     HTML table
@@ -168,6 +196,30 @@ export function summaryFromHtml(
   const root = HTMLParser.parse(html)
   const htmlTables = root.getElementsByTagName('table')
 
+  // Find coverage table by headers: Total, Frontend, Backend, ...
+  const coverageTable = findTableByHeaders(htmlTables, [
+    'Total',
+    'Frontend',
+    'Backend'
+  ])
+  if (!coverageTable) {
+    throw new Error(
+      'Could not find coverage table with headers: Total, Frontend, Backend'
+    )
+  }
+
+  // Find results table by headers: Model, Verified, Simulate, ...
+  const resultTable = findTableByHeaders(htmlTables, [
+    'Model',
+    'Verified',
+    'Simulate'
+  ])
+  if (!resultTable) {
+    throw new Error(
+      'Could not find results table with headers: Model, Verified, Simulate'
+    )
+  }
+
   const turndownService = new TurndownService({
     headingStyle: 'atx',
     codeBlockStyle: 'fenced'
@@ -180,27 +232,26 @@ export function summaryFromHtml(
   if (addPagesLinks && rootUrl.endsWith('/')) {
     rootUrl = rootUrl.slice(0, -1)
   }
-  let resultTable: HTMLParser.HTMLElement
   let resultsRootFile = ''
+  let updatedResultTable = resultTable
 
   if (addPagesLinks) {
     const libNameBranch = `${library}_${libraryVersion}`
 
     resultsRootFile = `${rootUrl}/${omcVersion}/${libNameBranch}/${libNameBranch}.html`
 
-    // TODO: ensure that htmlTables has three elements and that they are the correct tables
-    resultTable = updateHtmlLinks(
-      htmlTables[3],
+    updatedResultTable = updateHtmlLinks(
+      resultTable,
       `${rootUrl}/${omcVersion}/${libNameBranch}`
     )
   } else {
-    resultTable = updateHtmlLinks(htmlTables[3])
+    updatedResultTable = updateHtmlLinks(resultTable)
   }
 
-  const coverage = turndownService.turndown(htmlTables[0].outerHTML)
-  const results = turndownService.turndown(resultTable.outerHTML)
+  const coverage = turndownService.turndown(coverageTable.outerHTML)
+  const results = turndownService.turndown(updatedResultTable.outerHTML)
 
-  const outputs = parseStats(htmlTables[0], verificationTested)
+  const outputs = parseStats(coverageTable, verificationTested)
 
   let summary = `## Summary
 
