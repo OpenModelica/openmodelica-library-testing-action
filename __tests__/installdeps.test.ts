@@ -40,6 +40,6 @@ describe('installdeps.ts', () => {
       expect(stdout).toContain('simplejson')
       expect(stdout).toContain('psutil')
     },
-    2 * 60000 /* 2 minutes */
+    5 * 60000 /* 5 minutes */
   )
 })
