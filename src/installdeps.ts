@@ -37,6 +37,15 @@ import * as child_process from 'child_process'
 import * as core from '@actions/core'
 
 /**
+ * Check if Python is running inside a virtual environment.
+ *
+ * @returns True if Python is running inside a virtual environment, false otherwise.
+ */
+export function isPythonVirtualEnvironment(): boolean {
+  return process.env.VIRTUAL_ENV !== undefined
+}
+
+/**
  * Install Python requirements.
  *
  * @param requirementsFile  Path to 'requirements.txt' file.
@@ -45,7 +54,12 @@ import * as core from '@actions/core'
 export async function installPythonDeps(
   requirementsFile: string
 ): Promise<{ stdout: string; stderr: string }> {
-  const command = `pip install -r ${requirementsFile} --user`
+  let command: string
+  if (isPythonVirtualEnvironment()) {
+    command = `pip install -r ${requirementsFile}`
+  } else {
+    command = `pip install -r ${requirementsFile} --user`
+  }
 
   return new Promise((resolve, reject) => {
     child_process.exec(command, (error, stdout, stderr) => {
