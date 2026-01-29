@@ -16,4 +16,4 @@ RUN apt-get update && \
 USER node
 RUN printf 'success:=installPackage(Modelica, version = "4.0.0", exactMatch = true);\nif not success then exit(1); end if;\n' > /tmp/install.mos && \
     omc /tmp/install.mos && \
-    rm -rf /var/lib/apt/lists/* /tmp/install.mos
+    rm -rf /tmp/install.mos

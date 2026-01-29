@@ -183739,7 +183739,7 @@ async function installPythonDeps(requirementsFile) {
         args.push('--user');
     }
     return new Promise((resolve, reject) => {
-        external_child_process_.execFile('pip', args, (error, stdout, stderr) => {
+        external_child_process_.execFile('python', ['-m', 'pip', ...args], (error, stdout, stderr) => {
             core.debug(stdout);
             if (error) {
                 core.error('Failed installing Python dependencies');

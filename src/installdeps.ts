@@ -60,7 +60,7 @@ export async function installPythonDeps(
   }
 
   return new Promise((resolve, reject) => {
-    child_process.execFile('pip', args, (error, stdout, stderr) => {
+    child_process.execFile('python', ['-m', 'pip', ...args], (error, stdout, stderr) => {
       core.debug(stdout)
 
       if (error) {
