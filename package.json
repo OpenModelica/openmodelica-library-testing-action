@@ -36,7 +36,7 @@
     "package:watch": "npm run package -- --watch",
     "copy-files": "copyfiles scripts/dygraph-combined.js dist/",
     "test": "jest",
-    "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
+    "all": "npm run format:write && npm run lint && npm run package && npm run test && npm run coverage"
   },
   "jest": {
     "preset": "ts-jest",

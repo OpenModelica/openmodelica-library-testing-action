@@ -60,15 +60,19 @@ export async function installPythonDeps(
   }
 
   return new Promise((resolve, reject) => {
-    child_process.execFile('python', ['-m', 'pip', ...args], (error, stdout, stderr) => {
-      core.debug(stdout)
+    child_process.execFile(
+      'python',
+      ['-m', 'pip', ...args],
+      (error, stdout, stderr) => {
+        core.debug(stdout)
 
-      if (error) {
-        core.error('Failed installing Python dependencies')
-        reject(error)
-      } else {
-        resolve({ stdout, stderr })
+        if (error) {
+          core.error('Failed installing Python dependencies')
+          reject(error)
+        } else {
+          resolve({ stdout, stderr })
+        }
       }
-    })
+    )
   })
 }
