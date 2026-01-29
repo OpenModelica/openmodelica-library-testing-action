@@ -54,15 +54,13 @@ export function isPythonVirtualEnvironment(): boolean {
 export async function installPythonDeps(
   requirementsFile: string
 ): Promise<{ stdout: string; stderr: string }> {
-  let command: string
-  if (isPythonVirtualEnvironment()) {
-    command = `pip install -r ${requirementsFile}`
-  } else {
-    command = `pip install -r ${requirementsFile} --user`
+  const args = ['install', '-r', requirementsFile]
+  if (!isPythonVirtualEnvironment()) {
+    args.push('--user')
   }
 
   return new Promise((resolve, reject) => {
-    child_process.exec(command, (error, stdout, stderr) => {
+    child_process.execFile('pip', args, (error, stdout, stderr) => {
       core.debug(stdout)
 
       if (error) {

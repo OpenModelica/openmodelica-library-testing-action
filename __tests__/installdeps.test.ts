@@ -31,9 +31,10 @@ describe('installdeps.ts', () => {
       const { stdout, stderr } = await installPythonDeps(requirementsFile)
 
       // stderr should be empty or start with deprecation warning "DEPRECATION: ompython"
-      expect(stderr === '' || stderr.startsWith('DEPRECATION: ompython')).toBe(
-        true
-      )
+      if (stderr !== '') {
+        expect(stderr).toMatch(/^DEPRECATION: ompython[\s\S]*$/)
+      }
+
       expect(stdout).toContain('datetime')
       expect(stdout).toContain('matplotlib')
       expect(stdout).toContain('monotonic')

@@ -183734,15 +183734,12 @@ function isPythonVirtualEnvironment() {
  * @returns                 Promise resolving when pip process exits.
  */
 async function installPythonDeps(requirementsFile) {
-    let command;
-    if (isPythonVirtualEnvironment()) {
-        command = `pip install -r ${requirementsFile}`;
-    }
-    else {
-        command = `pip install -r ${requirementsFile} --user`;
+    const args = ['install', '-r', requirementsFile];
+    if (!isPythonVirtualEnvironment()) {
+        args.push('--user');
     }
     return new Promise((resolve, reject) => {
-        external_child_process_.exec(command, (error, stdout, stderr) => {
+        external_child_process_.execFile('pip', args, (error, stdout, stderr) => {
             core.debug(stdout);
             if (error) {
                 core.error('Failed installing Python dependencies');
