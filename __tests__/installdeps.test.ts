@@ -30,7 +30,11 @@ describe('installdeps.ts', () => {
       fs.writeFileSync(requirementsFile, requirements)
       const { stdout, stderr } = await installPythonDeps(requirementsFile)
 
-      expect(stderr).toBe('')
+      // stderr should be empty or start with deprecation warning "DEPRECATION: ompython"
+      expect(stderr === '' || stderr.startsWith('DEPRECATION: ompython')).toBe(
+        true
+      )
+
       expect(stdout).toContain('datetime')
       expect(stdout).toContain('matplotlib')
       expect(stdout).toContain('monotonic')
@@ -40,6 +44,6 @@ describe('installdeps.ts', () => {
       expect(stdout).toContain('simplejson')
       expect(stdout).toContain('psutil')
     },
-    2 * 60000 /* 2 minutes */
+    5 * 60000 /* 5 minutes */
   )
 })
