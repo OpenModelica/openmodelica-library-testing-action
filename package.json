@@ -47,6 +47,9 @@
       "js",
       "ts"
     ],
+    "moduleNameMapper": {
+      "^@actions/core$": "<rootDir>/__tests__/__mocks__/@actions/core.ts"
+    },
     "projects": [
       {
         "displayName": "unit-tests",
