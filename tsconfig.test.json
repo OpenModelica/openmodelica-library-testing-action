@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": null,
+    "noEmit": true
+  },
+  "include": ["./src/**/*", "./__tests__/**/*", "./__fixtures__/**/*"],
+  "exclude": ["./dist", "./node_modules", "./coverage"]
+}
