@@ -4,15 +4,40 @@
 
 import * as fs from 'fs'
 import * as path from 'path'
-import * as artifact from '@actions/artifact'
-import { expect } from '@jest/globals'
-import { copyHtmlFilesSync, uploadArtifacts } from '../src/collect'
+import {
+  expect,
+  jest,
+  describe,
+  beforeEach,
+  afterEach,
+  it
+} from '@jest/globals'
 
 const tempTestDir = path.join('__tests__', 'tmp-collect')
 
 // Mock @actions/artifact
-jest.mock('@actions/artifact')
-jest.mock('@actions/github')
+const uploadArtifactMock = jest
+  .fn<() => Promise<{ size: number; id: number }>>()
+  .mockResolvedValue({ size: 0, id: 0 })
+
+const DefaultArtifactClientMock = jest.fn().mockImplementation(() => ({
+  uploadArtifact: uploadArtifactMock
+}))
+
+jest.unstable_mockModule('@actions/artifact', () => ({
+  DefaultArtifactClient: DefaultArtifactClientMock
+}))
+
+jest.unstable_mockModule('@actions/github', () => ({
+  context: {
+    repo: { owner: 'test', repo: 'test' },
+    runId: 123,
+    job: 'test-job'
+  }
+}))
+
+// Dynamic imports after mocking
+const { copyHtmlFilesSync, uploadArtifacts } = await import('../src/collect')
 
 function mockFileStructure(
   libraryName: string,
@@ -106,13 +131,6 @@ describe('collect.ts', () => {
     const omLibTestingDir = path.join(tempTestDir, 'OpenModelicaLibraryTesting')
     const targetDir = path.join(tempTestDir, 'html')
     mockFileStructure(libraryName, libraryVersion, modelPrefix, omLibTestingDir)
-
-    const DefaultArtifactClientMock = jest
-      .spyOn(artifact, 'DefaultArtifactClient')
-      .mockImplementation()
-    const uploadArtifactMock = jest
-      .spyOn(artifact.DefaultArtifactClient.prototype, 'uploadArtifact')
-      .mockImplementation()
 
     copyHtmlFilesSync(
       libraryName,

@@ -9,33 +9,45 @@
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
-import * as core from '@actions/core'
-import * as main from '../src/main'
-import { getMSYS } from '../src/get-msys'
+import { expect, jest, describe, beforeEach, afterAll, it } from '@jest/globals'
+
+// Import mocks from fixtures
+import * as core from '../__fixtures__/core.js'
 
 // Some expected string
 const mdCoverageTable = `| Total | Frontend | Backend | SimCode | Templates | Compilation | Simulation | Verification |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 1 |`
 
-// Mock the action's main function
-const runMock = jest.spyOn(main, 'run')
 const modelicaFile = path.resolve(
   path.join('examples', 'MyLibrary', 'package.mo')
 )
 const referenceFilesDir = path.resolve(path.join('examples', 'ReferenceFiles'))
 
 // Mock the GitHub Actions core library
-let debugMock: jest.SpyInstance
-let errorMock: jest.SpyInstance
-let infoMock: jest.SpyInstance
-let getInputMock: jest.SpyInstance
-let setFailedMock: jest.SpyInstance
-let setOutputMock: jest.SpyInstance
+jest.unstable_mockModule('@actions/core', () => core)
 
 // Mock @actions/artifact and @actions/github
-jest.mock('@actions/artifact')
-jest.mock('@actions/github')
+const uploadArtifactMock = jest
+  .fn<() => Promise<{ size: number; id: number }>>()
+  .mockResolvedValue({ size: 0, id: 0 })
+
+jest.unstable_mockModule('@actions/artifact', () => ({
+  DefaultArtifactClient: jest.fn().mockImplementation(() => ({
+    uploadArtifact: uploadArtifactMock
+  }))
+}))
+
+jest.unstable_mockModule('@actions/github', () => ({
+  context: {
+    repo: { owner: 'test', repo: 'test' },
+    runId: 123
+  }
+}))
+
+// Dynamic imports after mocking
+const main = await import('../src/main')
+const { getMSYS } = await import('../src/get-msys')
 
 // Set GitHub summary file
 const gitHubStepSummaryFile = path.resolve(
@@ -56,26 +68,19 @@ describe('action', () => {
     fs.writeFileSync(gitHubStepSummaryFile, '', { flag: 'w' })
 
     jest.clearAllMocks()
+    // Reset summary buffer
+    core.resetSummaryBuffer()
 
-    debugMock = jest
-      .spyOn(core, 'debug')
-      .mockImplementation(msg => console.log(`::debug::${msg}`))
-    infoMock = jest
-      .spyOn(core, 'info')
-      .mockImplementation(msg => console.log(`::info::${msg}`))
-    errorMock = jest
-      .spyOn(core, 'error')
-      .mockImplementation(msg => console.log(`::error::${msg}`))
-    getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
-    setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
-    setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
+    core.debug.mockImplementation(msg => console.log(`::debug::${msg}`))
+    core.info.mockImplementation(msg => console.log(`::info::${msg}`))
+    core.error.mockImplementation(msg => console.log(`::error::${msg}`))
   })
 
   it(
     'Run action',
     async () => {
       // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string => {
+      core.getInput.mockImplementation((name: string): string => {
         switch (name) {
           case 'library':
             return 'MyLibrary'
@@ -101,68 +106,67 @@ describe('action', () => {
       })
 
       await main.run()
-      expect(runMock).toHaveReturned()
 
       // Verify that all of the core library functions were called correctly
-      expect(debugMock).toHaveBeenNthCalledWith(1, 'Get inputs')
-      expect(debugMock).toHaveBeenNthCalledWith(
+      expect(core.debug).toHaveBeenNthCalledWith(1, 'Get inputs')
+      expect(core.debug).toHaveBeenNthCalledWith(
         2,
         'clone OpenModelicaLibraryTesting'
       )
-      expect(debugMock).toHaveBeenNthCalledWith(4, 'Generating configuration')
-      expect(debugMock).toHaveBeenNthCalledWith(
+      expect(core.debug).toHaveBeenNthCalledWith(4, 'Generating configuration')
+      expect(core.debug).toHaveBeenNthCalledWith(
         5,
         'Running python test.py --verbose --branch=master --noclean' +
           ` ${os.platform() === 'win32' ? `--msysEnvironment=${getMSYS()}` : ''}` +
           ` ${path.join('configs', 'conf-MyLibrary.json')}`
       )
-      expect(debugMock).toHaveBeenNthCalledWith(
+      expect(core.debug).toHaveBeenNthCalledWith(
         7,
         'Running python report.py --branch=master' +
           ` ${path.join('configs', 'conf-MyLibrary.json')}`
       )
-      expect(debugMock).toHaveBeenNthCalledWith(9, 'Write summary')
-      expect(debugMock).toHaveBeenNthCalledWith(10, 'Set outputs')
-      expect(debugMock).toHaveBeenNthCalledWith(11, 'Collect HTML outputs')
-      expect(debugMock).toHaveBeenNthCalledWith(12, 'Upload artifacts')
-      expect(debugMock).toHaveBeenCalledTimes(12)
+      expect(core.debug).toHaveBeenNthCalledWith(9, 'Write summary')
+      expect(core.debug).toHaveBeenNthCalledWith(10, 'Set outputs')
+      expect(core.debug).toHaveBeenNthCalledWith(11, 'Collect HTML outputs')
+      expect(core.debug).toHaveBeenNthCalledWith(12, 'Upload artifacts')
+      expect(core.debug).toHaveBeenCalledTimes(12)
 
-      expect(setOutputMock).toHaveBeenNthCalledWith(
+      expect(core.setOutput).toHaveBeenNthCalledWith(
         1,
         'simulation-tests-passing',
         true
       )
-      expect(setOutputMock).toHaveBeenNthCalledWith(
+      expect(core.setOutput).toHaveBeenNthCalledWith(
         2,
         'n-simulation-passing',
         2
       )
-      expect(setOutputMock).toHaveBeenNthCalledWith(
+      expect(core.setOutput).toHaveBeenNthCalledWith(
         3,
         'verification-tests-passing',
         false
       )
-      expect(setOutputMock).toHaveBeenNthCalledWith(
+      expect(core.setOutput).toHaveBeenNthCalledWith(
         4,
         'n-verification-passing',
         1
       )
-      expect(setOutputMock).toHaveBeenCalledTimes(4)
+      expect(core.setOutput).toHaveBeenCalledTimes(4)
 
-      expect(infoMock).toHaveBeenNthCalledWith(
+      expect(core.info).toHaveBeenNthCalledWith(
         2,
         `simulation-tests-passing: true`
       )
-      expect(infoMock).toHaveBeenNthCalledWith(3, `n-simulation-passing: 2`)
-      expect(infoMock).toHaveBeenNthCalledWith(
+      expect(core.info).toHaveBeenNthCalledWith(3, `n-simulation-passing: 2`)
+      expect(core.info).toHaveBeenNthCalledWith(
         4,
         `verification-tests-passing: false`
       )
-      expect(infoMock).toHaveBeenNthCalledWith(5, `n-verification-passing: 1`)
-      expect(infoMock).toHaveBeenCalledTimes(5)
+      expect(core.info).toHaveBeenNthCalledWith(5, `n-verification-passing: 1`)
+      expect(core.info).toHaveBeenCalledTimes(5)
 
-      expect(errorMock).not.toHaveBeenCalled()
-      expect(setFailedMock).not.toHaveBeenCalled()
+      expect(core.error).not.toHaveBeenCalled()
+      expect(core.setFailed).not.toHaveBeenCalled()
 
       // Verify summary file
       const summaryContent = fs.readFileSync(gitHubStepSummaryFile, 'utf-8')

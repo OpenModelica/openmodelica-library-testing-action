@@ -3,24 +3,28 @@
  */
 
 import * as path from 'path'
-import * as core from '@actions/core'
-import { expect } from '@jest/globals'
-import { ActionInputs, ActionInputsInterface } from '../src/inputs'
+import { expect, jest, describe, beforeEach, it } from '@jest/globals'
+
+// Import mocks from fixtures
+import * as core from '../__fixtures__/core.js'
 
 const modelicaFile = path.resolve('examples/MyLibrary/package.mo')
 const referenceFilesDir = path.resolve('examples/ReferenceFiles')
 
-// Mock the GitHub Actions core library
-let getInputMock: jest.SpyInstance
+// Mock @actions/core before importing modules that use it
+jest.unstable_mockModule('@actions/core', () => core)
+
+// Dynamic import after mocking
+const { ActionInputs } = await import('../src/inputs')
+import type { ActionInputsInterface } from '../src/inputs'
 
 describe('inputs.ts', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
   })
 
   it('Read inputs', async () => {
-    getInputMock.mockImplementation((name: string): string => {
+    core.getInput.mockImplementation((name: string): string => {
       switch (name) {
         case 'library':
           return 'MyLibrary'

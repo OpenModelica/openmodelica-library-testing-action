@@ -35,62 +35,12 @@
     "package": "ncc build src/index.ts --license licenses.txt && npm run copy-files",
     "package:watch": "npm run package -- --watch",
     "copy-files": "copyfiles scripts/dygraph-combined.js dist/",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "all": "npm run format:write && npm run lint && npm run package && npm run test && npm run coverage"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "verbose": true,
-    "clearMocks": true,
-    "testEnvironment": "node",
-    "moduleFileExtensions": [
-      "js",
-      "ts"
-    ],
-    "projects": [
-      {
-        "displayName": "unit-tests",
-        "testEnvironment": "node",
-        "testMatch": [
-          "**/*.test.ts"
-        ],
-        "testPathIgnorePatterns": [
-          "main.test.ts",
-          "/node_modules/",
-          "/dist/"
-        ],
-        "transform": {
-          "^.+\\.ts$": "ts-jest"
-        }
-      },
-      {
-        "displayName": "main-test",
-        "testEnvironment": "node",
-        "testMatch": [
-          "**/main.test.ts"
-        ],
-        "testPathIgnorePatterns": [
-          "/node_modules/",
-          "/dist/"
-        ],
-        "transform": {
-          "^.+\\.ts$": "ts-jest"
-        }
-      }
-    ],
-    "coverageReporters": [
-      "json-summary",
-      "text",
-      "lcov"
-    ],
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "./src/**"
-    ]
   },
   "dependencies": {
     "@actions/artifact": "^5.0.3",
-    "@actions/core": "^2.0.3",
+    "@actions/core": "^3.0.0",
     "node-html-parser": "^7.0.2",
     "simple-git": "^3.30.0",
     "turndown": "^7.2.2",
