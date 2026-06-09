@@ -1,8 +1,6 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import jest from "eslint-plugin-jest";
-import github from "eslint-plugin-github";
 import prettier from "eslint-plugin-prettier";
-import tseslint from "typescript-eslint";
 import stylistic from '@stylistic/eslint-plugin'
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import globals from "globals";
@@ -38,11 +36,9 @@ export default defineConfig([globalIgnores([
     ),
 
     plugins: {
-        "@typescript-eslint": tseslint.plugin,
         jest,
         "@typescript-eslint": typescriptEslint,
         "@stylistic": stylistic,
-        github,
         prettier,
     },
 
@@ -70,10 +66,6 @@ export default defineConfig([globalIgnores([
 
     rules: {
         camelcase: "off",
-        "eslint-comments/no-use": "off",
-        "eslint-comments/no-unused-disable": "off",
-        "i18n-text/no-en": "off",
-        "import/no-namespace": "off",
         "no-console": "off",
         "no-unused-vars": "off",
         "prettier/prettier": "error",

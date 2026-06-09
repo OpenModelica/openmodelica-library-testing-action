@@ -235,7 +235,7 @@ export function summaryFromHtml(
     rootUrl = rootUrl.slice(0, -1)
   }
   let resultsRootFile = ''
-  let updatedResultTable = resultTable
+  let updatedResultTable
 
   if (addPagesLinks) {
     const libNameBranch = `${library}_${libraryVersion}`
