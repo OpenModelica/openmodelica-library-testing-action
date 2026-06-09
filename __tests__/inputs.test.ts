@@ -16,7 +16,6 @@ jest.unstable_mockModule('@actions/core', () => core)
 
 // Dynamic import after mocking
 const { ActionInputs } = await import('../src/inputs')
-import type { ActionInputsInterface } from '../src/inputs'
 
 describe('inputs.ts', () => {
   beforeEach(() => {
@@ -61,6 +60,6 @@ describe('inputs.ts', () => {
       pagesRootUrl: 'https://USERNAME.github.io/REPOSITORY/',
       omcVersion: 'master',
       allowFailingTests: false
-    } as ActionInputsInterface)
+    })
   })
 })
