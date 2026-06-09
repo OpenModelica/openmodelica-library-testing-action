@@ -167958,7 +167958,7 @@ function summaryFromHtml(html, rootUrl, omcVersion, library, libraryVersion, ver
         rootUrl = rootUrl.slice(0, -1);
     }
     let resultsRootFile = '';
-    let updatedResultTable = resultTable;
+    let updatedResultTable;
     if (addPagesLinks) {
         const libNameBranch = `${library}_${libraryVersion}`;
         resultsRootFile = `${rootUrl}/${omcVersion}/${libNameBranch}/${libNameBranch}.html`;
