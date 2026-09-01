@@ -41,7 +41,7 @@
   "dependencies": {
     "@actions/artifact": "^6.2.1",
     "@actions/core": "^3.0.1",
-    "node-html-parser": "^7.1.0",
+    "node-html-parser": "^9.0.2",
     "simple-git": "^3.36.0",
     "turndown": "^7.2.4",
     "turndown-plugin-gfm": "^1.0.2"
