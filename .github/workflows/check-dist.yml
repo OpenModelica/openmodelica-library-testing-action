@@ -7,6 +7,13 @@
 # If this workflow is run from a feature branch, it will act as an additional CI
 # check and fail if the checked-in `dist/` directory does not match what is
 # expected from the build.
+#
+# On a pull_request from a branch of this repository (not a fork, and not a
+# Dependabot PR - both get a read-only GITHUB_TOKEN), a mismatch is committed
+# and pushed back to the PR branch automatically instead of just failing.
+# Note: GITHUB_TOKEN pushes never trigger new workflow runs, so this run's
+# status still reflects the pre-fix commit - re-run the job (or push anything
+# else) once the auto-fix commit lands to get a green check on the new SHA.
 name: Check Transpiled JavaScript
 
 on:
@@ -22,15 +29,19 @@ jobs:
   check-dist:
     name: Check dist/
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.head_ref || github.ref }}
 
       - name: Setup Node.js
         id: setup-node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .node-version
           cache: npm
@@ -43,22 +54,44 @@ jobs:
         id: build
         run: npm run bundle
 
-      # This will fail the workflow if the PR wasn't created by Dependabot.
       - name: Compare Directories
         id: diff
         run: |
           if [ "$(git diff --ignore-space-at-eol --text dist/ | wc -l)" -gt "0" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
             echo "Detected uncommitted changes after build. See status below:"
             git diff --ignore-space-at-eol --text dist/
-            exit 1
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # If `dist/` was different than expected, and this was not a Dependabot
-      # PR, upload the expected version as a workflow artifact.
-      - if: ${{ failure() && steps.diff.outcome == 'failure' }}
+      # Only attempted on a pull_request; a plain push to main has no branch
+      # to push the fix to. Fork and Dependabot PRs get a read-only token, so
+      # the push fails here and falls through to the artifact upload below.
+      - name: Commit dist/ fix to PR branch
+        id: autocommit
+        if: steps.diff.outputs.changed == 'true' && github.event_name == 'pull_request'
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dist/
+          git commit -m "chore: rebuild dist/ [skip ci]"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
+
+      - name: Fail if dist/ is still out of date
+        if: steps.diff.outputs.changed == 'true' && steps.autocommit.outcome != 'success'
+        run: |
+          echo "::error::dist/ does not match the build output and could not be auto-committed. Run 'npm run bundle' locally and commit the result."
+          exit 1
+
+      # If `dist/` was different than expected and it could not be
+      # auto-committed (push to main, fork PR, or Dependabot PR), upload the
+      # expected version as a workflow artifact.
+      - if: ${{ steps.diff.outputs.changed == 'true' && steps.autocommit.outcome != 'success' }}
         name: Upload Artifact
         id: upload
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dist
           path: dist/
