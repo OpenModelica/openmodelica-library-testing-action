@@ -56,7 +56,7 @@ jobs:
           key: ${{ runner.os }}-pip
 
       - name: Setup OpenModelica
-        uses: OpenModelica/setup-openmodelica@dd6dc5fdb91c936dd3ab328902808c8a5421f146 # v1.1.0
+        uses: OpenModelica/setup-openmodelica@419f31141aa79a22f7033def5626047dd3bb5069 # v1.2.0
         with:
           version: stable
           packages: |
@@ -120,7 +120,7 @@ jobs:
           key: ${{ runner.os }}-pip
 
       - name: Setup OpenModelica
-        uses: OpenModelica/setup-openmodelica@dd6dc5fdb91c936dd3ab328902808c8a5421f146 # v1.1.0
+        uses: OpenModelica/setup-openmodelica@419f31141aa79a22f7033def5626047dd3bb5069 # v1.2.0
         with:
           version: stable
           packages: |
